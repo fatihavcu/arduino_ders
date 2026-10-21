@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1. Hafta – Arduino'ya Giriş, IDE Kurulumu ve Ohm Kanunu | Arduino ile Programlama</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#1d2733;--muted:#5b6b7d;--teal:#00979d;--teal2:#00b3b9;--accent:#e67e22;--red:#e74c3c;--green:#27ae60;--code:#0f1b26;--border:#dde5ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+header.top{background:linear-gradient(135deg,#006468,#00979d 60%,#00b3b9);color:#fff;padding:28px 20px 34px;position:relative;overflow:hidden}
+header.top::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px),repeating-linear-gradient(0deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px);pointer-events:none}
+.wrap{max-width:1050px;margin:0 auto;padding:0 18px}
+.badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:3px 12px;border-radius:20px;font-size:.85em;letter-spacing:.5px}
+header.top h1{margin:10px 0 6px;font-size:2em}
+header.top p{margin:0;opacity:.92}
+nav.weeknav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;position:relative;z-index:1}
+nav.weeknav a{color:#fff;text-decoration:none;background:rgba(0,0,0,.18);padding:6px 12px;border-radius:6px;font-size:.9em}
+nav.weeknav a:hover{background:rgba(0,0,0,.35)}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;margin:22px 0}
+.toc ol{margin:6px 0;columns:2}
+.toc a{color:var(--teal);text-decoration:none}
+section.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin:22px 0;box-shadow:0 2px 8px rgba(20,40,60,.05);animation:fadeUp .6s ease both}
+section.card h2{margin-top:0;color:#006468;border-bottom:2px solid #e3f3f3;padding-bottom:8px}
+section.card h2 .num{display:inline-block;background:var(--teal);color:#fff;border-radius:50%;width:32px;height:32px;text-align:center;line-height:32px;margin-right:8px;font-size:.8em}
+h3{color:#0b4f6c}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.goals li{margin:4px 0}
+.note,.warn,.tip{border-radius:8px;padding:12px 16px;margin:14px 0;border-left:5px solid}
+.note{background:#eaf6ff;border-color:#2e86de}.warn{background:#fff3e6;border-color:var(--accent)}.tip{background:#eafaf1;border-color:var(--green)}
+.note::before{content:"ℹ️ Not: ";font-weight:600}.warn::before{content:"⚠️ Dikkat: ";font-weight:600}.tip::before{content:"💡 İpucu: ";font-weight:600}
+.formula{font-family:Cambria,"Times New Roman",serif;font-size:1.5em;text-align:center;background:#f7fbfb;border:1px dashed var(--teal);border-radius:8px;padding:12px;margin:14px 0}
+table.tbl{border-collapse:collapse;width:100%;margin:12px 0;font-size:.95em}
+table.tbl th,table.tbl td{border:1px solid var(--border);padding:7px 10px;text-align:left}
+table.tbl th{background:#e9f6f6;color:#064d50}
+table.tbl tr:nth-child(even) td{background:#fafcfd}
+.codebox{position:relative;margin:14px 0}
+.codebox .lbl{background:#1f3344;color:#9fd7da;font-size:.8em;padding:4px 12px;border-radius:8px 8px 0 0;display:inline-block;font-family:Consolas,monospace}
+pre.code{background:var(--code);color:#d7e3ee;padding:16px 18px;border-radius:0 8px 8px 8px;overflow:auto;font-family:Consolas,"Courier New",monospace;font-size:.92em;line-height:1.5;margin:0}
+pre.code .kw{color:#c792ea}.code .ty{color:#82aaff}.code .fn{color:#f78c6c}.code .num{color:#f7c56c}.code .str{color:#c3e88d}.code .com{color:#6b8299;font-style:italic}.code .cst{color:#ff5370}
+.copybtn{position:absolute;top:30px;right:8px;background:#2b4459;color:#cfe;border:0;border-radius:5px;padding:4px 10px;cursor:pointer;font-size:.8em}
+.copybtn:hover{background:var(--teal)}
+.figure{text-align:center;margin:16px 0}
+.figure svg{max-width:100%;height:auto}
+.figure .cap{font-size:.88em;color:var(--muted);margin-top:6px}
+.sim{background:#f3fafa;border:1px solid #bfe3e4;border-radius:10px;padding:16px;margin:16px 0}
+.sim h4{margin:0 0 10px;color:#006468}
+.sim label{display:block;margin:8px 0 2px;font-weight:600;font-size:.92em}
+.sim input[type=range]{width:100%;accent-color:var(--teal)}
+.sim .out{font-family:Consolas,monospace;background:#fff;border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-top:10px}
+.serial{background:#0b1620;color:#7CFC9a;font-family:Consolas,monospace;border-radius:6px;padding:10px;height:140px;overflow:auto;font-size:.88em;white-space:pre}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:.92em;margin:4px 4px 4px 0}
+.btn:hover{background:#007a7f}.btn.alt{background:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.toc ol{columns:1}}
+/* animations */
+.flow{stroke-dasharray:6 10;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+.glow{filter:drop-shadow(0 0 6px #ff4d4d)}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.spin{transform-origin:center;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* quiz */
+.quiz .q{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0}
+.quiz .q p{margin:0 0 8px;font-weight:600}
+.quiz .opt{display:block;width:100%;text-align:left;background:#f7f9fb;border:1px solid var(--border);border-radius:6px;padding:7px 10px;margin:4px 0;cursor:pointer;font-size:.95em}
+.quiz .opt:hover{background:#eef6f6}
+.quiz .opt.ok{background:#d9f5e3;border-color:var(--green)}
+.quiz .opt.no{background:#fde2df;border-color:var(--red)}
+.quiz .fb{font-size:.9em;margin-top:6px;color:var(--muted)}
+details{background:#fbfcfd;border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin:10px 0}
+details summary{cursor:pointer;font-weight:600;color:#0b4f6c}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding:8px 0 8px 46px;margin:6px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:32px;height:32px;border-radius:50%;background:var(--teal);color:#fff;text-align:center;line-height:32px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:30px 10px 40px}
+.pill{display:inline-block;background:#e3f3f3;color:#064d50;border-radius:12px;padding:2px 10px;font-size:.85em;margin:2px}
+</style></head><body>
+<header class="top"><div class="wrap">
+<span class="badge">ARDUİNO İLE PROGRAMLAMA · 1. HAFTA</span>
+<h1>Arduino'ya Giriş, IDE Kurulumu ve Ohm Kanunu</h1><p>Arduino platformu, UNO kartı, ilk program ve temel elektrik kavramları: gerilim, akım, direnç</p>
+<nav class="weeknav"><a href="index.html">☰ Tüm Haftalar</a><a href="hafta02.html">2. Hafta →</a></nav>
+</div></header>
+<main class="wrap">
+<div class="toc"><strong>Bu haftanın içeriği</strong><ol><li><a href="#hedef">Haftanın Hedefleri</a></li><li><a href="#arduino">Arduino Nedir?</a></li><li><a href="#kart">Arduino UNO Kartını Tanıyalım</a></li><li><a href="#ide">Arduino IDE Kurulumu</a></li><li><a href="#yapi">Bir Arduino Programının Yapısı</a></li><li><a href="#elektrik">Gerilim, Akım ve Direnç</a></li><li><a href="#ohm">Ohm Kanunu ve Simülasyon</a></li><li><a href="#led">LED İçin Direnç Hesabı</a></li><li><a href="#renk">Direnç Renk Kodları</a></li><li><a href="#blink">İlk Program: Blink</a></li><li><a href="#quiz">Kendini Test Et</a></li><li><a href="#odev">Ödev ve Özet</a></li></ol></div>
+
+<section class="card" id="hedef"><h2><span class="num">1</span>Haftanın Hedefleri</h2>
+<ul class="goals">
+<li>Arduino'nun ne olduğunu ve neden yaygın kullanıldığını açıklayabilmek</li>
+<li>Arduino UNO kartının temel bölümlerini (dijital/analog pinler, güç pinleri, USB, mikrodenetleyici) tanımak</li>
+<li>Arduino IDE'yi kurup karta ilk programı yükleyebilmek</li>
+<li>Gerilim, akım ve direnç kavramlarını ve Ohm Kanunu'nu (V = I·R) kullanabilmek</li>
+<li>Bir LED için uygun ön direnci hesaplayabilmek</li>
+</ul></section>
+
+<section class="card" id="arduino"><h2><span class="num">2</span>Arduino Nedir?</h2>
+<p><b>Arduino</b>, 2005 yılında İtalya'da (Ivrea) geliştirilen, <b>açık kaynaklı</b> bir elektronik prototipleme platformudur. Bir <b>mikrodenetleyici kartı</b> ile bu kartı programlamak için kullanılan <b>Arduino IDE</b> yazılımından oluşur.</p>
+<p>Mikrodenetleyici; işlemci, bellek (Flash, SRAM, EEPROM) ve giriş/çıkış birimlerini tek bir yonga üzerinde barındıran küçük bir bilgisayardır. Arduino UNO'da <b>ATmega328P</b> mikrodenetleyicisi bulunur.</p>
+<div class="grid2">
+<div><h3>Neden Arduino?</h3><ul><li>Ucuz ve kolay bulunur</li><li>C/C++ tabanlı, basit bir dil</li><li>Çok geniş kütüphane ve topluluk desteği</li><li>USB ile doğrudan programlanır, ayrı programlayıcı gerekmez</li><li>Windows, macOS ve Linux'ta çalışır</li></ul></div>
+<div class="figure"><svg viewBox="0 0 320 170" width="320">
+ <rect x="10" y="60" width="70" height="50" rx="8" fill="#ffe8cc" stroke="#e67e22"/><text x="45" y="82" text-anchor="middle" font-size="11">GİRİŞ</text><text x="45" y="98" text-anchor="middle" font-size="9">buton, sensör</text>
+ <rect x="125" y="50" width="70" height="70" rx="8" fill="#00979d"/><text x="160" y="82" text-anchor="middle" font-size="11" fill="#fff">ARDUINO</text><text x="160" y="98" text-anchor="middle" font-size="9" fill="#fff">işleme</text>
+ <rect x="240" y="60" width="70" height="50" rx="8" fill="#e0f4e8" stroke="#27ae60"/><text x="275" y="82" text-anchor="middle" font-size="11">ÇIKIŞ</text><text x="275" y="98" text-anchor="middle" font-size="9">LED, motor</text>
+ <path d="M80 85 H125" stroke="#e67e22" stroke-width="3" class="flow"/><path d="M195 85 H240" stroke="#27ae60" stroke-width="3" class="flow"/>
+ <text x="160" y="150" text-anchor="middle" font-size="10" fill="#5b6b7d">Giriş → İşleme → Çıkış</text></svg>
+ <div class="cap">Şekil 1. Bir Arduino sisteminin genel çalışma mantığı</div></div></div>
+</section>
+
+<section class="card" id="kart"><h2><span class="num">3</span>Arduino UNO Kartını Tanıyalım</h2>
+<p>Aşağıdaki şemada kartın bölümlerinin üzerine gelerek açıklamalarını görebilirsiniz.</p>
+<div class="figure"><svg id="uno" viewBox="0 0 520 330" width="620">
+ <rect x="20" y="20" width="480" height="290" rx="14" fill="#0e7c86" stroke="#064d50" stroke-width="3"/>
+ <g class="part" data-info="USB-B girişi: Kartı bilgisayara bağlar; hem programlama hem 5 V besleme sağlar."><rect x="5" y="55" width="70" height="60" fill="#b8c2cc" stroke="#555"/><text x="40" y="90" text-anchor="middle" font-size="11">USB</text></g>
+ <g class="part" data-info="DC jak (7–12 V önerilir): Harici adaptör ya da pil ile besleme."><rect x="5" y="220" width="60" height="50" fill="#222"/><text x="35" y="250" text-anchor="middle" font-size="10" fill="#fff">DC 7-12V</text></g>
+ <g class="part" data-info="ATmega328P: Kartın beyni. 16 MHz, 32 KB Flash, 2 KB SRAM, 1 KB EEPROM."><rect x="230" y="200" width="200" height="45" rx="4" fill="#1b1b1b"/><text x="330" y="227" text-anchor="middle" font-size="12" fill="#ddd">ATmega328P</text></g>
+ <g class="part" data-info="Dijital pinler 0–13: HIGH (5 V) / LOW (0 V). ~ işaretli 3,5,6,9,10,11 PWM çıkışı verebilir. 0 ve 1 seri haberleşme (RX/TX) içindir."><rect x="170" y="30" width="310" height="22" fill="#111"/><text x="325" y="72" text-anchor="middle" font-size="11" fill="#fff">DİJİTAL PİNLER (0–13, ~PWM)</text></g>
+ <g class="part" data-info="Analog girişler A0–A5: 0–5 V arası gerilimi 10 bit (0–1023) olarak okur."><rect x="330" y="278" width="150" height="22" fill="#111"/><text x="405" y="270" text-anchor="middle" font-size="11" fill="#fff">ANALOG A0–A5</text></g>
+ <g class="part" data-info="Güç pinleri: 3.3V, 5V, GND, Vin. Devrelerinizi buradan besleyebilirsiniz."><rect x="150" y="278" width="150" height="22" fill="#111"/><text x="225" y="270" text-anchor="middle" font-size="11" fill="#fff">GÜÇ (3.3V 5V GND Vin)</text></g>
+ <g class="part" data-info="Reset butonu: Programı baştan başlatır."><circle cx="110" cy="45" r="11" fill="#c0392b"/><text x="110" y="75" text-anchor="middle" font-size="9" fill="#fff">RESET</text></g>
+ <g class="part" data-info="L LED'i: 13. pine bağlı dahili LED. İlk programımızda bunu yakıp söndüreceğiz."><circle id="ledL" cx="150" cy="110" r="7" fill="#ffb300" class="blink glow"/><text x="150" y="132" text-anchor="middle" font-size="10" fill="#fff">L (13)</text></g>
+ <g class="part" data-info="ON LED'i: Kart enerji aldığında yanar."><circle cx="440" cy="120" r="6" fill="#3cff6b"/><text x="440" y="140" text-anchor="middle" font-size="10" fill="#fff">ON</text></g>
+ <g class="part" data-info="TX/RX LED'leri: Seri haberleşme (program yükleme, Serial.print) sırasında yanıp söner."><circle cx="185" cy="155" r="5" fill="#ffd54f"/><circle cx="205" cy="155" r="5" fill="#ffd54f"/><text x="195" y="175" text-anchor="middle" font-size="9" fill="#fff">TX RX</text></g>
+ <g id="pins"></g>
+</svg><div class="out" id="unoInfo" style="max-width:620px;margin:8px auto;text-align:left">Bir bölümün üzerine gelin…</div>
+<div class="cap">Şekil 2. Arduino UNO'nun etkileşimli şeması</div></div>
+<table class="tbl"><tr><th>Özellik</th><th>Arduino UNO R3</th></tr>
+<tr><td>Mikrodenetleyici</td><td>ATmega328P</td></tr><tr><td>Çalışma gerilimi</td><td>5 V</td></tr><tr><td>Dijital G/Ç pini</td><td>14 (6 tanesi PWM)</td></tr>
+<tr><td>Analog giriş</td><td>6 (A0–A5), 10 bit</td></tr><tr><td>Pin başına akım</td><td>20 mA önerilen (40 mA mutlak sınır)</td></tr><tr><td>Saat hızı</td><td>16 MHz</td></tr></table>
+</section>
+
+<section class="card" id="ide"><h2><span class="num">4</span>Arduino IDE Kurulumu</h2>
+<ol class="steps">
+<li><b>arduino.cc/en/software</b> adresine gidin ve işletim sisteminize uygun <b>Arduino IDE 2.x</b> sürümünü indirin.</li>
+<li>Kurulum dosyasını çalıştırın; sürücü (driver) kurulumu sorulduğunda <b>Yükle</b>'yi seçin.</li>
+<li>Arduino UNO'yu USB kablosu ile bilgisayara bağlayın. Kart üzerindeki <b>ON</b> LED'i yanmalıdır.</li>
+<li>IDE'de <b>Araçlar → Kart → Arduino AVR Boards → Arduino Uno</b> seçin.</li>
+<li><b>Araçlar → Port</b> menüsünden kartın bağlı olduğu portu seçin (Windows'ta COM3, COM4…; Linux'ta /dev/ttyACM0).</li>
+<li><b>Dosya → Örnekler → 01.Basics → Blink</b> örneğini açın ve <b>Yükle (→)</b> butonuna basın.</li>
+</ol>
+<div class="figure"><svg viewBox="0 0 520 210" width="560">
+ <rect x="10" y="10" width="500" height="190" rx="8" fill="#fff" stroke="#9fb3c8"/>
+ <rect x="10" y="10" width="500" height="40" rx="8" fill="#00979d"/>
+ <g id="btnVerify"><circle cx="40" cy="30" r="13" fill="#fff"/><path d="M33 30 l5 5 l9 -10" stroke="#00979d" stroke-width="3" fill="none"/></g>
+ <g id="btnUpload"><circle cx="75" cy="30" r="13" fill="#fff"/><path d="M68 30 H82 M77 25 l5 5 l-5 5" stroke="#00979d" stroke-width="3" fill="none"/></g>
+ <text x="100" y="35" fill="#fff" font-size="12">Doğrula (✓)   Yükle (→)   |  Kart: Arduino Uno  ·  COM3</text>
+ <text x="25" y="75" font-family="Consolas" font-size="12" fill="#c792ea">void <tspan fill="#f78c6c">setup</tspan><tspan fill="#333">() { … }</tspan></text>
+ <text x="25" y="95" font-family="Consolas" font-size="12" fill="#c792ea">void <tspan fill="#f78c6c">loop</tspan><tspan fill="#333">() { … }</tspan></text>
+ <rect x="10" y="130" width="500" height="70" fill="#1b2a36"/>
+ <text id="ideMsg" x="22" y="152" fill="#9fd" font-family="Consolas" font-size="12">Hazır.</text>
+ <rect x="22" y="170" width="300" height="10" rx="5" fill="#33495a"/><rect id="ideBar" x="22" y="170" width="0" height="10" rx="5" fill="#27ae60"/>
+</svg><br><button class="btn" id="ideRun">▶ Yüklemeyi canlandır</button>
+<div class="cap">Şekil 3. Arduino IDE: Doğrula (derleme) ve Yükle (karta gönderme) adımları</div></div>
+<div class="warn">Port listesinde kart görünmüyorsa USB kablosunun <i>veri</i> kablosu olduğundan emin olun (bazı kablolar yalnızca şarj içindir) ve CH340 çipli klon kartlar için CH340 sürücüsünü kurun.</div>
+</section>
+
+<section class="card" id="yapi"><h2><span class="num">5</span>Bir Arduino Programının (Sketch) Yapısı</h2>
+<p>Arduino programlarına <b>sketch</b> denir ve uzantısı <code>.ino</code>'dur. Her sketch iki zorunlu fonksiyon içerir:</p>
+<div class="grid2"><div>
+<div class="codebox"><span class="lbl">yapi.ino</span><pre class="code">// Değişken ve sabit tanımları burada yapılır
+int ledPin = 13;
+
+void setup() {
+  // Kart açıldığında / resetlendiğinde
+  // YALNIZCA BİR KEZ çalışır
+  pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+  // setup() bittikten sonra
+  // SONSUZA KADAR tekrar tekrar çalışır
+}</pre></div></div>
+<div class="figure"><svg viewBox="0 0 220 260" width="230">
+ <rect x="60" y="5" width="100" height="32" rx="16" fill="#e67e22"/><text x="110" y="26" text-anchor="middle" fill="#fff" font-size="12">Enerji / Reset</text>
+ <path d="M110 37 V60" stroke="#333" stroke-width="2" marker-end="url(#ar)"/>
+ <rect x="50" y="60" width="120" height="40" rx="6" fill="#2e86de"/><text x="110" y="85" text-anchor="middle" fill="#fff" font-size="13">setup()</text>
+ <path d="M110 100 V130" stroke="#333" stroke-width="2" marker-end="url(#ar)"/>
+ <rect x="50" y="130" width="120" height="40" rx="6" fill="#00979d"/><text x="110" y="155" text-anchor="middle" fill="#fff" font-size="13">loop()</text>
+ <path d="M170 150 C215 150 215 210 110 210 C5 210 5 150 50 150" stroke="#00979d" stroke-width="3" fill="none" class="flow"/>
+ <text x="110" y="235" text-anchor="middle" font-size="11" fill="#5b6b7d">sonsuz döngü</text>
+ <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8z" fill="#333"/></marker></defs>
+</svg><div class="cap">Şekil 4. setup() bir kez, loop() sürekli çalışır</div></div></div>
+<div class="tip">Her komut satırı <b>noktalı virgül ( ; )</b> ile biter. Arduino dili büyük/küçük harfe duyarlıdır: <code>pinMode</code> doğru, <code>pinmode</code> hatalıdır.</div>
+</section>
+
+<section class="card" id="elektrik"><h2><span class="num">6</span>Temel Elektrik: Gerilim, Akım ve Direnç</h2>
+<table class="tbl"><tr><th>Büyüklük</th><th>Sembol</th><th>Birim</th><th>Ölçü aleti</th><th>Su analojisi</th></tr>
+<tr><td><b>Gerilim</b> (potansiyel fark)</td><td>V veya U</td><td>Volt (V)</td><td>Voltmetre (paralel)</td><td>Depodaki su basıncı / yükseklik farkı</td></tr>
+<tr><td><b>Akım</b></td><td>I</td><td>Amper (A)</td><td>Ampermetre (seri)</td><td>Borudan geçen su miktarı (debi)</td></tr>
+<tr><td><b>Direnç</b></td><td>R</td><td>Ohm (Ω)</td><td>Ohmmetre (enerjisiz devrede)</td><td>Borunun darlığı</td></tr></table>
+<div class="figure"><svg viewBox="0 0 560 200" width="580">
+ <rect x="20" y="20" width="90" height="140" fill="#dfeffa" stroke="#2e86de"/><rect id="water" x="20" y="50" width="90" height="110" fill="#5dade2"/>
+ <text x="65" y="185" text-anchor="middle" font-size="11">Basınç = Gerilim</text>
+ <path d="M110 140 H260" stroke="#5dade2" stroke-width="22"/><path d="M260 140 H330" stroke="#5dade2" stroke-width="8"/><path d="M330 140 H470" stroke="#5dade2" stroke-width="22"/>
+ <path d="M110 140 H470" stroke="#fff" stroke-width="3" class="flow"/>
+ <text x="295" y="120" text-anchor="middle" font-size="11">Daralma = Direnç</text><text x="400" y="175" text-anchor="middle" font-size="11">Akış = Akım</text>
+ <rect x="470" y="110" width="70" height="60" fill="#dfeffa" stroke="#2e86de"/>
+</svg><div class="cap">Şekil 5. Elektrik devresinin su devresine benzetilmesi (animasyon)</div></div>
+<div class="note">Akımın yönü, kabul olarak <b>artı (+) uçtan eksi (–) uca</b> doğrudur (konvansiyonel akım). Elektronlar ise tam tersi yönde hareket eder.</div>
+<p><b>Birim dönüşümleri:</b> 1 A = 1000 mA · 1 kΩ = 1000 Ω · 1 MΩ = 1 000 000 Ω · 1 V = 1000 mV</p>
+</section>
+
+<section class="card" id="ohm"><h2><span class="num">7</span>Ohm Kanunu ve Etkileşimli Simülasyon</h2>
+<p>Alman fizikçi Georg Simon Ohm'un adını taşıyan kanuna göre, bir iletkenden geçen akım uçlarındaki gerilimle <b>doğru</b>, direnciyle <b>ters</b> orantılıdır.</p>
+<div class="formula">V = I · R &nbsp;&nbsp;⟹&nbsp;&nbsp; I = V / R &nbsp;&nbsp;⟹&nbsp;&nbsp; R = V / I</div>
+<div class="grid2"><div class="figure"><svg viewBox="0 0 200 180" width="200">
+ <path d="M100 15 L185 165 L15 165 Z" fill="#e3f3f3" stroke="#00979d" stroke-width="3"/><line x1="55" y1="100" x2="145" y2="100" stroke="#00979d" stroke-width="2"/><line x1="100" y1="100" x2="100" y2="165" stroke="#00979d" stroke-width="2"/>
+ <text x="100" y="80" text-anchor="middle" font-size="30" font-weight="700" fill="#e67e22">V</text><text x="65" y="145" text-anchor="middle" font-size="28" font-weight="700" fill="#2e86de">I</text><text x="135" y="145" text-anchor="middle" font-size="28" font-weight="700" fill="#27ae60">R</text></svg>
+<div class="cap">Şekil 6. Ohm üçgeni: bulmak istediğinizi kapatın</div></div>
+<div><h3>Çözümlü Örnek</h3><p>12 V'luk bir kaynağa 4 Ω'luk direnç bağlanırsa devreden geçen akım?</p><p><b>I = V / R = 12 / 4 = 3 A</b></p>
+<p>5 V'luk Arduino çıkışına 1 kΩ direnç bağlanırsa: <b>I = 5 / 1000 = 0,005 A = 5 mA</b></p></div></div>
+<div class="sim"><h4>🔬 Simülasyon: Gerilimi ve direnci değiştirin, akımı gözlemleyin</h4>
+<div class="grid2"><div>
+<label>Kaynak gerilimi V = <span id="vV">5</span> V</label><input type="range" id="sV" min="1" max="12" step="0.5" value="5">
+<label>Direnç R = <span id="vR">220</span> Ω</label><input type="range" id="sR" min="10" max="2000" step="10" value="220">
+<div class="out" id="ohmOut"></div></div>
+<div class="figure"><svg viewBox="0 0 260 170" width="260">
+ <path id="wire" d="M40 40 H220 V130 H40 Z" fill="none" stroke="#555" stroke-width="3"/>
+ <path id="cur" d="M40 40 H220 V130 H40 Z" fill="none" stroke="#f1c40f" stroke-width="4" stroke-dasharray="4 14"/>
+ <rect x="20" y="65" width="40" height="40" fill="#fff" stroke="#333"/><text x="40" y="82" text-anchor="middle" font-size="11">+</text><text x="40" y="100" text-anchor="middle" font-size="11">–</text>
+ <rect x="110" y="30" width="50" height="20" rx="4" fill="#d9b38c" stroke="#7a5230"/><text x="135" y="25" text-anchor="middle" font-size="11">R</text>
+ <rect x="195" y="70" width="50" height="34" rx="4" fill="#fff" stroke="#333"/><text id="amm" x="220" y="92" text-anchor="middle" font-size="11" font-family="Consolas">0 mA</text>
+</svg><div class="cap">Sarı çizgiler akımı temsil eder; akım arttıkça hızlanır.</div></div></div></div>
+</section>
+
+<section class="card" id="led"><h2><span class="num">8</span>LED İçin Ön Direnç Hesabı</h2>
+<p>LED (Light Emitting Diode – Işık Yayan Diyot) <b>polariteli</b> bir elemandır: uzun bacak <b>anot (+)</b>, kısa bacak <b>katot (–)</b>. LED doğrudan 5 V'a bağlanırsa aşırı akım çeker ve bozulur; bu yüzden <b>seri bir direnç</b> kullanılır.</p>
+<div class="formula">R = (V<sub>kaynak</sub> − V<sub>LED</sub>) / I<sub>LED</sub></div>
+<div class="grid2"><div><p><b>Örnek:</b> Kırmızı LED için V<sub>LED</sub> ≈ 2 V, I<sub>LED</sub> = 20 mA, kaynak 5 V:</p>
+<p>R = (5 − 2) / 0,020 = <b>150 Ω</b>. Piyasada bulunan bir üst değer olan <b>220 Ω</b> seçilir (akım ≈ 13,6 mA).</p>
+<table class="tbl"><tr><th>LED rengi</th><th>Yaklaşık V<sub>LED</sub></th></tr><tr><td>Kırmızı</td><td>1,8 – 2,2 V</td></tr><tr><td>Sarı / Yeşil</td><td>2,0 – 2,4 V</td></tr><tr><td>Mavi / Beyaz</td><td>3,0 – 3,4 V</td></tr></table></div>
+<div class="sim"><h4>🔬 LED direnç hesaplayıcı</h4>
+<label>LED rengi</label><select id="ledCol"><option value="2,#ff3b3b">Kırmızı (2,0 V)</option><option value="2.1,#ffd31a">Sarı (2,1 V)</option><option value="2.2,#3cdc5a">Yeşil (2,2 V)</option><option value="3.2,#4aa3ff">Mavi (3,2 V)</option></select>
+<label>Hedef akım = <span id="vI">15</span> mA</label><input type="range" id="sI" min="2" max="30" value="15">
+<div class="out" id="ledOut"></div>
+<svg viewBox="0 0 200 90" width="200"><circle id="ledBulb" cx="100" cy="40" r="22" fill="#ff3b3b"/><rect x="88" y="62" width="4" height="25" fill="#888"/><rect x="108" y="62" width="4" height="18" fill="#888"/><text x="70" y="85" font-size="9">anot+</text><text x="115" y="85" font-size="9">katot–</text></svg></div></div>
+</section>
+
+<section class="card" id="renk"><h2><span class="num">9</span>Direnç Renk Kodları</h2>
+<p>4 bantlı dirençlerde ilk iki bant <b>rakam</b>, üçüncü bant <b>çarpan</b>, dördüncü bant <b>tolerans</b>tır. Renkleri seçerek direnç değerini hesaplayın:</p>
+<div class="sim"><div class="grid2"><div>
+<label>1. bant</label><select id="b1"></select><label>2. bant</label><select id="b2"></select><label>3. bant (çarpan)</label><select id="b3"></select>
+<label>4. bant (tolerans)</label><select id="b4"><option value="5,#c9a227">Altın ±%5</option><option value="10,#c0c0c0">Gümüş ±%10</option></select></div>
+<div class="figure"><svg viewBox="0 0 300 100" width="300"><line x1="0" y1="50" x2="300" y2="50" stroke="#999" stroke-width="4"/><rect x="60" y="25" width="180" height="50" rx="22" fill="#e8cfa6" stroke="#a5835a"/>
+<rect id="r1" x="85" y="25" width="14" height="50"/><rect id="r2" x="115" y="25" width="14" height="50"/><rect id="r3" x="145" y="25" width="14" height="50"/><rect id="r4" x="200" y="25" width="10" height="50"/></svg>
+<div class="out" id="resOut" style="text-align:center;font-size:1.2em"></div></div></div></div>
+<p>Örnek: <span class="pill">Kırmızı-Kırmızı-Kahverengi-Altın</span> = 22 × 10 = 220 Ω ±%5 · <span class="pill">Kahverengi-Siyah-Kırmızı-Altın</span> = 10 × 100 = 1 kΩ ±%5</p>
+</section>
+
+<section class="card" id="blink"><h2><span class="num">10</span>İlk Program: Blink (LED Yakıp Söndürme)</h2>
+<p>13. pine bağlı dahili L LED'ini 1 saniye yakıp 1 saniye söndüren program "Merhaba Dünya"nın elektronik karşılığıdır.</p>
+<div class="grid2"><div class="codebox"><span class="lbl">Blink.ino</span><pre class="code">void setup() {
+  pinMode(13, OUTPUT);     // 13. pini çıkış yap
+}
+
+void loop() {
+  digitalWrite(13, HIGH);  // LED'i yak (5 V)
+  delay(1000);             // 1000 ms bekle
+  digitalWrite(13, LOW);   // LED'i söndür (0 V)
+  delay(1000);             // 1000 ms bekle
+}</pre></div>
+<div class="sim"><h4>🔬 Blink simülasyonu</h4>
+<label>delay süresi = <span id="vD">1000</span> ms</label><input type="range" id="sD" min="100" max="2000" step="100" value="1000">
+<svg viewBox="0 0 220 120" width="220"><rect x="10" y="10" width="200" height="100" rx="10" fill="#0e7c86"/><text x="30" y="35" fill="#fff" font-size="12">Arduino UNO</text>
+<circle id="bLed" cx="60" cy="70" r="12" fill="#5a4a00"/><text x="60" y="100" text-anchor="middle" fill="#fff" font-size="10">L (13)</text>
+<text id="bState" x="140" y="75" fill="#fff" font-family="Consolas" font-size="14" text-anchor="middle">LOW</text></svg>
+<div class="serial" id="bLog" style="height:90px"></div></div></div>
+<table class="tbl"><tr><th>Komut</th><th>Görevi</th></tr>
+<tr><td><code>pinMode(pin, OUTPUT)</code></td><td>Pini çıkış (OUTPUT) ya da giriş (INPUT) olarak ayarlar</td></tr>
+<tr><td><code>digitalWrite(pin, HIGH/LOW)</code></td><td>Çıkış pinine 5 V (HIGH) ya da 0 V (LOW) verir</td></tr>
+<tr><td><code>delay(ms)</code></td><td>Programı belirtilen milisaniye kadar bekletir</td></tr></table>
+</section>
+
+<section class="card quiz" id="quiz"><h2><span class="num">11</span>Kendini Test Et</h2>
+<div class="q" data-answer="b"><p>1) Arduino UNO'da kullanılan mikrodenetleyici hangisidir?</p><button class="opt" data-k="a">a) ATmega2560</button><button class="opt" data-k="b">b) ATmega328P</button><button class="opt" data-k="c">c) ESP32</button><div class="fb">✓ Doğru. UNO, 16 MHz'de çalışan ATmega328P kullanır.</div></div>
+<div class="q" data-answer="c"><p>2) 9 V'luk kaynağa 450 Ω direnç bağlanırsa akım kaç mA olur?</p><button class="opt" data-k="a">a) 2 mA</button><button class="opt" data-k="b">b) 50 mA</button><button class="opt" data-k="c">c) 20 mA</button><div class="fb">✓ I = 9 / 450 = 0,02 A = 20 mA</div></div>
+<div class="q" data-answer="a"><p>3) setup() fonksiyonu kaç kez çalışır?</p><button class="opt" data-k="a">a) Bir kez</button><button class="opt" data-k="b">b) Sürekli</button><button class="opt" data-k="c">c) Her saniye</button><div class="fb">✓ setup() yalnızca açılışta/resette bir kez çalışır.</div></div>
+<div class="q" data-answer="b"><p>4) Akım ölçen ampermetre devreye nasıl bağlanır?</p><button class="opt" data-k="a">a) Paralel</button><button class="opt" data-k="b">b) Seri</button><button class="opt" data-k="c">c) Fark etmez</button><div class="fb">✓ Ampermetre seri, voltmetre paralel bağlanır.</div></div>
+<div class="q" data-answer="c"><p>5) 5 V kaynak, mavi LED (3,2 V) ve 18 mA akım için gereken direnç yaklaşık kaçtır?</p><button class="opt" data-k="a">a) 280 Ω</button><button class="opt" data-k="b">b) 18 Ω</button><button class="opt" data-k="c">c) 100 Ω</button><div class="fb">✓ R = (5 − 3,2)/0,018 = 100 Ω</div></div>
+</section>
+
+<section class="card" id="odev"><h2><span class="num">12</span>Ödev ve Özet</h2>
+<h3>Ödev</h3><ol><li>Arduino IDE'yi kendi bilgisayarınıza kurun ve Blink örneğini karta yükleyin.</li>
+<li>Blink programını LED 200 ms yanacak, 800 ms sönecek şekilde değiştirin.</li>
+<li>LED'i "SOS" Mors kodu (· · · — — — · · ·) şeklinde yakıp söndüren bir program yazın.</li>
+<li>12 V kaynak ile beyaz LED (3,2 V, 20 mA) için gerekli direnci hesaplayın.</li></ol>
+<details><summary>3. ödev için ipucu (tıklayın)</summary><div class="codebox"><span class="lbl">sos_ipucu.ino</span><pre class="code">void nokta() { digitalWrite(13, HIGH); delay(200); digitalWrite(13, LOW); delay(200); }
+void cizgi() { digitalWrite(13, HIGH); delay(600); digitalWrite(13, LOW); delay(200); }
+
+void setup() { pinMode(13, OUTPUT); }
+
+void loop() {
+  nokta(); nokta(); nokta();
+  cizgi(); cizgi(); cizgi();
+  nokta(); nokta(); nokta();
+  delay(2000);
+}</pre></div></details>
+<h3>Özet</h3><ul><li>Arduino = mikrodenetleyici kartı + IDE; programlar <code>.ino</code> uzantılıdır.</li>
+<li><code>setup()</code> bir kez, <code>loop()</code> sürekli çalışır.</li><li>V = I·R; akım gerilimle doğru, dirençle ters orantılıdır.</li>
+<li>LED'ler mutlaka seri direnç ile kullanılır: R = (V<sub>s</sub> − V<sub>LED</sub>)/I.</li></ul>
+</section>
+
+</main>
+<footer>Arduino ile Programlama · Ders Notları · 1. Hafta<br>Kaynaklar: C. Taşdemir – <i>Arduino</i>; G. Döktaş – <i>Arduino Eğitim Kitabı</i>; E. Delebe – <i>Projeler ile Arduino</i></footer>
+<script>
+(function(){
+ const KW=['void','if','else','for','while','do','return','switch','case','break','default','const','true','false','#include','#define'];
+ const TY=['int','float','long','unsigned','byte','bool','boolean','char','double','String','word'];
+ const CST=['HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP','LED_BUILTIN','A0','A1','A2','A3','A4','A5'];
+ const FN=['pinMode','digitalWrite','digitalRead','analogRead','analogWrite','delay','delayMicroseconds','millis','micros','setup','loop','map','constrain','pulseIn','tone','noTone','Serial','begin','print','println','attach','write','read','available','random'];
+ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+ function hl(src){
+  let out='',i=0;
+  const re=/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(#?[A-Za-z_][A-Za-z0-9_]*)|(\b\d+(?:\.\d+)?\b)/g;let m,last=0;
+  while((m=re.exec(src))){out+=esc(src.slice(last,m.index));
+   if(m[1])out+='<span class="com">'+esc(m[1])+'</span>';
+   else if(m[2])out+='<span class="str">'+esc(m[2])+'</span>';
+   else if(m[3]){const w=m[3];let c=KW.includes(w)?'kw':TY.includes(w)?'ty':CST.includes(w)?'cst':FN.includes(w)?'fn':'';out+=c?'<span class="'+c+'">'+esc(w)+'</span>':esc(w)}
+   else if(m[4])out+='<span class="num">'+m[4]+'</span>';
+   last=re.lastIndex}
+  return out+esc(src.slice(last))}
+ document.querySelectorAll('pre.code').forEach(p=>{const raw=p.textContent;p.innerHTML=hl(raw);
+  const b=document.createElement('button');b.className='copybtn';b.textContent='Kopyala';
+  b.onclick=()=>{navigator.clipboard.writeText(raw).then(()=>{b.textContent='Kopyalandı ✓';setTimeout(()=>b.textContent='Kopyala',1500)})};
+  p.parentElement.appendChild(b)});
+ document.querySelectorAll('.quiz .q').forEach(q=>{const ans=q.dataset.answer;const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{q.querySelectorAll('.opt').forEach(x=>x.classList.remove('ok','no'));
+   if(o.dataset.k===ans){o.classList.add('ok');if(fb)fb.style.display='block'}else{o.classList.add('no')}})});
+ document.querySelectorAll('.quiz .fb').forEach(f=>f.style.display='none');
+})();
+</script>
+<script>
+// UNO tooltip
+document.querySelectorAll('#uno .part').forEach(g=>{g.style.cursor='pointer';g.addEventListener('mouseenter',()=>{document.getElementById('unoInfo').textContent=g.dataset.info;g.style.opacity=.8});g.addEventListener('mouseleave',()=>g.style.opacity=1);g.addEventListener('click',()=>document.getElementById('unoInfo').textContent=g.dataset.info)});
+(function(){const p=document.getElementById('pins');let s='';for(let i=0;i<14;i++){s+=`<rect x="${180+i*21}" y="35" width="10" height="12" fill="#c9a227"/>`}for(let i=0;i<6;i++){s+=`<rect x="${340+i*23}" y="283" width="10" height="12" fill="#c9a227"/>`;s+=`<rect x="${160+i*23}" y="283" width="10" height="12" fill="#c9a227"/>`}p.innerHTML=s})();
+// IDE anim
+document.getElementById('ideRun').onclick=()=>{const m=document.getElementById('ideMsg'),b=document.getElementById('ideBar');const st=[['Derleniyor…',80],['Derleme tamam: 924 bayt (%2) program alanı',150],['Karta yükleniyor…',230],['Yükleniyor… avrdude',280],['Yükleme tamamlandı ✓',300]];let k=0;b.setAttribute('width',0);const t=setInterval(()=>{if(k>=st.length){clearInterval(t);return}m.textContent=st[k][0];b.setAttribute('width',st[k][1]);k++},700)};
+// Ohm sim
+function ohm(){const V=+sV.value,R=+sR.value,I=V/R;vV.textContent=V;vR.textContent=R;
+ ohmOut.innerHTML=`I = V / R = ${V} / ${R} = <b>${(I*1000).toFixed(2)} mA</b> &nbsp; (P = V·I = ${(V*I*1000).toFixed(1)} mW)`;
+ amm.textContent=(I*1000).toFixed(1)+' mA';const c=document.getElementById('cur');const dur=Math.max(0.15,Math.min(6,0.02/I));
+ c.style.animation=`flow ${dur}s linear infinite`;c.style.opacity=Math.min(1,0.25+I*20)}
+['sV','sR'].forEach(i=>document.getElementById(i).oninput=ohm);ohm();
+// LED calc
+function led(){const [vf,col]=ledCol.value.split(',');const I=+sI.value;vI.textContent=I;const R=(5-vf)/(I/1000);
+ const E12=[100,120,150,180,220,270,330,390,470,560,680,820,1000,1200,1500];const std=E12.find(x=>x>=R)||1500;
+ ledOut.innerHTML=`R = (5 − ${vf}) / ${(I/1000).toFixed(3)} = <b>${R.toFixed(0)} Ω</b><br>Standart değer: <b>${std} Ω</b>`;
+ const b=document.getElementById('ledBulb');b.setAttribute('fill',col);b.style.opacity=0.3+I/30*0.7;b.style.filter=`drop-shadow(0 0 ${I/2}px ${col})`}
+ledCol.onchange=led;sI.oninput=led;led();
+// resistor colors
+const C=[['Siyah','#000'],['Kahverengi','#7b3f00'],['Kırmızı','#d00'],['Turuncu','#f80'],['Sarı','#fd0'],['Yeşil','#0a0'],['Mavi','#00c'],['Mor','#80c'],['Gri','#888'],['Beyaz','#fff']];
+['b1','b2','b3'].forEach((id,j)=>{const s=document.getElementById(id);C.forEach((c,i)=>{if(j==2&&i>6)return;s.innerHTML+=`<option value="${i}">${c[0]} (${j==2?'×10^'+i:i})</option>`});s.onchange=res});
+b1.value=2;b2.value=2;b3.value=1;b4.onchange=res;
+function res(){const a=+b1.value,b=+b2.value,c=+b3.value;[r1,r2,r3].forEach((r,i)=>r.setAttribute('fill',C[[a,b,c][i]][1]));const [t,tc]=b4.value.split(',');r4.setAttribute('fill',tc);
+ let v=(a*10+b)*Math.pow(10,c);let s=v>=1e6?(v/1e6)+' MΩ':v>=1e3?(v/1e3)+' kΩ':v+' Ω';resOut.innerHTML=`<b>${s}</b> ±%${t}`}
+res();
+// blink sim
+let bOn=false,bT=null,tms=0;function bTick(){bOn=!bOn;bLed.setAttribute('fill',bOn?'#ffb300':'#5a4a00');bLed.style.filter=bOn?'drop-shadow(0 0 8px #ffb300)':'none';bState.textContent=bOn?'HIGH':'LOW';
+ tms+= +sD.value;const l=document.getElementById('bLog');l.textContent+=`[${tms} ms] digitalWrite(13, ${bOn?'HIGH':'LOW'})\n`;l.scrollTop=1e9;bT=setTimeout(bTick,+sD.value)}
+sD.oninput=()=>vD.textContent=sD.value;bTick();
+</script>
+</body></html>

@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2. Hafta – Kirchhoff Kanunları, Gerilim Bölücü ve Breadboard | Arduino ile Programlama</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#1d2733;--muted:#5b6b7d;--teal:#00979d;--teal2:#00b3b9;--accent:#e67e22;--red:#e74c3c;--green:#27ae60;--code:#0f1b26;--border:#dde5ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+header.top{background:linear-gradient(135deg,#006468,#00979d 60%,#00b3b9);color:#fff;padding:28px 20px 34px;position:relative;overflow:hidden}
+header.top::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px),repeating-linear-gradient(0deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px);pointer-events:none}
+.wrap{max-width:1050px;margin:0 auto;padding:0 18px}
+.badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:3px 12px;border-radius:20px;font-size:.85em;letter-spacing:.5px}
+header.top h1{margin:10px 0 6px;font-size:2em}
+header.top p{margin:0;opacity:.92}
+nav.weeknav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;position:relative;z-index:1}
+nav.weeknav a{color:#fff;text-decoration:none;background:rgba(0,0,0,.18);padding:6px 12px;border-radius:6px;font-size:.9em}
+nav.weeknav a:hover{background:rgba(0,0,0,.35)}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;margin:22px 0}
+.toc ol{margin:6px 0;columns:2}
+.toc a{color:var(--teal);text-decoration:none}
+section.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin:22px 0;box-shadow:0 2px 8px rgba(20,40,60,.05);animation:fadeUp .6s ease both}
+section.card h2{margin-top:0;color:#006468;border-bottom:2px solid #e3f3f3;padding-bottom:8px}
+section.card h2 .num{display:inline-block;background:var(--teal);color:#fff;border-radius:50%;width:32px;height:32px;text-align:center;line-height:32px;margin-right:8px;font-size:.8em}
+h3{color:#0b4f6c}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.goals li{margin:4px 0}
+.note,.warn,.tip{border-radius:8px;padding:12px 16px;margin:14px 0;border-left:5px solid}
+.note{background:#eaf6ff;border-color:#2e86de}.warn{background:#fff3e6;border-color:var(--accent)}.tip{background:#eafaf1;border-color:var(--green)}
+.note::before{content:"ℹ️ Not: ";font-weight:600}.warn::before{content:"⚠️ Dikkat: ";font-weight:600}.tip::before{content:"💡 İpucu: ";font-weight:600}
+.formula{font-family:Cambria,"Times New Roman",serif;font-size:1.5em;text-align:center;background:#f7fbfb;border:1px dashed var(--teal);border-radius:8px;padding:12px;margin:14px 0}
+table.tbl{border-collapse:collapse;width:100%;margin:12px 0;font-size:.95em}
+table.tbl th,table.tbl td{border:1px solid var(--border);padding:7px 10px;text-align:left}
+table.tbl th{background:#e9f6f6;color:#064d50}
+table.tbl tr:nth-child(even) td{background:#fafcfd}
+.codebox{position:relative;margin:14px 0}
+.codebox .lbl{background:#1f3344;color:#9fd7da;font-size:.8em;padding:4px 12px;border-radius:8px 8px 0 0;display:inline-block;font-family:Consolas,monospace}
+pre.code{background:var(--code);color:#d7e3ee;padding:16px 18px;border-radius:0 8px 8px 8px;overflow:auto;font-family:Consolas,"Courier New",monospace;font-size:.92em;line-height:1.5;margin:0}
+pre.code .kw{color:#c792ea}.code .ty{color:#82aaff}.code .fn{color:#f78c6c}.code .num{color:#f7c56c}.code .str{color:#c3e88d}.code .com{color:#6b8299;font-style:italic}.code .cst{color:#ff5370}
+.copybtn{position:absolute;top:30px;right:8px;background:#2b4459;color:#cfe;border:0;border-radius:5px;padding:4px 10px;cursor:pointer;font-size:.8em}
+.copybtn:hover{background:var(--teal)}
+.figure{text-align:center;margin:16px 0}
+.figure svg{max-width:100%;height:auto}
+.figure .cap{font-size:.88em;color:var(--muted);margin-top:6px}
+.sim{background:#f3fafa;border:1px solid #bfe3e4;border-radius:10px;padding:16px;margin:16px 0}
+.sim h4{margin:0 0 10px;color:#006468}
+.sim label{display:block;margin:8px 0 2px;font-weight:600;font-size:.92em}
+.sim input[type=range]{width:100%;accent-color:var(--teal)}
+.sim .out{font-family:Consolas,monospace;background:#fff;border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-top:10px}
+.serial{background:#0b1620;color:#7CFC9a;font-family:Consolas,monospace;border-radius:6px;padding:10px;height:140px;overflow:auto;font-size:.88em;white-space:pre}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:.92em;margin:4px 4px 4px 0}
+.btn:hover{background:#007a7f}.btn.alt{background:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.toc ol{columns:1}}
+/* animations */
+.flow{stroke-dasharray:6 10;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+.glow{filter:drop-shadow(0 0 6px #ff4d4d)}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.spin{transform-origin:center;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* quiz */
+.quiz .q{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0}
+.quiz .q p{margin:0 0 8px;font-weight:600}
+.quiz .opt{display:block;width:100%;text-align:left;background:#f7f9fb;border:1px solid var(--border);border-radius:6px;padding:7px 10px;margin:4px 0;cursor:pointer;font-size:.95em}
+.quiz .opt:hover{background:#eef6f6}
+.quiz .opt.ok{background:#d9f5e3;border-color:var(--green)}
+.quiz .opt.no{background:#fde2df;border-color:var(--red)}
+.quiz .fb{font-size:.9em;margin-top:6px;color:var(--muted)}
+details{background:#fbfcfd;border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin:10px 0}
+details summary{cursor:pointer;font-weight:600;color:#0b4f6c}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding:8px 0 8px 46px;margin:6px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:32px;height:32px;border-radius:50%;background:var(--teal);color:#fff;text-align:center;line-height:32px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:30px 10px 40px}
+.pill{display:inline-block;background:#e3f3f3;color:#064d50;border-radius:12px;padding:2px 10px;font-size:.85em;margin:2px}
+</style></head><body>
+<header class="top"><div class="wrap">
+<span class="badge">ARDUİNO İLE PROGRAMLAMA · 2. HAFTA</span>
+<h1>Kirchhoff Kanunları, Gerilim Bölücü ve Breadboard</h1><p>Seri/paralel dirençler, KAK ve KGK, gerilim bölücü, breadboard ile devre kurulumu, multimetre ve Seri Monitör'e giriş</p>
+<nav class="weeknav"><a href="index.html">☰ Tüm Haftalar</a><a href="hafta01.html">← 1. Hafta</a><a href="hafta03.html">3. Hafta →</a></nav>
+</div></header>
+<main class="wrap">
+<div class="toc"><strong>Bu haftanın içeriği</strong><ol><li><a href="#hedef">Haftanın Hedefleri</a></li><li><a href="#kavram">Devre Kavramları: Düğüm, Kol ve Çevre</a></li><li><a href="#seri">Seri ve Paralel Dirençler</a></li><li><a href="#kcl">Kirchhoff'un Akım Kanunu (KAK)</a></li><li><a href="#kvl">Kirchhoff'un Gerilim Kanunu (KGK)</a></li><li><a href="#bolucu">Gerilim Bölücü</a></li><li><a href="#breadboard">Breadboard'un İç Yapısı</a></li><li><a href="#multimetre">Multimetre Kullanımı</a></li><li><a href="#ilkdevre">Breadboard'da İlk LED Devresi</a></li><li><a href="#olcum">Arduino ile Gerilim Ölçme (Ön Bakış)</a></li><li><a href="#kvlard">Kirchhoff'u Arduino ile Gözlemleme</a></li><li><a href="#quiz">Kendini Test Et</a></li><li><a href="#odev">Ödev ve Özet</a></li></ol></div>
+<section class="card" id="hedef"><h2><span class="num">1</span>Haftanın Hedefleri</h2>
+
+<ul class="goals">
+<li>Devre kavramlarını (düğüm, kol, çevre) tanımlayabilmek</li>
+<li>Seri ve paralel bağlı dirençlerin eşdeğerini hesaplayabilmek</li>
+<li>Kirchhoff'un Akım Kanunu (KAK) ve Gerilim Kanunu'nu (KGK) açıklayıp basit devrelerde uygulayabilmek</li>
+<li>Gerilim bölücü devresini tasarlayabilmek: V<sub>çıkış</sub> = V<sub>giriş</sub>·R2/(R1+R2)</li>
+<li>Breadboard'un iç bağlantılarını bilmek ve üzerinde hatasız devre kurabilmek</li>
+<li>Multimetre ile gerilim, akım, direnç ve süreklilik ölçebilmek</li>
+<li>Arduino'nun <code>analogRead()</code> fonksiyonu ve Seri Monitör ile bir gerilimi ölçmeye ilk adımı atmak</li>
+</ul>
+<div class="note">Bu hafta, 1. haftada öğrendiğimiz Ohm Kanunu'nu (V = I·R) birden fazla elemandan oluşan devrelere genişletiyoruz. Sonraki haftalarda kullanacağımız potansiyometre, LDR ve sıcaklık sensörü devrelerinin hepsi aslında birer <b>gerilim bölücüdür</b>; bu yüzden bu hafta dersin temel taşlarından biridir.</div>
+
+</section>
+
+<section class="card" id="kavram"><h2><span class="num">2</span>Devre Kavramları: Düğüm, Kol ve Çevre</h2>
+
+<p>Kirchhoff kanunlarını uygulayabilmek için önce devrenin "haritasını" okumayı öğrenmeliyiz:</p>
+<div class="grid2"><div>
+<table class="tbl"><tr><th>Kavram</th><th>Tanım</th></tr>
+<tr><td><b>Düğüm</b> (node)</td><td>İki veya daha fazla elemanın birleştiği nokta. Aynı iletkenle bağlı noktaların hepsi tek bir düğüm sayılır.</td></tr>
+<tr><td><b>Kol</b> (branch)</td><td>İki düğüm arasında kalan ve üzerinden <i>aynı</i> akımın geçtiği yol.</td></tr>
+<tr><td><b>Çevre / Göz</b> (loop)</td><td>Bir düğümden başlayıp başka hiçbir düğümden iki kez geçmeden aynı düğüme dönen kapalı yol.</td></tr>
+<tr><td><b>Seri bağlantı</b></td><td>Elemanlar uç uca bağlıdır; hepsinden <b>aynı akım</b> geçer.</td></tr>
+<tr><td><b>Paralel bağlantı</b></td><td>Elemanlar aynı iki düğüm arasına bağlıdır; hepsinin uçlarında <b>aynı gerilim</b> vardır.</td></tr></table>
+</div>
+<div class="figure"><svg viewBox="0 0 420 200" width="420">
+ <path d="M40 40 H360 V160 H40 Z" fill="none" stroke="#444" stroke-width="2.5"/>
+ <path d="M220 40 V160" stroke="#444" stroke-width="2.5"/>
+ <rect x="22" y="80" width="36" height="40" fill="#fff" stroke="#333" stroke-width="2"/><text x="40" y="96" text-anchor="middle" font-size="12">+</text><text x="40" y="114" text-anchor="middle" font-size="12">−</text><text x="70" y="105" font-size="11">V<tspan font-size="8">s</tspan></text>
+ <rect x="100" y="32" width="60" height="16" rx="3" fill="#d9b38c" stroke="#7a5230"/><text x="130" y="26" text-anchor="middle" font-size="11">R1</text>
+ <rect x="212" y="75" width="16" height="50" rx="3" fill="#d9b38c" stroke="#7a5230"/><text x="236" y="104" font-size="11">R2</text>
+ <rect x="352" y="75" width="16" height="50" rx="3" fill="#d9b38c" stroke="#7a5230"/><text x="376" y="104" font-size="11">R3</text>
+ <circle cx="220" cy="40" r="6" fill="#e67e22" class="pulse" style="transform-origin:220px 40px"/><text x="228" y="30" font-size="12" font-weight="700" fill="#e67e22">A</text>
+ <circle cx="220" cy="160" r="6" fill="#e67e22" class="pulse" style="transform-origin:220px 160px"/><text x="228" y="180" font-size="12" font-weight="700" fill="#e67e22">B</text>
+ <path d="M90 70 h80 v70 h-80 z" fill="none" stroke="#2e86de" stroke-dasharray="4 4"/><text x="130" y="110" text-anchor="middle" font-size="11" fill="#2e86de">Çevre 1</text>
+ <path d="M250 70 h80 v70 h-80 z" fill="none" stroke="#27ae60" stroke-dasharray="4 4"/><text x="290" y="110" text-anchor="middle" font-size="11" fill="#27ae60">Çevre 2</text>
+</svg><div class="cap">Şekil 1. A ve B düğümleri; R2 ile R3 paralel, bu ikili R1 ile seri bağlıdır</div></div></div>
+<p>Şekil 1'deki devrede 2 düğüm (A ve B), 3 kol (kaynak+R1 kolu, R2 kolu, R3 kolu) ve 2 bağımsız çevre vardır. R2 ve R3 aynı iki düğüm (A–B) arasına bağlı olduğu için <b>paraleldir</b>; kaynak ve R1'den aynı akım geçtiği için bunlar <b>seridir</b>.</p>
+
+</section>
+
+<section class="card" id="seri"><h2><span class="num">3</span>Seri ve Paralel Dirençler</h2>
+
+<div class="grid2"><div><h3>Seri bağlantı</h3>
+<div class="formula">R<sub>eş</sub> = R1 + R2 + R3 + …</div>
+<ul><li>Tüm dirençlerden <b>aynı akım</b> geçer: I = V<sub>s</sub> / R<sub>eş</sub></li>
+<li>Gerilim, dirençlerin değeriyle orantılı paylaşılır: V<sub>k</sub> = I·R<sub>k</sub></li>
+<li>Eşdeğer direnç <b>en büyük dirençten de büyüktür</b>.</li></ul></div>
+<div><h3>Paralel bağlantı</h3>
+<div class="formula">1/R<sub>eş</sub> = 1/R1 + 1/R2 + 1/R3 + …</div>
+<ul><li>Tüm dirençlerin uçlarında <b>aynı gerilim</b> vardır.</li>
+<li>Toplam akım kollara bölünür: I<sub>k</sub> = V<sub>s</sub> / R<sub>k</sub></li>
+<li>Eşdeğer direnç <b>en küçük dirençten de küçüktür</b>.</li>
+<li>İki direnç için kısa yol: R<sub>eş</sub> = R1·R2 / (R1 + R2)</li></ul></div></div>
+<p><b>Örnek:</b> 220 Ω ve 330 Ω seri bağlanırsa R<sub>eş</sub> = 550 Ω; paralel bağlanırsa R<sub>eş</sub> = 220·330/550 = <b>132 Ω</b>. Aynı değerde iki direnç paralel bağlanırsa eşdeğer, değerin yarısıdır (1 kΩ ‖ 1 kΩ = 500 Ω).</p>
+<div class="sim"><h4>🔬 Simülasyon: Seri / paralel devre hesaplayıcı (V<sub>s</sub> = 5 V)</h4>
+<div class="grid2"><div>
+<button class="btn" id="spSeri">Seri bağla</button><button class="btn alt" id="spPar">Paralel bağla</button>
+<label>R1 = <span id="vR1">220</span> Ω</label><input type="range" id="sR1" min="0" max="11" value="1">
+<label>R2 = <span id="vR2">470</span> Ω</label><input type="range" id="sR2" min="0" max="11" value="3">
+<label>R3 = <span id="vR3">1000</span> Ω</label><input type="range" id="sR3" min="0" max="11" value="4">
+<div class="out" id="spOut"></div></div>
+<div class="figure"><svg viewBox="0 0 300 190" width="400">
+ <g id="gSeri">
+  <path d="M35 40 H265 V150 H35 Z" fill="none" stroke="#555" stroke-width="2.5"/>
+  <path class="flow spf" d="M35 40 H265 V150 H35 Z" fill="none" stroke="#f1c40f" stroke-width="3"/>
+  <rect x="20" y="75" width="30" height="40" fill="#fff" stroke="#333"/><text x="35" y="92" text-anchor="middle" font-size="11">+</text><text x="35" y="110" text-anchor="middle" font-size="11">−</text>
+  <rect x="70" y="32" width="40" height="16" rx="3" fill="#d9b38c" stroke="#7a5230"/><text x="90" y="24" text-anchor="middle" font-size="10">R1</text>
+  <rect x="130" y="32" width="40" height="16" rx="3" fill="#d9b38c" stroke="#7a5230"/><text x="150" y="24" text-anchor="middle" font-size="10">R2</text>
+  <rect x="190" y="32" width="40" height="16" rx="3" fill="#d9b38c" stroke="#7a5230"/><text x="210" y="24" text-anchor="middle" font-size="10">R3</text>
+  <text id="sV1" x="90" y="68" text-anchor="middle" font-size="10" fill="#e67e22"></text><text id="sV2" x="150" y="68" text-anchor="middle" font-size="10" fill="#e67e22"></text><text id="sV3" x="210" y="68" text-anchor="middle" font-size="10" fill="#e67e22"></text>
+  <text id="sItxt" x="150" y="172" text-anchor="middle" font-size="11" fill="#2e86de"></text>
+ </g>
+ <g id="gPar" style="display:none">
+  <path d="M35 30 H250 M35 160 H250 M35 30 V75 M35 115 V160 M110 30 V160 M180 30 V160 M250 30 V160" fill="none" stroke="#555" stroke-width="2.5"/>
+  <path class="flow spf1" d="M110 30 V160" stroke="#f1c40f" stroke-width="3"/><path class="flow spf2" d="M180 30 V160" stroke="#f1c40f" stroke-width="3"/><path class="flow spf3" d="M250 30 V160" stroke="#f1c40f" stroke-width="3"/>
+  <rect x="20" y="75" width="30" height="40" fill="#fff" stroke="#333"/><text x="35" y="92" text-anchor="middle" font-size="11">+</text><text x="35" y="110" text-anchor="middle" font-size="11">−</text>
+  <rect x="102" y="75" width="16" height="40" rx="3" fill="#d9b38c" stroke="#7a5230"/><rect x="172" y="75" width="16" height="40" rx="3" fill="#d9b38c" stroke="#7a5230"/><rect x="242" y="75" width="16" height="40" rx="3" fill="#d9b38c" stroke="#7a5230"/>
+  <text x="122" y="70" font-size="10">R1</text><text x="192" y="70" font-size="10">R2</text><text x="262" y="70" font-size="10">R3</text>
+  <text id="pI1" x="122" y="132" font-size="9" fill="#2e86de"></text><text id="pI2" x="192" y="132" font-size="9" fill="#2e86de"></text><text id="pI3" x="262" y="132" font-size="9" fill="#2e86de"></text>
+  <text x="142" y="182" text-anchor="middle" font-size="10" fill="#5b6b7d">her kolda gerilim = 5 V</text>
+ </g>
+</svg><div class="cap">Sarı kesikli çizgiler akımı gösterir; akım büyüdükçe akış hızlanır.</div></div></div></div>
+
+</section>
+
+<section class="card" id="kcl"><h2><span class="num">4</span>Kirchhoff'un Akım Kanunu (KAK)</h2>
+
+<p>Alman fizikçi Gustav Kirchhoff (1845) iki temel kanun ortaya koymuştur. Birincisi yükün korunumuna dayanır: <b>Bir düğüme giren akımların toplamı, o düğümden çıkan akımların toplamına eşittir.</b> Başka bir deyişle düğümde yük birikmez.</p>
+<div class="formula">Σ I<sub>giren</sub> = Σ I<sub>çıkan</sub> &nbsp;&nbsp;⟺&nbsp;&nbsp; Σ I = 0</div>
+<div class="grid2"><div class="figure"><svg viewBox="0 0 400 185" width="400">
+ <path d="M40 90 H200" stroke="#444" stroke-width="3"/><path d="M200 90 V30 H360" stroke="#444" stroke-width="3" fill="none"/><path d="M200 90 V150 H360" stroke="#444" stroke-width="3" fill="none"/>
+ <path d="M40 90 H200" stroke="#f1c40f" stroke-width="3" class="flow" style="animation-duration:.4s"/>
+ <path d="M200 90 V30 H360" stroke="#f1c40f" stroke-width="3" fill="none" class="flow" style="animation-duration:1.2s"/>
+ <path d="M200 90 V150 H360" stroke="#f1c40f" stroke-width="3" fill="none" class="flow" style="animation-duration:.6s"/>
+ <circle cx="200" cy="90" r="8" fill="#e67e22"/><text x="212" y="95" font-size="12" font-weight="700" fill="#e67e22">düğüm</text>
+ <text x="110" y="78" text-anchor="middle" font-size="13" fill="#2e86de">I1 = 30 mA →</text>
+ <text x="290" y="20" text-anchor="middle" font-size="13" fill="#2e86de">I2 = 10 mA →</text>
+ <text x="290" y="172" text-anchor="middle" font-size="13" fill="#2e86de">I3 = 20 mA →</text>
+</svg><div class="cap">Şekil 2. 30 mA = 10 mA + 20 mA (akış hızları akım büyüklüğünü temsil eder)</div></div>
+<div><h3>Su analojisi</h3><p>Bir boru ikiye ayrılıyorsa, ana borudan gelen suyun tamamı iki kola dağılır; su kaybolmaz, yoktan da var olmaz. Akım için de durum aynıdır.</p>
+<h3>Çözümlü örnek</h3><p>5 V kaynağa 220 Ω ve 1 kΩ paralel bağlanmıştır. Kol akımları I<sub>1</sub> = 5/220 = 22,7 mA ve I<sub>2</sub> = 5/1000 = 5 mA'dir. KAK'a göre kaynaktan çekilen akım <b>I = 22,7 + 5 = 27,7 mA</b> olur.</p></div></div>
+<div class="warn">Arduino'nun 5V pininden (USB ile beslendiğinde) toplam olarak birkaç yüz mA çekilebilir, ancak tek bir dijital G/Ç pininden <b>20 mA</b> önerilir, <b>40 mA</b> mutlak sınırdır. Paralel bağlanan her LED akımı artırır; KAK ile toplam akımı mutlaka hesaplayın.</div>
+
+</section>
+
+<section class="card" id="kvl"><h2><span class="num">5</span>Kirchhoff'un Gerilim Kanunu (KGK)</h2>
+
+<p>İkinci kanun enerjinin korunumuna dayanır: <b>Kapalı bir çevre boyunca gerilimlerin cebirsel toplamı sıfırdır.</b> Kaynağın sağladığı gerilim, çevredeki elemanlar üzerinde düşen gerilimlerin toplamına eşittir.</p>
+<div class="formula">Σ V = 0 &nbsp;&nbsp;⟹&nbsp;&nbsp; V<sub>s</sub> = V<sub>1</sub> + V<sub>2</sub> + V<sub>3</sub> + …</div>
+<div class="grid2"><div class="figure"><svg viewBox="0 0 420 230" width="420">
+ <path d="M50 40 H360 V190 H50 V125 M50 105 V40" fill="none" stroke="#444" stroke-width="2.5"/>
+ <path d="M50 40 H360 V190 H50 V125 M50 105 V40" fill="none" stroke="#f1c40f" stroke-width="3" class="flow"/>
+ <line x1="32" y1="105" x2="68" y2="105" stroke="#333" stroke-width="3"/><line x1="40" y1="125" x2="60" y2="125" stroke="#333" stroke-width="5"/>
+ <text x="22" y="100" font-size="12" fill="#e74c3c">+</text><text x="76" y="120" font-size="12">9 V</text>
+ <rect x="150" y="31" width="70" height="18" rx="3" fill="#d9b38c" stroke="#7a5230"/><text x="185" y="24" text-anchor="middle" font-size="11">R1 = 1 kΩ</text><text x="185" y="66" text-anchor="middle" font-size="12" fill="#e67e22">V1 = 2 V</text>
+ <rect x="351" y="80" width="18" height="70" rx="3" fill="#d9b38c" stroke="#7a5230"/><text x="345" y="110" text-anchor="end" font-size="11">R2 = 2 kΩ</text><text x="345" y="126" text-anchor="end" font-size="12" fill="#e67e22">V2 = 4 V</text>
+ <rect x="170" y="181" width="70" height="18" rx="3" fill="#d9b38c" stroke="#7a5230"/><text x="205" y="218" text-anchor="middle" font-size="11">R3 = 1,5 kΩ</text><text x="205" y="172" text-anchor="middle" font-size="12" fill="#e67e22">V3 = 3 V</text>
+ <ellipse cx="205" cy="112" rx="50" ry="30" fill="none" stroke="#2e86de" stroke-width="2" class="flow" style="animation-duration:2s"/><path d="M252 104 l4 10 l6 -9" fill="none" stroke="#2e86de" stroke-width="2"/>
+ <text x="205" y="117" text-anchor="middle" font-size="13" font-weight="700" fill="#2e86de">ΣV = 0</text>
+</svg><div class="cap">Şekil 3. 9 V = 2 V + 4 V + 3 V (I = 9 V / 4,5 kΩ = 2 mA)</div></div>
+<div><h3>Çözüm adımları</h3><ol class="steps">
+<li>Seri dirençleri topla: R<sub>eş</sub> = 1 + 2 + 1,5 = 4,5 kΩ</li>
+<li>Akımı bul: I = 9 / 4500 = 2 mA (seri devrede her yerde aynı)</li>
+<li>Her direncin gerilimi: V<sub>1</sub> = 2 V, V<sub>2</sub> = 4 V, V<sub>3</sub> = 3 V</li>
+<li>KGK kontrolü: 2 + 4 + 3 = 9 V ✓</li></ol></div></div>
+<div class="tip">LED devresi de bir KGK uygulamasıdır: 5 V = V<sub>R</sub> + V<sub>LED</sub>. 1. haftadaki R = (V<sub>s</sub> − V<sub>LED</sub>)/I formülü buradan gelir: direnç, kaynağın LED'e "fazla" gelen kısmını üzerine alır.</div>
+
+</section>
+
+<section class="card" id="bolucu"><h2><span class="num">6</span>Gerilim Bölücü</h2>
+
+<p>Seri bağlı iki direnç, giriş gerilimini dirençlerin oranında böler. İki direncin birleşim noktasından alınan gerilime <b>çıkış gerilimi</b> denir. KGK ve Ohm Kanunu'ndan:</p>
+<div class="formula">I = V<sub>giriş</sub> / (R1 + R2) &nbsp;&nbsp;⟹&nbsp;&nbsp; V<sub>çıkış</sub> = I·R2 = V<sub>giriş</sub> · R2 / (R1 + R2)</div>
+<div class="grid2"><div>
+<h3>Nerelerde kullanılır?</h3><ul>
+<li>Arduino'nun okuyamayacağı yüksek gerilimleri (ör. 12 V akü) 0–5 V aralığına indirmek</li>
+<li><b>Potansiyometre</b>: tek gövdede ayarlanabilir bir gerilim bölücü (7. hafta)</li>
+<li><b>LDR</b> ve <b>termistör</b>: direnci ışıkla/ısıyla değişen R'li bölücü (6. ve 10. hafta)</li>
+<li>Seviye uyarlama (ör. 5 V sinyali 3,3 V'a düşürme)</li></ul>
+<p><b>Örnek:</b> V<sub>giriş</sub> = 5 V, R1 = 10 kΩ, R2 = 10 kΩ ⟹ V<sub>çıkış</sub> = 5·10/20 = <b>2,5 V</b>.<br>
+V<sub>giriş</sub> = 12 V, R1 = 10 kΩ, R2 = 4,7 kΩ ⟹ V<sub>çıkış</sub> = 12·4,7/14,7 ≈ <b>3,84 V</b> (Arduino için güvenli).</p></div>
+<div class="note">Bölücünün çıkışına bir yük (başka bir direnç, motor vb.) bağlanırsa bu yük R2'ye paralel olur ve çıkış gerilimi düşer (<b>yükleme etkisi</b>). Arduino'nun analog girişi çok yüksek empedanslı olduğundan (≈100 MΩ) bölücüyü pratikte yüklemez; ancak bölücüden güç çekip bir motoru beslemeye çalışmak yanlıştır.</div></div>
+<div class="sim"><h4>🔬 Simülasyon: Gerilim bölücü ve Arduino A0 okuması</h4>
+<div class="grid2"><div>
+<label>V<sub>giriş</sub> = <span id="dVv">5,0</span> V</label><input type="range" id="dVin" min="1" max="15" step="0.5" value="5">
+<label>R1 = <span id="dR1v">10 kΩ</span></label><input type="range" id="dR1" min="0" max="11" value="8">
+<label>R2 = <span id="dR2v">10 kΩ</span></label><input type="range" id="dR2" min="0" max="11" value="8">
+<div class="out" id="dOut"></div>
+<label>Seri Monitör (aşağıdaki <code>bolucu_olcum.ino</code> programının çıktısı)</label>
+<div class="serial" id="dSer" style="height:110px"></div></div>
+<div class="figure"><svg viewBox="0 0 340 265" width="420">
+ <path d="M40 30 H150 V50 M150 100 V150 M150 200 V240 H40 V160 M40 110 V30" fill="none" stroke="#555" stroke-width="2.5"/>
+ <path class="flow" id="dFlow" d="M40 30 H150 V240 H40 Z" fill="none" stroke="#f1c40f" stroke-width="3"/>
+ <rect x="25" y="110" width="30" height="50" fill="#fff" stroke="#333"/><text x="40" y="128" text-anchor="middle" font-size="11">+</text><text x="40" y="150" text-anchor="middle" font-size="11">−</text>
+ <text id="dVinT" x="62" y="140" font-size="11" fill="#333">5 V</text>
+ <rect x="141" y="50" width="18" height="50" rx="3" fill="#d9b38c" stroke="#7a5230"/><text x="166" y="72" font-size="11">R1</text><text id="dVR1" x="166" y="88" font-size="10" fill="#e67e22"></text>
+ <rect x="141" y="150" width="18" height="50" rx="3" fill="#d9b38c" stroke="#7a5230"/><text x="166" y="172" font-size="11">R2</text><text id="dVR2" x="166" y="188" font-size="10" fill="#e67e22"></text>
+ <circle cx="150" cy="125" r="5" fill="#e67e22"/><path d="M150 125 H232" stroke="#e67e22" stroke-width="2"/><text x="190" y="118" font-size="11" fill="#e67e22" text-anchor="middle">V<tspan font-size="8">çıkış</tspan> → A0</text>
+ <rect x="232" y="105" width="62" height="40" rx="5" fill="#0e7c86"/><text x="263" y="122" text-anchor="middle" font-size="10" fill="#fff">Arduino</text><text id="dADC" x="263" y="138" text-anchor="middle" font-size="10" fill="#ff0" font-family="Consolas">A0=512</text>
+ <rect x="308" y="30" width="18" height="210" fill="#eee" stroke="#999"/>
+ <rect id="dBar1" x="308" y="30" width="18" height="105" fill="#e67e22"/><rect id="dBar2" x="308" y="135" width="18" height="105" fill="#00979d"/>
+ <text x="317" y="256" text-anchor="middle" font-size="9" fill="#5b6b7d">V<tspan font-size="7">R1</tspan>+V<tspan font-size="7">R2</tspan></text>
+</svg><div class="cap">Sağdaki çubuk KGK'yı gösterir: turuncu V<sub>R1</sub>, yeşil V<sub>R2</sub>; toplamları her zaman V<sub>giriş</sub>'tir.</div></div></div></div>
+
+</section>
+
+<section class="card" id="breadboard"><h2><span class="num">7</span>Breadboard'un İç Yapısı</h2>
+
+<p><b>Breadboard</b> (delikli deney tahtası), lehim yapmadan devre kurmamızı sağlar. Deliklerin altında, belirli delikleri birbirine bağlayan yaylı metal şeritler bulunur. Doğru devre kurmanın sırrı bu bağlantıları bilmektir:</p>
+<ul><li><b>Uçlardaki güç rayları (+ / −):</b> Yatay olarak boydan boya bağlıdır. 5V'u + rayına, GND'yi − rayına bağlarız.</li>
+<li><b>Orta bölüm:</b> Her <b>sütundaki 5 delik</b> (a–e veya f–j) kendi aralarında bağlıdır.</li>
+<li><b>Orta kanal:</b> Üst yarıyı (a–e) alt yarıdan (f–j) ayırır. Entegre devreler (DIP) bu kanalın üzerine oturtulur.</li></ul>
+<div class="sim"><h4>🔬 Etkileşimli breadboard: Bir deliğin üzerine gelin veya tıklayın — onunla elektriksel olarak bağlı tüm delikler parlar</h4>
+<div class="figure"><svg id="bb" viewBox="0 0 520 320" width="640">
+<rect x="28" y="16" width="464" height="290" rx="10" fill="#f2f2ee" stroke="#b9b9b0" stroke-width="2"/>
+<rect x="40" y="163" width="440" height="14" fill="#e2e2da"/>
+<text x="260" y="174" text-anchor="middle" font-size="9" fill="#888">orta kanal (iki yarıyı ayırır)</text>
+<text x="40" y="38" font-size="12" font-weight="700" fill="#e74c3c">+</text>
+<rect class="h" data-g="rt+" x="66" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="80" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="94" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="108" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="122" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="150" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="164" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="178" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="192" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="206" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="234" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="248" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="262" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="276" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="290" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="318" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="332" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="346" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="360" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="374" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="402" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="416" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="430" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="444" y="30" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt+" x="458" y="30" width="8" height="8" rx="1.5"/>
+<text x="40" y="54" font-size="12" font-weight="700" fill="#2e86de">−</text>
+<rect class="h" data-g="rt-" x="66" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="80" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="94" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="108" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="122" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="150" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="164" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="178" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="192" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="206" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="234" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="248" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="262" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="276" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="290" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="318" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="332" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="346" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="360" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="374" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="402" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="416" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="430" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="444" y="46" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rt-" x="458" y="46" width="8" height="8" rx="1.5"/>
+<text x="40" y="278" font-size="12" font-weight="700" fill="#e74c3c">+</text>
+<rect class="h" data-g="rb+" x="66" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="80" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="94" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="108" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="122" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="150" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="164" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="178" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="192" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="206" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="234" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="248" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="262" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="276" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="290" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="318" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="332" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="346" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="360" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="374" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="402" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="416" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="430" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="444" y="270" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb+" x="458" y="270" width="8" height="8" rx="1.5"/>
+<text x="40" y="294" font-size="12" font-weight="700" fill="#2e86de">−</text>
+<rect class="h" data-g="rb-" x="66" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="80" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="94" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="108" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="122" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="150" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="164" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="178" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="192" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="206" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="234" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="248" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="262" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="276" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="290" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="318" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="332" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="346" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="360" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="374" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="402" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="416" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="430" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="444" y="286" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="rb-" x="458" y="286" width="8" height="8" rx="1.5"/>
+<line x1="58" y1="25" x2="470" y2="25" stroke="#e74c3c" stroke-width="2"/>
+<line x1="58" y1="59" x2="470" y2="59" stroke="#2e86de" stroke-width="2"/>
+<line x1="58" y1="265" x2="470" y2="265" stroke="#e74c3c" stroke-width="2"/>
+<line x1="58" y1="299" x2="470" y2="299" stroke="#2e86de" stroke-width="2"/>
+<text x="48" y="92" font-size="9" fill="#777" text-anchor="middle">a</text>
+<rect class="h" data-g="t1" x="62" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t2" x="76" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t3" x="90" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t4" x="104" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t5" x="118" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t6" x="132" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t7" x="146" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t8" x="160" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t9" x="174" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t10" x="188" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t11" x="202" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t12" x="216" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t13" x="230" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t14" x="244" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t15" x="258" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t16" x="272" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t17" x="286" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t18" x="300" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t19" x="314" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t20" x="328" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t21" x="342" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t22" x="356" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t23" x="370" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t24" x="384" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t25" x="398" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t26" x="412" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t27" x="426" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t28" x="440" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t29" x="454" y="84" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t30" x="468" y="84" width="8" height="8" rx="1.5"/>
+<text x="48" y="106" font-size="9" fill="#777" text-anchor="middle">b</text>
+<rect class="h" data-g="t1" x="62" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t2" x="76" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t3" x="90" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t4" x="104" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t5" x="118" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t6" x="132" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t7" x="146" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t8" x="160" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t9" x="174" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t10" x="188" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t11" x="202" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t12" x="216" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t13" x="230" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t14" x="244" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t15" x="258" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t16" x="272" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t17" x="286" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t18" x="300" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t19" x="314" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t20" x="328" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t21" x="342" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t22" x="356" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t23" x="370" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t24" x="384" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t25" x="398" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t26" x="412" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t27" x="426" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t28" x="440" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t29" x="454" y="98" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t30" x="468" y="98" width="8" height="8" rx="1.5"/>
+<text x="48" y="120" font-size="9" fill="#777" text-anchor="middle">c</text>
+<rect class="h" data-g="t1" x="62" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t2" x="76" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t3" x="90" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t4" x="104" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t5" x="118" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t6" x="132" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t7" x="146" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t8" x="160" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t9" x="174" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t10" x="188" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t11" x="202" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t12" x="216" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t13" x="230" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t14" x="244" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t15" x="258" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t16" x="272" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t17" x="286" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t18" x="300" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t19" x="314" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t20" x="328" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t21" x="342" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t22" x="356" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t23" x="370" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t24" x="384" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t25" x="398" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t26" x="412" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t27" x="426" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t28" x="440" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t29" x="454" y="112" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t30" x="468" y="112" width="8" height="8" rx="1.5"/>
+<text x="48" y="134" font-size="9" fill="#777" text-anchor="middle">d</text>
+<rect class="h" data-g="t1" x="62" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t2" x="76" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t3" x="90" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t4" x="104" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t5" x="118" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t6" x="132" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t7" x="146" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t8" x="160" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t9" x="174" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t10" x="188" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t11" x="202" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t12" x="216" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t13" x="230" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t14" x="244" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t15" x="258" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t16" x="272" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t17" x="286" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t18" x="300" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t19" x="314" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t20" x="328" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t21" x="342" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t22" x="356" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t23" x="370" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t24" x="384" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t25" x="398" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t26" x="412" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t27" x="426" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t28" x="440" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t29" x="454" y="126" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t30" x="468" y="126" width="8" height="8" rx="1.5"/>
+<text x="48" y="148" font-size="9" fill="#777" text-anchor="middle">e</text>
+<rect class="h" data-g="t1" x="62" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t2" x="76" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t3" x="90" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t4" x="104" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t5" x="118" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t6" x="132" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t7" x="146" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t8" x="160" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t9" x="174" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t10" x="188" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t11" x="202" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t12" x="216" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t13" x="230" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t14" x="244" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t15" x="258" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t16" x="272" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t17" x="286" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t18" x="300" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t19" x="314" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t20" x="328" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t21" x="342" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t22" x="356" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t23" x="370" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t24" x="384" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t25" x="398" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t26" x="412" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t27" x="426" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t28" x="440" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t29" x="454" y="140" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="t30" x="468" y="140" width="8" height="8" rx="1.5"/>
+<text x="48" y="194" font-size="9" fill="#777" text-anchor="middle">f</text>
+<rect class="h" data-g="b1" x="62" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b2" x="76" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b3" x="90" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b4" x="104" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b5" x="118" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b6" x="132" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b7" x="146" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b8" x="160" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b9" x="174" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b10" x="188" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b11" x="202" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b12" x="216" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b13" x="230" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b14" x="244" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b15" x="258" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b16" x="272" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b17" x="286" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b18" x="300" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b19" x="314" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b20" x="328" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b21" x="342" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b22" x="356" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b23" x="370" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b24" x="384" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b25" x="398" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b26" x="412" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b27" x="426" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b28" x="440" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b29" x="454" y="186" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b30" x="468" y="186" width="8" height="8" rx="1.5"/>
+<text x="48" y="208" font-size="9" fill="#777" text-anchor="middle">g</text>
+<rect class="h" data-g="b1" x="62" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b2" x="76" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b3" x="90" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b4" x="104" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b5" x="118" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b6" x="132" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b7" x="146" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b8" x="160" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b9" x="174" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b10" x="188" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b11" x="202" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b12" x="216" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b13" x="230" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b14" x="244" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b15" x="258" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b16" x="272" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b17" x="286" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b18" x="300" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b19" x="314" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b20" x="328" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b21" x="342" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b22" x="356" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b23" x="370" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b24" x="384" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b25" x="398" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b26" x="412" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b27" x="426" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b28" x="440" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b29" x="454" y="200" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b30" x="468" y="200" width="8" height="8" rx="1.5"/>
+<text x="48" y="222" font-size="9" fill="#777" text-anchor="middle">h</text>
+<rect class="h" data-g="b1" x="62" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b2" x="76" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b3" x="90" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b4" x="104" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b5" x="118" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b6" x="132" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b7" x="146" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b8" x="160" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b9" x="174" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b10" x="188" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b11" x="202" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b12" x="216" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b13" x="230" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b14" x="244" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b15" x="258" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b16" x="272" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b17" x="286" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b18" x="300" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b19" x="314" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b20" x="328" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b21" x="342" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b22" x="356" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b23" x="370" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b24" x="384" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b25" x="398" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b26" x="412" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b27" x="426" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b28" x="440" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b29" x="454" y="214" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b30" x="468" y="214" width="8" height="8" rx="1.5"/>
+<text x="48" y="236" font-size="9" fill="#777" text-anchor="middle">i</text>
+<rect class="h" data-g="b1" x="62" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b2" x="76" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b3" x="90" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b4" x="104" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b5" x="118" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b6" x="132" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b7" x="146" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b8" x="160" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b9" x="174" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b10" x="188" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b11" x="202" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b12" x="216" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b13" x="230" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b14" x="244" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b15" x="258" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b16" x="272" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b17" x="286" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b18" x="300" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b19" x="314" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b20" x="328" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b21" x="342" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b22" x="356" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b23" x="370" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b24" x="384" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b25" x="398" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b26" x="412" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b27" x="426" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b28" x="440" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b29" x="454" y="228" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b30" x="468" y="228" width="8" height="8" rx="1.5"/>
+<text x="48" y="250" font-size="9" fill="#777" text-anchor="middle">j</text>
+<rect class="h" data-g="b1" x="62" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b2" x="76" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b3" x="90" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b4" x="104" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b5" x="118" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b6" x="132" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b7" x="146" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b8" x="160" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b9" x="174" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b10" x="188" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b11" x="202" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b12" x="216" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b13" x="230" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b14" x="244" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b15" x="258" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b16" x="272" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b17" x="286" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b18" x="300" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b19" x="314" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b20" x="328" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b21" x="342" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b22" x="356" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b23" x="370" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b24" x="384" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b25" x="398" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b26" x="412" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b27" x="426" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b28" x="440" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b29" x="454" y="242" width="8" height="8" rx="1.5"/>
+<rect class="h" data-g="b30" x="468" y="242" width="8" height="8" rx="1.5"/>
+<text x="66" y="76" font-size="9" fill="#777" text-anchor="middle">1</text>
+<text x="122" y="76" font-size="9" fill="#777" text-anchor="middle">5</text>
+<text x="192" y="76" font-size="9" fill="#777" text-anchor="middle">10</text>
+<text x="262" y="76" font-size="9" fill="#777" text-anchor="middle">15</text>
+<text x="332" y="76" font-size="9" fill="#777" text-anchor="middle">20</text>
+<text x="402" y="76" font-size="9" fill="#777" text-anchor="middle">25</text>
+<text x="472" y="76" font-size="9" fill="#777" text-anchor="middle">30</text>
+</svg>
+<div class="out" id="bbInfo" style="max-width:640px;margin:8px auto;text-align:left">Bir deliğin üzerine gelin…</div>
+<button class="btn" id="bbTour">▶ Bağlantıları sırayla göster</button><button class="btn alt" id="bbStop">■ Durdur</button>
+<div class="cap">Şekil 4. 30 sütunluk yarım boy breadboard; yeşil vurgulu delikler aynı metal şeride bağlıdır</div></div></div>
+<div class="warn">Bazı uzun (830 delikli) breadboard'larda güç rayları <b>ortadan ikiye ayrılmıştır</b> (raydaki kırmızı/mavi çizginin kesildiği yer). Kartın iki ucunu birden kullanacaksanız bu iki yarıyı bir köprü kablosuyla birleştirin veya multimetrenin süreklilik moduyla kontrol edin.</div>
+<div class="tip">Bir elemanın iki bacağını <b>aynı sütuna</b> takmak en sık yapılan hatadır: bu durumda eleman kısa devre olur ve üzerinden akım geçmez. Bacaklar her zaman farklı sütunlarda olmalıdır.</div>
+
+</section>
+
+<section class="card" id="multimetre"><h2><span class="num">8</span>Multimetre Kullanımı</h2>
+
+<p><b>Multimetre</b> (avometre), gerilim, akım, direnç ve süreklilik ölçebilen temel ölçü aletidir. Siyah prob daima <b>COM</b> girişine takılır; kırmızı probun yeri ölçülen büyüklüğe göre değişir.</p>
+<div class="grid2"><div>
+<table class="tbl"><tr><th>Ölçüm</th><th>Kademe</th><th>Kırmızı prob</th><th>Bağlantı</th></tr>
+<tr><td>DC gerilim</td><td>V⎓ (20 V)</td><td>VΩ</td><td>Elemana <b>paralel</b></td></tr>
+<tr><td>DC akım</td><td>mA⎓ (200 mA)</td><td>mA</td><td>Devreyi açıp <b>seri</b></td></tr>
+<tr><td>Direnç</td><td>Ω (2 kΩ, 20 kΩ…)</td><td>VΩ</td><td>Devre <b>enerjisizken</b>, eleman sökülü</td></tr>
+<tr><td>Süreklilik</td><td>•))) (buzzer)</td><td>VΩ</td><td>Enerjisiz; bağlıysa öter</td></tr></table>
+<div class="warn">Akım kademesindeyken probları bir gerilim kaynağına <b>paralel</b> bağlamak, multimetrenin sigortasını attırır (ampermetrenin iç direnci neredeyse sıfırdır, kısa devre oluşur). Ölçüm bittiğinde kırmızı probu tekrar VΩ girişine takın.</div>
+<div class="sim"><h4>🔬 Kademe seçimi</h4>
+<button class="btn" data-mm="v">DC Gerilim</button><button class="btn" data-mm="a">DC Akım</button><button class="btn" data-mm="o">Direnç</button><button class="btn" data-mm="c">Süreklilik</button><button class="btn alt" data-mm="off">OFF</button>
+<div class="out" id="mmOut">Bir kademe seçin.</div></div></div>
+<div class="figure"><svg viewBox="0 0 220 310" width="230">
+<rect x="10" y="8" width="200" height="294" rx="18" fill="#f5c518" stroke="#8a6d00" stroke-width="2"/>
+<rect x="28" y="22" width="164" height="56" rx="6" fill="#bfd8b0" stroke="#4d5c43"/>
+<text id="mmDisp" x="182" y="62" text-anchor="end" font-family="Consolas" font-size="30" fill="#1e2a18">----</text>
+<text id="mmUnit" x="36" y="40" font-family="Consolas" font-size="11" fill="#1e2a18">OFF</text>
+<circle cx="110" cy="172" r="42" fill="#333" stroke="#111" stroke-width="2"/>
+<text x="110" y="114" text-anchor="middle" font-size="11" font-weight="700" fill="#222">OFF</text>
+<text x="164" y="145" text-anchor="middle" font-size="11" font-weight="700" fill="#222">V⎓</text>
+<text x="164" y="207" text-anchor="middle" font-size="11" font-weight="700" fill="#222">mA⎓</text>
+<text x="56" y="145" text-anchor="middle" font-size="11" font-weight="700" fill="#222">Ω</text>
+<text x="56" y="207" text-anchor="middle" font-size="11" font-weight="700" fill="#222">•)))</text>
+<g id="mmPtr" style="transition:transform .4s" transform="rotate(-90 110 172)"><line x1="110" y1="172" x2="146" y2="172" stroke="#fff" stroke-width="5" stroke-linecap="round"/></g>
+<circle cx="110" cy="172" r="8" fill="#555"/>
+<circle id="jk10A" cx="40" cy="262" r="9" fill="#222" stroke="#000"/><text x="40" y="246" text-anchor="middle" font-size="10" font-weight="700" fill="#222">10A</text>
+<circle id="jkmA" cx="85" cy="262" r="9" fill="#222" stroke="#000"/><text x="85" y="246" text-anchor="middle" font-size="10" font-weight="700" fill="#222">mA</text>
+<circle id="jkCOM" cx="135" cy="262" r="9" fill="#222" stroke="#000"/><text x="135" y="246" text-anchor="middle" font-size="10" font-weight="700" fill="#222">COM</text>
+<circle id="jkVΩ" cx="180" cy="262" r="9" fill="#222" stroke="#000"/><text x="180" y="246" text-anchor="middle" font-size="10" font-weight="700" fill="#222">VΩ</text>
+<path id="leadR" d="M180 262 C180 300 200 300 214 306" stroke="#e74c3c" stroke-width="4" fill="none"/>
+<path d="M135 262 C135 300 120 300 110 308" stroke="#111" stroke-width="4" fill="none"/>
+</svg><div class="cap">Şekil 5. Dijital multimetre; kademe anahtarı ve prob girişleri</div></div></div>
+<p><b>Kademe seçimi:</b> Otomatik kademeli olmayan multimetrelerde, ölçülecek değerden <i>büyük</i> en yakın kademe seçilir. Arduino 5 V'u ölçmek için 20 V kademesi uygundur; 2 V kademesi seçilirse ekranda taşma ("1" veya "OL") görülür.</p>
+
+</section>
+
+<section class="card" id="ilkdevre"><h2><span class="num">9</span>Breadboard'da İlk LED Devresi</h2>
+
+<p>Bu devrede Arduino'yu yalnızca <b>5 V güç kaynağı</b> olarak kullanıyoruz; henüz program gerekmez. Kart USB'ye takılır takılmaz LED yanmalıdır.</p>
+<div class="figure"><svg viewBox="0 0 640 300" width="900">
+<rect x="20" y="30" width="180" height="240" rx="12" fill="#0e7c86" stroke="#064d50" stroke-width="3"/>
+<text x="105" y="60" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">Arduino UNO</text>
+<rect x="60" y="180" width="90" height="34" rx="3" fill="#1b1b1b"/><text x="105" y="201" text-anchor="middle" fill="#ccc" font-size="10">ATmega328P</text>
+<rect x="186" y="92" width="14" height="98" fill="#111"/>
+<rect x="189" y="96" width="8" height="8" fill="#c9a227"/><text x="180" y="104" text-anchor="end" fill="#fff" font-size="11">3.3V</text>
+<rect x="189" y="116" width="8" height="8" fill="#c9a227"/><text x="180" y="124" text-anchor="end" fill="#fff" font-size="11">5V</text>
+<rect x="189" y="136" width="8" height="8" fill="#c9a227"/><text x="180" y="144" text-anchor="end" fill="#fff" font-size="11">GND</text>
+<rect x="189" y="156" width="8" height="8" fill="#c9a227"/><text x="180" y="164" text-anchor="end" fill="#fff" font-size="11">GND</text>
+<rect x="189" y="176" width="8" height="8" fill="#c9a227"/><text x="180" y="184" text-anchor="end" fill="#fff" font-size="11">Vin</text>
+<rect x="262" y="30" width="360" height="240" rx="8" fill="#f2f2ee" stroke="#b9b9b0" stroke-width="2"/>
+<line x1="270" y1="47" x2="612" y2="47" stroke="#e74c3c" stroke-width="1.5"/><line x1="270" y1="83" x2="612" y2="83" stroke="#2e86de" stroke-width="1.5"/>
+<text x="610" y="62" font-size="11" font-weight="700" fill="#e74c3c">+</text><text x="610" y="77" font-size="12" font-weight="700" fill="#2e86de">−</text>
+<rect x="270" y="166" width="342" height="12" fill="#e2e2da"/>
+<rect x="277" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="291" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="305" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="319" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="333" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="347" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="361" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="375" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="389" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="403" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="417" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="431" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="445" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="459" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="473" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="487" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="501" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="515" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="529" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="543" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="557" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="571" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="585" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="599" y="55" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="277" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="291" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="305" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="319" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="333" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="347" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="361" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="375" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="389" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="403" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="417" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="431" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="445" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="459" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="473" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="487" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="501" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="515" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="529" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="543" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="557" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="571" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="585" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="599" y="69" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="277" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="291" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="305" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="319" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="333" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="347" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="361" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="375" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="389" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="403" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="417" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="431" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="445" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="459" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="473" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="487" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="501" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="515" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="529" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="543" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="557" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="571" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="585" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="599" y="97" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="277" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="291" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="305" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="319" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="333" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="347" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="361" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="375" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="389" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="403" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="417" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="431" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="445" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="459" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="473" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="487" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="501" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="515" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="529" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="543" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="557" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="571" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="585" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="599" y="111" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="277" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="291" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="305" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="319" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="333" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="347" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="361" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="375" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="389" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="403" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="417" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="431" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="445" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="459" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="473" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="487" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="501" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="515" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="529" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="543" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="557" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="571" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="585" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="599" y="125" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="277" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="291" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="305" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="319" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="333" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="347" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="361" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="375" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="389" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="403" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="417" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="431" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="445" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="459" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="473" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="487" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="501" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="515" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="529" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="543" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="557" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="571" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="585" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="599" y="139" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="277" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="291" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="305" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="319" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="333" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="347" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="361" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="375" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="389" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="403" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="417" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="431" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="445" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="459" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="473" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="487" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="501" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="515" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="529" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="543" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="557" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="571" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="585" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="599" y="153" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="277" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="291" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="305" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="319" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="333" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="347" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="361" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="375" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="389" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="403" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="417" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="431" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="445" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="459" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="473" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="487" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="501" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="515" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="529" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="543" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="557" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="571" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="585" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="599" y="185" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="277" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="291" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="305" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="319" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="333" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="347" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="361" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="375" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="389" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="403" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="417" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="431" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="445" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="459" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="473" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="487" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="501" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="515" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="529" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="543" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="557" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="571" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="585" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="599" y="199" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="277" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="291" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="305" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="319" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="333" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="347" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="361" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="375" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="389" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="403" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="417" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="431" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="445" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="459" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="473" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="487" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="501" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="515" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="529" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="543" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="557" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="571" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="585" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="599" y="213" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="277" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="291" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="305" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="319" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="333" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="347" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="361" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="375" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="389" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="403" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="417" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="431" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="445" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="459" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="473" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="487" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="501" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="515" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="529" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="543" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="557" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="571" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="585" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="599" y="227" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="277" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="291" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="305" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="319" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="333" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="347" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="361" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="375" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="389" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="403" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="417" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="431" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="445" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="459" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="473" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="487" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="501" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="515" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="529" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="543" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="557" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="571" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="585" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<rect x="599" y="241" width="6" height="6" fill="#555" opacity=".55"/>
+<path d="M197 120 H235 V58 H282" stroke="#e74c3c" stroke-width="4" fill="none"/>
+<path d="M197 140 H245 V72 H282" stroke="#222" stroke-width="4" fill="none"/>
+<path d="M294 58 V100" stroke="#e74c3c" stroke-width="3.5" fill="none"/>
+<line x1="294" y1="128" x2="364" y2="128" stroke="#999" stroke-width="2.5"/>
+<rect x="312" y="121" width="34" height="14" rx="6" fill="#e8cfa6" stroke="#a5835a"/>
+<rect x="318" y="121" width="3.5" height="14" fill="#d00"/>
+<rect x="324" y="121" width="3.5" height="14" fill="#d00"/>
+<rect x="330" y="121" width="3.5" height="14" fill="#7b3f00"/>
+<rect x="339" y="121" width="3.5" height="14" fill="#c9a227"/>
+<rect x="309" y="140" width="40" height="14" rx="3" fill="#fff" opacity=".9"/><text x="329" y="151" text-anchor="middle" font-size="10" fill="#333">220 Ω</text>
+<line x1="364" y1="156" x2="372" y2="140" stroke="#888" stroke-width="2"/><line x1="392" y1="156" x2="384" y2="140" stroke="#888" stroke-width="2"/>
+<circle id="bbLed" cx="378" cy="132" r="11" fill="#ff3b3b" class="glow"/>
+<rect x="404" y="116" width="100" height="28" rx="3" fill="#fff" opacity=".92" stroke="#ccc"/><text x="410" y="128" font-size="10" fill="#333">Kırmızı LED</text><text x="410" y="140" font-size="9" fill="#777">uzun bacak (anot) → 7</text>
+<path d="M392 100 V72" stroke="#222" stroke-width="3.5" fill="none"/>
+<path id="bbFlow" d="M197 120 H235 V58 H294 V128 H364 V156 H392 V72 H245 V140 H197" fill="none" stroke="#f1c40f" stroke-width="3" class="flow"/>
+<text x="442" y="290" text-anchor="middle" font-size="11" fill="#555">Akım yolu: 5V → + ray → köprü → 220 Ω → LED (anot→katot) → − ray → GND</text>
+</svg><div class="cap">Şekil 6. 5V → 220 Ω → LED → GND devresinin breadboard üzerinde kurulumu (sarı çizgiler akımın yönünü gösterir)</div></div>
+<div class="grid2"><div><h3>Kurulum adımları</h3><ol class="steps">
+<li>USB kablosu <b>takılı değilken</b> çalışın.</li>
+<li>Kırmızı kabloyla Arduino <b>5V</b> pinini breadboard'un <b>+</b> rayına bağlayın.</li>
+<li>Siyah kabloyla <b>GND</b> pinini <b>−</b> rayına bağlayın.</li>
+<li>+ rayından 2. sütuna bir köprü kablosu takın; 220 Ω direnci 2. ve 7. sütunlar arasına yerleştirin.</li>
+<li>LED'in <b>uzun bacağını (anot)</b> 7. sütuna, kısa bacağını (katot) 9. sütuna takın.</li>
+<li>9. sütundan − rayına siyah bir köprü kablosu takın, ardından USB'yi bağlayın.</li></ol></div>
+<div><h3>Hesap ve ölçüm</h3>
+<p>KGK: 5 V = V<sub>R</sub> + V<sub>LED</sub>. Kırmızı LED için V<sub>LED</sub> ≈ 2 V ⟹ V<sub>R</sub> ≈ 3 V ⟹ I = 3/220 ≈ <b>13,6 mA</b>.</p>
+<p>Multimetre (V⎓, 20 V) ile ölçün ve tabloya yazın:</p>
+<table class="tbl"><tr><th>Ölçüm</th><th>Beklenen</th><th>Ölçülen</th></tr><tr><td>5V – GND</td><td>≈ 5,0 V</td><td></td></tr><tr><td>Direnç uçları</td><td>≈ 3,0 V</td><td></td></tr><tr><td>LED uçları</td><td>≈ 2,0 V</td><td></td></tr><tr><td>V<sub>R</sub> + V<sub>LED</sub></td><td>= 5V–GND</td><td></td></tr></table></div></div>
+<div class="tip">LED yanmıyorsa: (1) LED ters takılmış olabilir, çevirin; (2) iki bacak aynı sütunda olabilir; (3) uzun breadboard'da rayın ortadan ayrık olup olmadığını kontrol edin; (4) multimetrenin süreklilik moduyla kabloları test edin.</div>
+
+</section>
+
+<section class="card" id="olcum"><h2><span class="num">10</span>Arduino ile Gerilim Ölçme (Ön Bakış)</h2>
+
+<p>Arduino UNO'nun A0–A5 analog girişleri, 0–5 V aralığındaki gerilimi <b>10 bitlik</b> bir analog-dijital çevirici (ADC) ile 0–1023 arasında bir sayıya çevirir. Bu konuyu 6. haftada ayrıntılı göreceğiz; bu hafta yalnızca gerilim bölücüyü ölçmek için kullanacağız.</p>
+<div class="formula">V = ham · 5,0 / 1023 &nbsp;&nbsp;&nbsp; (ham = analogRead(A0), 0…1023)</div>
+<p><b>Devre:</b> 5V — R1 (10 kΩ) — <b>A0</b> — R2 (10 kΩ) — GND. Beklenen değer ≈ 2,5 V (ham ≈ 512).</p>
+<div class="codebox"><span class="lbl">bolucu_olcum.ino</span><pre class="code">// Gerilim bölücü çıkışını A0 analog girişi ile ölçme
+// Bağlantı: 5V — R1 (10 kΩ) — A0 düğümü — R2 (10 kΩ) — GND
+const int OLCUM_PIN = A0;      // Bölücünün orta noktası A0'a bağlı
+const float VREF = 5.0;        // ADC referans gerilimi (volt)
+
+void setup() {
+  Serial.begin(9600);          // Seri haberleşmeyi 9600 baud ile başlat
+  Serial.println("Gerilim bolucu olcumu basladi");
+}
+
+void loop() {
+  int ham = analogRead(OLCUM_PIN);       // 0–1023 arası ham değeri oku
+  float gerilim = ham * VREF / 1023.0;   // Ham değeri volta çevir
+  Serial.print("ADC: ");
+  Serial.print(ham);
+  Serial.print("  Gerilim: ");
+  Serial.print(gerilim, 2);              // 2 ondalık basamakla yaz
+  Serial.println(" V");
+  delay(500);                            // Yarım saniyede bir ölç
+}</pre></div>
+<table class="tbl"><tr><th>Komut / Yapı</th><th>Görevi</th></tr>
+<tr><td><code>const int OLCUM_PIN = A0;</code></td><td>Değeri program boyunca değişmeyen sabit tanımlar; okunabilirliği artırır</td></tr>
+<tr><td><code>float</code></td><td>Ondalıklı sayı veri tipi (ör. 2.47). Ondalık ayırıcı olarak <b>nokta</b> kullanılır</td></tr>
+<tr><td><code>Serial.begin(9600)</code></td><td>USB üzerinden bilgisayarla seri haberleşmeyi başlatır; 9600 baud hızı Seri Monitör'de de seçilmelidir</td></tr>
+<tr><td><code>Serial.print(x)</code> / <code>Serial.println(x)</code></td><td>Değeri Seri Monitör'e yazar; <code>println</code> sonuna satır sonu ekler</td></tr>
+<tr><td><code>Serial.print(x, 2)</code></td><td>Ondalıklı sayıyı 2 basamakla yazar</td></tr>
+<tr><td><code>analogRead(pin)</code></td><td>A0–A5 pinindeki gerilimi 0–1023 arası tam sayıya çevirir</td></tr></table>
+<div class="note">Seri Monitör'ü açmak için IDE'de <b>Araçlar → Seri Port Ekranı</b> (veya sağ üstteki büyüteç simgesi, Ctrl+Shift+M) kullanılır. Alt köşedeki baud değeri koddaki <code>Serial.begin()</code> ile aynı olmalıdır; aksi hâlde anlamsız karakterler görülür. Eski IDE sürümlerinde Türkçe karakterler bozuk görünebileceği için Seri Monitör mesajlarında ç, ğ, ş gibi harfleri kullanmadık.</div>
+<div class="warn">Analog girişlere <b>5 V'tan büyük</b> veya <b>negatif</b> gerilim uygulamayın; mikrodenetleyici zarar görebilir. Yüksek gerilimleri mutlaka gerilim bölücüyle düşürün.</div>
+
+</section>
+
+<section class="card" id="kvlard"><h2><span class="num">11</span>Kirchhoff'u Arduino ile Gözlemleme</h2>
+
+<p>Üç direnci seri bağlayıp iki ara düğümü A0 ve A1 ile ölçerek her direncin gerilimini ve üzerinden geçen akımı hesaplayabiliriz. <b>Seri devrede akım her yerde aynı</b> olduğundan, Ohm Kanunu ile hesaplanan üç akım birbirine çok yakın çıkmalıdır.</p>
+<div class="grid2"><div class="figure"><svg viewBox="0 0 300 250" width="300">
+ <path d="M60 20 V40 M60 80 V110 M60 150 V180 M60 220 V240" stroke="#444" stroke-width="2.5"/>
+ <path d="M60 20 V240" stroke="#f1c40f" stroke-width="3" class="flow" fill="none"/>
+ <text x="60" y="14" text-anchor="middle" font-size="11" fill="#e74c3c">5V</text><text x="60" y="250" text-anchor="middle" font-size="11">GND</text>
+ <rect x="51" y="40" width="18" height="40" rx="3" fill="#d9b38c" stroke="#7a5230"/><text x="78" y="64" font-size="11">R1 = 1 kΩ</text>
+ <rect x="51" y="110" width="18" height="40" rx="3" fill="#d9b38c" stroke="#7a5230"/><text x="78" y="134" font-size="11">R2 = 2,2 kΩ</text>
+ <rect x="51" y="180" width="18" height="40" rx="3" fill="#d9b38c" stroke="#7a5230"/><text x="78" y="204" font-size="11">R3 = 4,7 kΩ</text>
+ <circle cx="60" cy="95" r="4" fill="#e67e22"/><path d="M60 95 H180" stroke="#e67e22" stroke-width="2"/><text x="186" y="99" font-size="11" fill="#e67e22">A0 (≈ 4,37 V)</text>
+ <circle cx="60" cy="165" r="4" fill="#2e86de"/><path d="M60 165 H180" stroke="#2e86de" stroke-width="2"/><text x="186" y="169" font-size="11" fill="#2e86de">A1 (≈ 2,97 V)</text>
+</svg><div class="cap">Şekil 7. Üç dirençli seri devre ve ölçüm noktaları</div></div>
+<div><h3>Teorik değerler</h3><p>R<sub>eş</sub> = 1 + 2,2 + 4,7 = 7,9 kΩ ⟹ I = 5/7900 ≈ <b>0,633 mA</b></p>
+<p>V<sub>R1</sub> ≈ 0,63 V, V<sub>R2</sub> ≈ 1,39 V, V<sub>R3</sub> ≈ 2,97 V<br>Toplam: 0,63 + 1,39 + 2,97 ≈ 5 V ✓ (KGK; fark yalnızca yuvarlamadan)</p>
+<div class="note">Programda V<sub>R1</sub> = VCC − V<sub>A0</sub> olarak hesaplandığından üç gerilimin toplamı matematiksel olarak her zaman VCC çıkar. KGK'yı <b>bağımsız</b> olarak doğrulamak için her direncin gerilimini multimetreyle ayrı ayrı ölçüp toplayın. Programın asıl gösterdiği şey, üç akımın eşit olmasıdır.</div></div></div>
+<div class="codebox"><span class="lbl">kirchhoff_seri.ino</span><pre class="code">// Seri devrede gerilim paylaşımı ve akımın her yerde aynı olması
+// 5V — R1(1 kΩ) — [A0] — R2(2,2 kΩ) — [A1] — R3(4,7 kΩ) — GND
+const float VCC = 5.0;     // Besleme; 5V pinini multimetreyle ölçüp buraya yazın
+const float R1 = 1000.0;   // Direnç değerleri (ohm)
+const float R2 = 2200.0;
+const float R3 = 4700.0;
+
+// Verilen analog pindeki gerilimi volt olarak döndüren fonksiyon
+float voltOku(int pin) {
+  return analogRead(pin) * VCC / 1023.0;
+}
+
+void setup() {
+  Serial.begin(9600);
+  Serial.println("VR1   VR2   VR3  | I1(mA) I2(mA) I3(mA)");
+}
+
+void loop() {
+  float vA0 = voltOku(A0);       // R1-R2 birleşim noktası
+  float vA1 = voltOku(A1);       // R2-R3 birleşim noktası
+
+  float vR1 = VCC - vA0;         // R1 üzerindeki gerilim
+  float vR2 = vA0 - vA1;         // R2 üzerindeki gerilim
+  float vR3 = vA1;               // R3 üzerindeki gerilim (alt ucu GND)
+
+  // Ohm Kanunu: I = V / R  (mA için 1000 ile çarp)
+  float i1 = vR1 / R1 * 1000.0;
+  float i2 = vR2 / R2 * 1000.0;
+  float i3 = vR3 / R3 * 1000.0;
+
+  Serial.print(vR1, 2); Serial.print("  ");
+  Serial.print(vR2, 2); Serial.print("  ");
+  Serial.print(vR3, 2); Serial.print(" | ");
+  Serial.print(i1, 3);  Serial.print("  ");
+  Serial.print(i2, 3);  Serial.print("  ");
+  Serial.println(i3, 3);
+  delay(1000);                   // Saniyede bir ölçüm
+}</pre></div>
+<table class="tbl"><tr><th>Yeni yapı</th><th>Açıklama</th></tr>
+<tr><td><code>float voltOku(int pin) { … return …; }</code></td><td>Kendi fonksiyonumuzu tanımladık: bir <code>int</code> parametre alır, <code>float</code> sonuç döndürür. Aynı işlemi tekrar yazmaktan kurtarır.</td></tr>
+<tr><td><code>return</code></td><td>Fonksiyonun hesapladığı değeri çağırana geri verir.</td></tr>
+<tr><td><code>Serial.println(i3, 3)</code></td><td>Sayıyı 3 ondalık basamakla yazıp satırı bitirir.</td></tr></table>
+<div class="sim"><h4>🔬 Simülasyon: kirchhoff_seri.ino çalışıyor (ADC nicemleme ve ±1 adım gürültü dahil)</h4>
+<div class="grid2"><div>
+<label>R1 = <span id="kR1v"></span></label><input type="range" id="kR1" min="0" max="11" value="4">
+<label>R2 = <span id="kR2v"></span></label><input type="range" id="kR2" min="0" max="11" value="5">
+<label>R3 = <span id="kR3v"></span></label><input type="range" id="kR3" min="0" max="11" value="7">
+<button class="btn" id="kRun">⏸ Duraklat</button><button class="btn alt" id="kClr">Temizle</button>
+<div class="out" id="kOut"></div></div>
+<div><div class="serial" id="kSer" style="height:200px"></div></div></div>
+<p style="font-size:.9em;color:#5b6b7d">Not: Simülasyondaki R1–R3 kaydırıcıları devredeki direnci değiştirir; programdaki R1–R3 sabitlerinin de aynı değerlere ayarlandığı varsayılmıştır.</p></div>
+
+</section>
+
+<section class="card quiz" id="quiz"><h2><span class="num">12</span>Kendini Test Et</h2>
+<div class="q" data-answer="b"><p>1) V<sub>giriş</sub> = 9 V, R1 = 1 kΩ, R2 = 2 kΩ olan gerilim bölücüde R2 üzerindeki çıkış gerilimi kaç volttur?</p><button class="opt" data-k="a">a) 3 V</button><button class="opt" data-k="b">b) 6 V</button><button class="opt" data-k="c">c) 4,5 V</button><div class="fb">✓ V<sub>çıkış</sub> = 9 · 2/(1+2) = 6 V. Gerilim, dirençlerle orantılı paylaşılır; büyük direnç büyük payı alır.</div></div>
+<div class="q" data-answer="c"><p>2) İki adet 1 kΩ direnç paralel bağlanırsa eşdeğer direnç kaç olur?</p><button class="opt" data-k="a">a) 2 kΩ</button><button class="opt" data-k="b">b) 1 kΩ</button><button class="opt" data-k="c">c) 500 Ω</button><div class="fb">✓ 1/R = 1/1000 + 1/1000 ⟹ R = 500 Ω. Paralel eşdeğer daima en küçük dirençten küçüktür.</div></div>
+<div class="q" data-answer="a"><p>3) Breadboard'da 12a deliği ile 12f deliği arasında bağlantı var mıdır?</p><button class="opt" data-k="a">a) Hayır, orta kanal iki yarıyı ayırır</button><button class="opt" data-k="b">b) Evet, aynı sütundadır</button><button class="opt" data-k="c">c) Yalnızca güç raylarında vardır</button><div class="fb">✓ a–e ve f–j grupları ayrı şeritlerdir; aralarındaki orta kanal onları birbirinden yalıtır.</div></div>
+<div class="q" data-answer="b"><p>4) Bir düğüme 25 mA giriyor; çıkan iki koldan birinde 10 mA ölçülüyor. Diğer koldaki akım kaçtır?</p><button class="opt" data-k="a">a) 35 mA</button><button class="opt" data-k="b">b) 15 mA</button><button class="opt" data-k="c">c) 10 mA</button><div class="fb">✓ KAK: Σ I<sub>giren</sub> = Σ I<sub>çıkan</sub> ⟹ 25 = 10 + I ⟹ I = 15 mA.</div></div>
+<div class="q" data-answer="c"><p>5) Multimetre ile bir LED'den geçen akımı ölçmek için ne yapılmalıdır?</p><button class="opt" data-k="a">a) mA kademesi seçilip problar LED'e paralel bağlanır</button><button class="opt" data-k="b">b) V kademesinde problar seri bağlanır</button><button class="opt" data-k="c">c) mA kademesi seçilir, kırmızı prob mA girişine takılır ve devre açılıp multimetre seri bağlanır</button><div class="fb">✓ Akım ölçümü seri yapılır; akımın multimetrenin içinden geçmesi gerekir. Paralel bağlamak kısa devre yapar ve sigortayı attırır.</div></div>
+</section>
+
+<section class="card" id="odev"><h2><span class="num">13</span>Ödev ve Özet</h2>
+
+<h3>Ödev</h3><ol>
+<li>12 V'luk bir akünün gerilimini A0 ile ölçmek için bir gerilim bölücü tasarlayın (V<sub>çıkış</sub> ≤ 5 V olmalı). Direnç değerlerini standart değerlerden seçin, ölçülebilecek en yüksek akü gerilimini hesaplayın ve <code>bolucu_olcum.ino</code>'yu akü gerilimini yazacak şekilde değiştirin.</li>
+<li>Breadboard'a iki LED'i <b>paralel</b> kolar hâlinde kurun (her birinin kendi 220 Ω direnci olsun). Her kolun ve toplam devrenin akımını KAK ile hesaplayıp multimetreyle ölçün.</li>
+<li><code>kirchhoff_seri.ino</code> devresini kurun. Her direncin gerilimini multimetreyle ölçüp toplayın; ölçtüğünüz toplamı 5V pininde ölçtüğünüz değerle karşılaştırarak yüzde hatayı hesaplayın.</li>
+<li>Şekil 1'deki devrede V<sub>s</sub> = 5 V, R1 = 100 Ω, R2 = R3 = 220 Ω ise eşdeğer direnci, kaynaktan çekilen akımı ve R2 üzerindeki gerilimi bulun.</li></ol>
+<details><summary>1. ödev için ipucu (tıklayın)</summary>
+<p>R1 = 10 kΩ, R2 = 4,7 kΩ seçilirse 12 V için V<sub>çıkış</sub> ≈ 3,84 V olur. Ölçülebilecek en büyük gerilim: 5 · (10 + 4,7)/4,7 ≈ 15,6 V. Programda okunan gerilimi bölme oranının tersiyle çarpın:</p>
+<div class="codebox"><span class="lbl">aku_ipucu.ino</span><pre class="code">const float R1 = 10000.0, R2 = 4700.0;
+
+void setup() { Serial.begin(9600); }
+
+void loop() {
+  float vA0  = analogRead(A0) * 5.0 / 1023.0;   // Bölücü çıkışı
+  float vAku = vA0 * (R1 + R2) / R2;            // Akü gerilimine geri dönüş
+  Serial.print("Aku: ");
+  Serial.print(vAku, 2);
+  Serial.println(" V");
+  delay(1000);
+}</pre></div></details>
+<h3>Özet</h3><ul>
+<li>Seri: R<sub>eş</sub> = R1 + R2 + …, akım aynı; paralel: 1/R<sub>eş</sub> = Σ 1/R<sub>k</sub>, gerilim aynı.</li>
+<li><b>KAK:</b> Düğüme giren akımlar = çıkan akımlar. <b>KGK:</b> Kapalı çevrede gerilimlerin toplamı sıfır.</li>
+<li>Gerilim bölücü: V<sub>çıkış</sub> = V<sub>giriş</sub> · R2/(R1+R2); sensör devrelerinin temelidir.</li>
+<li>Breadboard'da güç rayları yatay, orta bölümdeki 5'li sütunlar dikey olarak bağlıdır; orta kanal iki yarıyı ayırır.</li>
+<li>Voltmetre <b>paralel</b>, ampermetre <b>seri</b> bağlanır; direnç enerjisiz devrede ölçülür.</li>
+<li><code>analogRead()</code> 0–5 V'u 0–1023'e çevirir; V = ham·5/1023. Sonuçlar <code>Serial.print()</code> ile Seri Monitör'de izlenir.</li></ul>
+
+</section>
+
+</main>
+<footer>Arduino ile Programlama · Ders Notları · 2. Hafta<br>Kaynaklar: C. Taşdemir – <i>Arduino</i>; G. Döktaş – <i>Arduino Eğitim Kitabı</i>; E. Delebe – <i>Projeler ile Arduino</i></footer>
+<script>
+(function(){
+ const KW=['void','if','else','for','while','do','return','switch','case','break','default','const','true','false','#include','#define'];
+ const TY=['int','float','long','unsigned','byte','bool','boolean','char','double','String','word'];
+ const CST=['HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP','LED_BUILTIN','A0','A1','A2','A3','A4','A5'];
+ const FN=['pinMode','digitalWrite','digitalRead','analogRead','analogWrite','delay','delayMicroseconds','millis','micros','setup','loop','map','constrain','pulseIn','tone','noTone','Serial','begin','print','println','attach','write','read','available','random'];
+ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+ function hl(src){
+  let out='',i=0;
+  const re=/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(#?[A-Za-z_][A-Za-z0-9_]*)|(\b\d+(?:\.\d+)?\b)/g;let m,last=0;
+  while((m=re.exec(src))){out+=esc(src.slice(last,m.index));
+   if(m[1])out+='<span class="com">'+esc(m[1])+'</span>';
+   else if(m[2])out+='<span class="str">'+esc(m[2])+'</span>';
+   else if(m[3]){const w=m[3];let c=KW.includes(w)?'kw':TY.includes(w)?'ty':CST.includes(w)?'cst':FN.includes(w)?'fn':'';out+=c?'<span class="'+c+'">'+esc(w)+'</span>':esc(w)}
+   else if(m[4])out+='<span class="num">'+m[4]+'</span>';
+   last=re.lastIndex}
+  return out+esc(src.slice(last))}
+ document.querySelectorAll('pre.code').forEach(p=>{const raw=p.textContent;p.innerHTML=hl(raw);
+  const b=document.createElement('button');b.className='copybtn';b.textContent='Kopyala';
+  b.onclick=()=>{navigator.clipboard.writeText(raw).then(()=>{b.textContent='Kopyalandı ✓';setTimeout(()=>b.textContent='Kopyala',1500)})};
+  p.parentElement.appendChild(b)});
+ document.querySelectorAll('.quiz .q').forEach(q=>{const ans=q.dataset.answer;const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{q.querySelectorAll('.opt').forEach(x=>x.classList.remove('ok','no'));
+   if(o.dataset.k===ans){o.classList.add('ok');if(fb)fb.style.display='block'}else{o.classList.add('no')}})});
+ document.querySelectorAll('.quiz .fb').forEach(f=>f.style.display='none');
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const E=[100,220,330,470,1000,2200,3300,4700,10000,22000,47000,100000];
+const fR=r=>r>=1000?(r/1000).toString().replace('.',',')+' kΩ':r+' Ω';
+const tr=(x,d)=>x.toFixed(d).replace('.',',');
+function flowSpeed(el,I){el.style.animationDuration=Math.max(0.15,Math.min(6,0.006/Math.max(I,1e-6)))+'s';el.style.opacity=Math.min(1,0.3+I*40)}
+// ---- seri / paralel
+let mode='s';
+function sp(){const R=[+$('sR1').value,+$('sR2').value,+$('sR3').value].map(i=>E[i]);
+ ['vR1','vR2','vR3'].forEach((id,i)=>$(id).textContent=R[i]);
+ let h='';
+ if(mode==='s'){const Req=R[0]+R[1]+R[2],I=5/Req;$('gSeri').style.display='';$('gPar').style.display='none';
+  R.forEach((r,i)=>$('sV'+(i+1)).textContent=tr(I*r,2)+' V');$('sItxt').textContent='I = '+tr(I*1000,2)+' mA (her yerde aynı)';
+  document.querySelectorAll('.spf').forEach(e=>flowSpeed(e,I));
+  h=`R<sub>eş</sub> = ${R.join(' + ')} = <b>${fR(Req)}</b><br>I = 5 / ${Req} = <b>${tr(I*1000,2)} mA</b><br>V1 + V2 + V3 = ${R.map(r=>tr(I*r,2)).join(' + ')} = ${tr(5,2)} V ✓ (KGK)`;}
+ else{const G=R.reduce((a,r)=>a+1/r,0),Req=1/G,I=5*G;$('gSeri').style.display='none';$('gPar').style.display='';
+  R.forEach((r,i)=>{$('pI'+(i+1)).textContent=tr(5/r*1000,1)+' mA';flowSpeed(document.querySelector('.spf'+(i+1)),5/r)});
+  h=`1/R<sub>eş</sub> = 1/${R[0]} + 1/${R[1]} + 1/${R[2]} ⟹ R<sub>eş</sub> = <b>${tr(Req,1)} Ω</b><br>I<sub>toplam</sub> = ${R.map(r=>tr(5/r*1000,1)).join(' + ')} = <b>${tr(I*1000,1)} mA</b> (KAK)`;
+  if(I>0.2)h+='<br><span style="color:#e74c3c">⚠ Toplam akım 200 mA\'i aşıyor; gerçek devrede bu kadar akım çekmeyin!</span>';}
+ $('spOut').innerHTML=h}
+$('spSeri').onclick=()=>{mode='s';sp()};$('spPar').onclick=()=>{mode='p';sp()};
+['sR1','sR2','sR3'].forEach(i=>$(i).oninput=sp);sp();
+// ---- gerilim bölücü
+let dT=0;
+function div(){const Vin=+$('dVin').value,R1=E[+$('dR1').value],R2=E[+$('dR2').value];
+ const I=Vin/(R1+R2),Vo=Vin*R2/(R1+R2);
+ $('dVv').textContent=tr(Vin,1);$('dR1v').textContent=fR(R1);$('dR2v').textContent=fR(R2);$('dVinT').textContent=tr(Vin,1)+' V';
+ $('dVR1').textContent=tr(I*R1,2)+' V';$('dVR2').textContent=tr(Vo,2)+' V';
+ const adc=Math.min(1023,Math.round(Vo/5*1023));$('dADC').textContent='A0='+adc;
+ const h1=210*(R1/(R1+R2));$('dBar1').setAttribute('height',h1);$('dBar2').setAttribute('y',30+h1);$('dBar2').setAttribute('height',210-h1);
+ flowSpeed($('dFlow'),I*10);
+ let s=`I = ${tr(Vin,1)} / (${R1} + ${R2}) = ${tr(I*1000,3)} mA<br>V<sub>çıkış</sub> = ${tr(Vin,1)} · ${R2}/${R1+R2} = <b>${tr(Vo,2)} V</b> → analogRead ≈ <b>${adc}</b>`;
+ if(Vo>5)s+='<br><span style="color:#e74c3c">⚠ Çıkış 5 V\'u aşıyor! Arduino girişine zarar verir; okunan değer 1023\'te doyar.</span>';
+ $('dOut').innerHTML=s}
+function dTick(){const Vin=+$('dVin').value,R1=E[+$('dR1').value],R2=E[+$('dR2').value];const Vo=Vin*R2/(R1+R2);
+ let ham=Math.round(Vo/5*1023)+Math.round(Math.random()*2-1);ham=Math.max(0,Math.min(1023,ham));
+ const l=$('dSer');if(!dT){l.textContent='Gerilim bolucu olcumu basladi\n'}dT++;
+ l.textContent+=`ADC: ${ham}  Gerilim: ${(ham*5/1023).toFixed(2)} V\n`;if(l.textContent.length>4000)l.textContent=l.textContent.slice(-2500);l.scrollTop=1e9}
+['dVin','dR1','dR2'].forEach(i=>$(i).oninput=div);div();dTick();setInterval(dTick,500);
+// ---- breadboard
+const holes=[...document.querySelectorAll('#bb .h')];
+holes.forEach(h=>{h.setAttribute('fill','#555');h.style.cursor='pointer'});
+function info(g){if(g[0]==='r'){const top=g[1]==='t',plus=g[2]==='+';return `${top?'Üst':'Alt'} ${plus?'+ (kırmızı)':'− (mavi)'} güç rayı: Bu satırdaki 25 deliğin tamamı yatay olarak bağlıdır. Genellikle ${plus?'5V':'GND'} buraya bağlanır.`}
+ const c=g.slice(1);return `Sütun ${c}, satır ${g[0]==='t'?'a–e':'f–j'}: Bu 5 delik dikey olarak birbirine bağlıdır. ${g[0]==='t'?'f–j':'a–e'} satırlarındaki ${c}. sütunla bağlantısı YOKTUR (orta kanal).`}
+let locked=null;
+function hi(g){holes.forEach(h=>{const on=h.dataset.g===g;h.setAttribute('fill',on?'#27ae60':'#555');h.style.filter=on?'drop-shadow(0 0 3px #27ae60)':'none'});$('bbInfo').textContent=info(g)}
+holes.forEach(h=>{h.addEventListener('mouseenter',()=>{if(!locked)hi(h.dataset.g)});h.addEventListener('click',()=>{locked=h.dataset.g;hi(locked)})});
+let tour=null;const seq=['rt+','rt-','t1','t2','t3','b3','t10','b10','rb+','rb-'];
+$('bbTour').onclick=()=>{clearInterval(tour);let k=0;hi(seq[0]);tour=setInterval(()=>{k=(k+1)%seq.length;hi(seq[k])},1300)};
+$('bbStop').onclick=()=>{clearInterval(tour);locked=null};
+// ---- multimetre
+const MM={off:[-90,'----','OFF','Ölçüm yapılmıyor. Pil ömrü için kullanmadığınızda OFF konumuna alın.','VΩ'],
+ v:[-30,'4.98','DC V  20V','Kırmızı prob VΩ, siyah prob COM. Problar 5V ve GND pinine <b>paralel</b> dokundurulur. Ekranda ≈ 4,98 V görülür.','VΩ'],
+ a:[30,'13.6','DC mA  200m','Kırmızı prob <b>mA</b> girişine alınır. LED devresi bir noktadan açılır ve multimetre araya <b>seri</b> bağlanır. 220 Ω\'luk LED devresinde ≈ 13,6 mA okunur.','mA'],
+ o:[210,'218','Ω  2k','Devre <b>enerjisiz</b>, direnç tercihen devreden sökülü olmalı. 220 Ω ±%5 direnç 209–231 Ω arası okunabilir.','VΩ'],
+ c:[150,'0.4','•)))  BİP','Süreklilik modu: Problar arasında çok düşük direnç (bağlantı) varsa cihaz öter. Breadboard şeritlerini ve kabloları test etmek için idealdir.','VΩ']};
+const jx={'VΩ':180,'mA':85};
+document.querySelectorAll('[data-mm]').forEach(b=>b.onclick=()=>{const m=MM[b.dataset.mm];
+ $('mmPtr').setAttribute('transform',`rotate(${m[0]} 110 172)`);$('mmDisp').textContent=m[1];$('mmUnit').textContent=m[2];$('mmOut').innerHTML=m[3];
+ const x=jx[m[4]];$('leadR').setAttribute('d',`M${x} 262 C${x} 300 200 300 214 306`);
+ ['jkVΩ','jkmA'].forEach(id=>$(id).setAttribute('fill','#222'));$('jk'+m[4]).setAttribute('fill','#e74c3c')});
+// ---- KGK seri ölçüm simülasyonu
+let kOn=true,kHead=false;
+function kVals(){return [+$('kR1').value,+$('kR2').value,+$('kR3').value].map(i=>E[i])}
+function kUpd(){const R=kVals();['kR1v','kR2v','kR3v'].forEach((id,i)=>$(id).textContent=fR(R[i]));
+ const Rt=R[0]+R[1]+R[2],I=5/Rt;$('kOut').innerHTML=`Teorik: I = 5 / ${Rt} = <b>${tr(I*1000,3)} mA</b><br>V<sub>A0</sub> = ${tr(5-I*R[0],2)} V, V<sub>A1</sub> = ${tr(I*R[2],2)} V`}
+function kTick(){if(!kOn)return;const R=kVals(),Rt=R[0]+R[1]+R[2],I=5/Rt;
+ const q=v=>Math.max(0,Math.min(1023,Math.round(v/5*1023)+Math.round(Math.random()*2-1)));
+ const a0=q(5-I*R[0])*5/1023,a1=q(I*R[2])*5/1023;const v1=5-a0,v2=a0-a1,v3=a1;
+ const l=$('kSer');if(!kHead){l.textContent='VR1   VR2   VR3  | I1(mA) I2(mA) I3(mA)\n';kHead=true}
+ l.textContent+=`${v1.toFixed(2)}  ${v2.toFixed(2)}  ${v3.toFixed(2)} | ${(v1/R[0]*1000).toFixed(3)}  ${(v2/R[1]*1000).toFixed(3)}  ${(v3/R[2]*1000).toFixed(3)}\n`;
+ if(l.textContent.length>5000)l.textContent=l.textContent.slice(-3000);l.scrollTop=1e9}
+['kR1','kR2','kR3'].forEach(i=>$(i).oninput=kUpd);kUpd();kTick();setInterval(kTick,1000);
+$('kRun').onclick=()=>{kOn=!kOn;$('kRun').textContent=kOn?'⏸ Duraklat':'▶ Devam'};
+$('kClr').onclick=()=>{$('kSer').textContent='';kHead=false};
+})();
+</script>
+</body></html>

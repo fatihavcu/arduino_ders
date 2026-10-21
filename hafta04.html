@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4. Hafta – Dijital Okuma, if-else ve Buton-LED Uygulamaları | Arduino ile Programlama</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#1d2733;--muted:#5b6b7d;--teal:#00979d;--teal2:#00b3b9;--accent:#e67e22;--red:#e74c3c;--green:#27ae60;--code:#0f1b26;--border:#dde5ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+header.top{background:linear-gradient(135deg,#006468,#00979d 60%,#00b3b9);color:#fff;padding:28px 20px 34px;position:relative;overflow:hidden}
+header.top::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px),repeating-linear-gradient(0deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px);pointer-events:none}
+.wrap{max-width:1050px;margin:0 auto;padding:0 18px}
+.badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:3px 12px;border-radius:20px;font-size:.85em;letter-spacing:.5px}
+header.top h1{margin:10px 0 6px;font-size:2em}
+header.top p{margin:0;opacity:.92}
+nav.weeknav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;position:relative;z-index:1}
+nav.weeknav a{color:#fff;text-decoration:none;background:rgba(0,0,0,.18);padding:6px 12px;border-radius:6px;font-size:.9em}
+nav.weeknav a:hover{background:rgba(0,0,0,.35)}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;margin:22px 0}
+.toc ol{margin:6px 0;columns:2}
+.toc a{color:var(--teal);text-decoration:none}
+section.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin:22px 0;box-shadow:0 2px 8px rgba(20,40,60,.05);animation:fadeUp .6s ease both}
+section.card h2{margin-top:0;color:#006468;border-bottom:2px solid #e3f3f3;padding-bottom:8px}
+section.card h2 .num{display:inline-block;background:var(--teal);color:#fff;border-radius:50%;width:32px;height:32px;text-align:center;line-height:32px;margin-right:8px;font-size:.8em}
+h3{color:#0b4f6c}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.goals li{margin:4px 0}
+.note,.warn,.tip{border-radius:8px;padding:12px 16px;margin:14px 0;border-left:5px solid}
+.note{background:#eaf6ff;border-color:#2e86de}.warn{background:#fff3e6;border-color:var(--accent)}.tip{background:#eafaf1;border-color:var(--green)}
+.note::before{content:"ℹ️ Not: ";font-weight:600}.warn::before{content:"⚠️ Dikkat: ";font-weight:600}.tip::before{content:"💡 İpucu: ";font-weight:600}
+.formula{font-family:Cambria,"Times New Roman",serif;font-size:1.5em;text-align:center;background:#f7fbfb;border:1px dashed var(--teal);border-radius:8px;padding:12px;margin:14px 0}
+table.tbl{border-collapse:collapse;width:100%;margin:12px 0;font-size:.95em}
+table.tbl th,table.tbl td{border:1px solid var(--border);padding:7px 10px;text-align:left}
+table.tbl th{background:#e9f6f6;color:#064d50}
+table.tbl tr:nth-child(even) td{background:#fafcfd}
+.codebox{position:relative;margin:14px 0}
+.codebox .lbl{background:#1f3344;color:#9fd7da;font-size:.8em;padding:4px 12px;border-radius:8px 8px 0 0;display:inline-block;font-family:Consolas,monospace}
+pre.code{background:var(--code);color:#d7e3ee;padding:16px 18px;border-radius:0 8px 8px 8px;overflow:auto;font-family:Consolas,"Courier New",monospace;font-size:.92em;line-height:1.5;margin:0}
+pre.code .kw{color:#c792ea}.code .ty{color:#82aaff}.code .fn{color:#f78c6c}.code .num{color:#f7c56c}.code .str{color:#c3e88d}.code .com{color:#6b8299;font-style:italic}.code .cst{color:#ff5370}
+.copybtn{position:absolute;top:30px;right:8px;background:#2b4459;color:#cfe;border:0;border-radius:5px;padding:4px 10px;cursor:pointer;font-size:.8em}
+.copybtn:hover{background:var(--teal)}
+.figure{text-align:center;margin:16px 0}
+.figure svg{max-width:100%;height:auto}
+.figure .cap{font-size:.88em;color:var(--muted);margin-top:6px}
+.sim{background:#f3fafa;border:1px solid #bfe3e4;border-radius:10px;padding:16px;margin:16px 0}
+.sim h4{margin:0 0 10px;color:#006468}
+.sim label{display:block;margin:8px 0 2px;font-weight:600;font-size:.92em}
+.sim input[type=range]{width:100%;accent-color:var(--teal)}
+.sim .out{font-family:Consolas,monospace;background:#fff;border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-top:10px}
+.serial{background:#0b1620;color:#7CFC9a;font-family:Consolas,monospace;border-radius:6px;padding:10px;height:140px;overflow:auto;font-size:.88em;white-space:pre}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:.92em;margin:4px 4px 4px 0}
+.btn:hover{background:#007a7f}.btn.alt{background:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.toc ol{columns:1}}
+/* animations */
+.flow{stroke-dasharray:6 10;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+.glow{filter:drop-shadow(0 0 6px #ff4d4d)}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.spin{transform-origin:center;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* quiz */
+.quiz .q{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0}
+.quiz .q p{margin:0 0 8px;font-weight:600}
+.quiz .opt{display:block;width:100%;text-align:left;background:#f7f9fb;border:1px solid var(--border);border-radius:6px;padding:7px 10px;margin:4px 0;cursor:pointer;font-size:.95em}
+.quiz .opt:hover{background:#eef6f6}
+.quiz .opt.ok{background:#d9f5e3;border-color:var(--green)}
+.quiz .opt.no{background:#fde2df;border-color:var(--red)}
+.quiz .fb{font-size:.9em;margin-top:6px;color:var(--muted)}
+details{background:#fbfcfd;border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin:10px 0}
+details summary{cursor:pointer;font-weight:600;color:#0b4f6c}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding:8px 0 8px 46px;margin:6px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:32px;height:32px;border-radius:50%;background:var(--teal);color:#fff;text-align:center;line-height:32px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:30px 10px 40px}
+.pill{display:inline-block;background:#e3f3f3;color:#064d50;border-radius:12px;padding:2px 10px;font-size:.85em;margin:2px}
+</style></head><body>
+<header class="top"><div class="wrap">
+<span class="badge">ARDUİNO İLE PROGRAMLAMA · 4. HAFTA</span>
+<h1>Dijital Okuma, if-else ve Buton-LED Uygulamaları</h1><p>digitalRead, buton bağlantısı, floating giriş, pull-down / INPUT_PULLUP, debounce, toggle ve Seri Monitör</p>
+<nav class="weeknav"><a href="index.html">☰ Tüm Haftalar</a><a href="hafta03.html">← 3. Hafta</a><a href="hafta05.html">5. Hafta →</a></nav>
+</div></header>
+<main class="wrap">
+<div class="toc"><strong>Bu haftanın içeriği</strong><ol><li><a href="#hedef">Haftanın Hedefleri</a></li><li><a href="#giris">Dijital Giriş ve digitalRead()</a></li><li><a href="#buton">Buton (Push Button) Tanıtımı</a></li><li><a href="#floating">Havada Kalan (Floating) Giriş Problemi</a></li><li><a href="#pull">Pull-down, Pull-up ve INPUT_PULLUP</a></li><li><a href="#devre">Devre Kurulumu: Buton ve LED</a></li><li><a href="#kod1">Program 1 ve 2: Buton ile LED Kontrolü</a></li><li><a href="#bounce">Buton Sıçraması (Bounce) ve Debounce</a></li><li><a href="#toggle">Aç-Kapa (Toggle): Durum Değişkeni ve Kenar Algılama</a></li><li><a href="#hata">Sık Yapılan Hatalar ve Hata Ayıklama</a></li><li><a href="#quiz">Kendini Test Et</a></li><li><a href="#odev">Ödev ve Özet</a></li></ol></div>
+<section class="card" id="hedef"><h2><span class="num">1</span>Haftanın Hedefleri</h2>
+<style>
+.grid2>*{min-width:0}
+@keyframes scan{from{transform:translateX(0)}to{transform:translateX(380px)}}
+.scan{animation:scan 3s linear infinite}
+.vbtn{width:120px;height:120px;border-radius:50%;border:6px solid #333;background:radial-gradient(circle at 40% 35%,#ff7b6b,#c0392b);box-shadow:0 8px 0 #7a2318,0 10px 14px rgba(0,0,0,.3);cursor:pointer;color:#fff;font-weight:700;font-size:1em;user-select:none;-webkit-user-select:none;touch-action:none;transition:transform .05s,box-shadow .05s}
+.vbtn.down{transform:translateY(6px);box-shadow:0 2px 0 #7a2318,0 3px 6px rgba(0,0,0,.3)}
+.clk{cursor:pointer}
+.bar{display:inline-block;width:6px;margin-right:1px;vertical-align:bottom;background:#00979d}
+</style>
+<ul class="goals">
+<li><code>digitalRead()</code> ile bir dijital pinin HIGH/LOW durumunu okuyabilmek</li>
+<li>Dört bacaklı buton (push button) yapısını bilmek ve doğru bağlayabilmek</li>
+<li>Havada kalan (floating) giriş problemini açıklayabilmek</li>
+<li>Pull-down ve pull-up dirençlerini, Arduino'nun dahili <code>INPUT_PULLUP</code> özelliğini kullanabilmek</li>
+<li>Buton sıçramasını (bounce) tanıyıp basit debounce yöntemleri uygulayabilmek</li>
+<li>if-else ile butona bağlı LED kontrolü ve durum değişkeni ile aç-kapa (toggle) programı yazabilmek</li>
+<li>Buton durumunu <code>Serial.print()</code> ile Seri Monitör'de izleyebilmek</li>
+</ul>
+<div class="note">3. haftada pinleri <b>çıkış</b> olarak kullandık (Arduino → dış dünya). Bu hafta pinleri <b>giriş</b> olarak kullanacağız (dış dünya → Arduino). Giriş-İşleme-Çıkış zincirinin ilk halkasını tamamlıyoruz.</div>
+
+</section>
+
+<section class="card" id="giris"><h2><span class="num">2</span>Dijital Giriş ve digitalRead()</h2>
+
+<p>Bir pin <code>pinMode(pin, INPUT)</code> ile giriş yapıldığında, Arduino o pindeki gerilime bakarak bir <b>mantık değeri</b> üretir. <code>digitalRead(pin)</code> bu değeri <code>HIGH</code> (1) veya <code>LOW</code> (0) olarak döndürür.</p>
+<div><div>
+<table class="tbl"><tr><th>Fonksiyon</th><th>Açıklama</th></tr>
+<tr><td><code>pinMode(pin, INPUT)</code></td><td>Pini yüksek empedanslı giriş yapar (varsayılan mod).</td></tr>
+<tr><td><code>pinMode(pin, INPUT_PULLUP)</code></td><td>Pini giriş yapar ve içerideki ≈ 20–50 kΩ'luk pull-up direncini 5 V'a bağlar.</td></tr>
+<tr><td><code>digitalRead(pin)</code></td><td>Pindeki gerilimi okur; <code>HIGH</code> veya <code>LOW</code> döndürür (<code>int</code> değişkende saklanabilir).</td></tr></table>
+<p>ATmega328P'nin 5 V'taki eşikleri (veri sayfası): <b>V<sub>IL</sub> ≤ 0,3·V<sub>CC</sub> = 1,5 V</b> → kesin LOW; <b>V<sub>IH</sub> ≥ 0,6·V<sub>CC</sub> = 3,0 V</b> → kesin HIGH. Aradaki bölgede okunan değer <b>belirsizdir</b>.</p></div>
+<div class="sim"><h4>🔬 Simülasyon: Giriş gerilimi → digitalRead()</h4>
+<div class="grid2"><div><label>Pin 2'deki gerilim = <span id="lvV">0,0</span> V</label><input type="range" id="lvS" min="0" max="5" step="0.1" value="0.5">
+<div class="out" id="lvOut"></div><div class="serial" id="lvSer" style="height:80px;margin-top:8px"></div></div>
+<div class="figure"><svg viewBox="0 0 150 230" width="150">
+ <rect x="40" y="10" width="40" height="80" fill="#ffe0bf"/><rect x="40" y="90" width="40" height="60" fill="#e3e3e3"/><rect x="40" y="150" width="40" height="70" fill="#d6e9fb"/>
+ <text x="60" y="54" text-anchor="middle" font-size="10" fill="#c0620b">HIGH</text><text x="60" y="124" text-anchor="middle" font-size="9" fill="#666">belirsiz</text><text x="60" y="190" text-anchor="middle" font-size="10" fill="#1f5f9e">LOW</text>
+ <text x="36" y="14" text-anchor="end" font-size="9">5 V</text><text x="36" y="94" text-anchor="end" font-size="9">3,0 V</text><text x="36" y="154" text-anchor="end" font-size="9">1,5 V</text><text x="36" y="222" text-anchor="end" font-size="9">0 V</text>
+ <g id="lvPtr"><path d="M82 0 l14 -7 v14 z" fill="#e74c3c"/><text id="lvPt" x="100" y="4" font-size="10" fill="#e74c3c"></text></g>
+</svg></div></div></div></div>
+
+</section>
+
+<section class="card" id="buton"><h2><span class="num">3</span>Buton (Push Button) Tanıtımı</h2>
+
+<p>Breadboard'a uygun <b>4 bacaklı mikro buton</b> (tact switch), basıldığı sürece iletken olan, bırakılınca açılan (<b>normalde açık</b>, NO) bir anahtardır. Dört bacak <b>ikişer ikişer içeriden zaten birbirine bağlıdır</b>; butona basıldığında bu iki çift birbirine bağlanır.</p>
+<div class="grid2"><div class="figure"><svg id="bp" viewBox="0 0 260 220" width="280" class="clk">
+ <rect x="70" y="50" width="120" height="120" rx="10" fill="#333"/><circle id="bpCap" cx="130" cy="110" r="36" fill="#c0392b" stroke="#111" stroke-width="3"/>
+ <rect x="45" y="60" width="30" height="10" fill="#aaa"/><rect x="185" y="60" width="30" height="10" fill="#aaa"/><rect x="45" y="150" width="30" height="10" fill="#aaa"/><rect x="185" y="150" width="30" height="10" fill="#aaa"/>
+ <text x="35" y="69" text-anchor="end" font-size="13" font-weight="700">1</text><text x="225" y="69" font-size="13" font-weight="700">2</text><text x="35" y="159" text-anchor="end" font-size="13" font-weight="700">3</text><text x="225" y="159" font-size="13" font-weight="700">4</text>
+ <path id="bpA" d="M60 65 H200" stroke="#2e86de" stroke-width="4" stroke-dasharray="6 4" opacity=".9"/>
+ <path id="bpB" d="M60 155 H200" stroke="#27ae60" stroke-width="4" stroke-dasharray="6 4" opacity=".9"/>
+ <path id="bpX" d="M130 65 V155" stroke="#f1c40f" stroke-width="5" class="flow" style="display:none"/>
+ <text id="bpTxt" x="130" y="200" text-anchor="middle" font-size="12" fill="#333">Bırakıldı: 1-2 ve 3-4 ayrı</text>
+ <text x="130" y="30" text-anchor="middle" font-size="11" fill="#5b6b7d">üstten görünüm (basmak için tıklayın)</text>
+</svg><div class="cap">Şekil 1. Mikro butonun iç bağlantıları: mavi ve yeşil kesikli çizgiler her zaman bağlı olan bacak çiftleridir</div></div>
+<div><h3>Doğru bağlantı kuralı</h3>
+<ul><li>Bacak <b>1–2</b> ve <b>3–4</b> hep bağlıdır; bunları anahtar uçları olarak kullanmak işe yaramaz (buton hep "basılı" görünür).</li>
+<li>Anahtar olarak <b>çapraz</b> bacakları (ör. 1 ve 4) kullanmak her zaman güvenlidir.</li>
+<li>Breadboard'da buton genellikle <b>orta kanalın üzerine</b> oturtulur; böylece bağlı çiftler kanalın iki yanındaki farklı sütunlara düşer.</li>
+<li>Bacak düzeni üreticiye göre değişebilir: emin değilseniz multimetrenin <b>süreklilik</b> modu ile hangi bacakların hep bağlı olduğunu kontrol edin (2. hafta).</li></ul>
+<div class="tip">Butonlar, anahtarlar, reed röleler, limit anahtarları ve PIR sensörünün çıkışı gibi "açık/kapalı" bilgi veren her eleman, bu hafta öğrendiğimiz dijital giriş mantığıyla okunur.</div></div></div>
+
+</section>
+
+<section class="card" id="floating"><h2><span class="num">4</span>Havada Kalan (Floating) Giriş Problemi</h2>
+
+<p>Butonun bir ucu 5 V'a, diğer ucu doğrudan pin 2'ye bağlansa ne olur? Butona basıldığında pin 5 V'a bağlanır ve HIGH okunur. Ancak buton <b>bırakıldığında pin hiçbir yere bağlı değildir</b>: giriş empedansı çok yüksek olduğu için çevredeki elektrik alanlarından, parmağınızdan, hatta yakındaki kablolardan gürültü toplar. <code>digitalRead()</code> rastgele 0 ve 1 değerleri döndürür. Buna <b>havada kalan (floating) giriş</b> denir.</p>
+<div class="sim"><h4>🔬 Simülasyon: Dirençsiz buton girişi ne okur?</h4>
+<div class="grid2"><div>
+<label><input type="checkbox" id="flR"> 10 kΩ pull-down direnci ekle (pin 2 → GND)</label>
+<label><input type="checkbox" id="flH"> Elinizi pine/kabloya yaklaştırın (gürültü artar)</label>
+<button class="btn" id="flB">Butona basılı tut</button>
+<div class="out" id="flOut"></div>
+<label>Son 60 okuma (yüksek çubuk = 1)</label><div id="flBars" style="height:40px;background:#fff;border:1px solid var(--border);border-radius:6px;padding:4px;overflow:hidden;white-space:nowrap"></div></div>
+<div><label>Seri Monitör: <code>Serial.println(digitalRead(2));</code> (100 ms'de bir)</label><div class="serial" id="flSer" style="height:190px"></div></div></div></div>
+<div class="warn">Kullanılmayan veya bir yere bağlı olmayan giriş pinini okumak anlamsız sonuçlar verir. Her dijital girişin, anahtar açıkken de <b>kesin bir gerilime</b> (0 V veya 5 V) bağlı olması gerekir. Bunu bir pull-down veya pull-up direnciyle sağlarız.</div>
+
+</section>
+
+<section class="card" id="pull"><h2><span class="num">5</span>Pull-down, Pull-up ve INPUT_PULLUP</h2>
+
+<p>Pin, büyük değerli bir direnç (genellikle <b>10 kΩ</b>) üzerinden GND'ye veya 5 V'a bağlanarak "varsayılan" bir değere çekilir. Buton basıldığında bu varsayılan değer ezilir.</p>
+<div class="grid2">
+<div class="figure"><svg id="pd" viewBox="0 0 260 260" width="270" class="clk">
+ <text x="130" y="16" text-anchor="middle" font-size="13" font-weight="700" fill="#006468">(a) Pull-down</text>
+ <text x="60" y="38" text-anchor="middle" font-size="11" fill="#e74c3c">5V</text>
+ <path d="M60 44 V70 M60 110 V130 H120 M120 130 V150 M120 200 V230" stroke="#444" stroke-width="2.5" fill="none"/>
+ <circle cx="60" cy="72" r="3" fill="#333"/><circle cx="60" cy="108" r="3" fill="#333"/><line id="pdSw" x1="60" y1="108" x2="82" y2="76" stroke="#333" stroke-width="3"/>
+ <text x="88" y="94" font-size="10">buton</text>
+ <rect x="112" y="150" width="16" height="50" rx="3" fill="#d9b38c" stroke="#7a5230"/><text x="134" y="180" font-size="11">10 kΩ</text>
+ <text x="120" y="248" text-anchor="middle" font-size="11">GND</text>
+ <circle cx="120" cy="130" r="4" fill="#e67e22"/><path d="M120 130 H210" stroke="#e67e22" stroke-width="2"/><text x="214" y="134" font-size="11" fill="#e67e22">pin 2</text>
+ <path id="pdF" d="M60 44 V130 H120 V230" stroke="#f1c40f" stroke-width="3" fill="none" class="flow" style="display:none"/>
+ <text id="pdT" x="130" y="112" font-size="11" font-family="Consolas" fill="#2e86de">okunan: LOW</text>
+</svg><div class="cap">Bırakıldı → LOW, basıldı → HIGH (şemaya tıklayın)</div></div>
+<div class="figure"><svg id="pu" viewBox="0 0 260 260" width="270" class="clk">
+ <text x="130" y="16" text-anchor="middle" font-size="13" font-weight="700" fill="#006468">(b) Pull-up / INPUT_PULLUP</text>
+ <text x="120" y="38" text-anchor="middle" font-size="11" fill="#e74c3c">5V</text>
+ <path d="M120 44 V60 M120 110 V130 H60 M60 130 V150 M60 190 V230" stroke="#444" stroke-width="2.5" fill="none"/>
+ <rect x="112" y="60" width="16" height="50" rx="3" fill="#d9b38c" stroke="#7a5230" stroke-dasharray="3 2"/><text x="134" y="82" font-size="10">20–50 kΩ</text><text x="134" y="95" font-size="9" fill="#777">(dahili)</text>
+ <circle cx="60" cy="152" r="3" fill="#333"/><circle cx="60" cy="188" r="3" fill="#333"/><line id="puSw" x1="60" y1="188" x2="82" y2="156" stroke="#333" stroke-width="3"/>
+ <text x="88" y="176" font-size="10">buton</text>
+ <text x="60" y="248" text-anchor="middle" font-size="11">GND</text>
+ <circle cx="120" cy="130" r="4" fill="#e67e22"/><path d="M120 130 H210" stroke="#e67e22" stroke-width="2"/><text x="214" y="134" font-size="11" fill="#e67e22">pin 2</text>
+ <path id="puF" d="M120 44 V130 H60 V230" stroke="#f1c40f" stroke-width="3" fill="none" class="flow" style="display:none"/>
+ <text id="puT" x="130" y="160" font-size="11" font-family="Consolas" fill="#2e86de">okunan: HIGH</text>
+</svg><div class="cap">Bırakıldı → HIGH, basıldı → LOW (ters mantık)</div></div></div>
+<table class="tbl"><tr><th></th><th>Pull-down (harici 10 kΩ)</th><th>INPUT_PULLUP (dahili direnç)</th></tr>
+<tr><td>Bağlantı</td><td>5V — buton — pin; pin — 10 kΩ — GND</td><td>pin — buton — GND (harici direnç yok)</td></tr>
+<tr><td>Bırakılmışken</td><td>LOW (0)</td><td>HIGH (1)</td></tr>
+<tr><td>Basılıyken</td><td>HIGH (1)</td><td>LOW (0)</td></tr>
+<tr><td>Basılıyken akım</td><td>I = 5 V / 10 kΩ = <b>0,5 mA</b></td><td>≈ 5 V / 35 kΩ ≈ 0,1–0,25 mA</td></tr>
+<tr><td>Kod</td><td><code>pinMode(2, INPUT);</code></td><td><code>pinMode(2, INPUT_PULLUP);</code></td></tr></table>
+<div class="note">Direnç neden 10 kΩ? Çok küçük seçilirse (ör. 100 Ω) basıldığında 50 mA akım boşa harcanır; çok büyük seçilirse (ör. 10 MΩ) pin yine gürültüye duyarlı hâle gelir. 4,7–100 kΩ aralığı pratikte sorunsuz çalışır. <b>Butonu dirençsiz şekilde 5V ile GND arasına bağlamayın</b>: basıldığı anda kısa devre olur.</div>
+
+</section>
+
+<section class="card" id="devre"><h2><span class="num">6</span>Devre Kurulumu: Buton ve LED</h2>
+
+<p>Buton pin 2'ye 10 kΩ pull-down direnciyle, LED ise 220 Ω dirençle pin 8'e bağlanır. Aşağıdaki şemada <b>butona tıklayıp basılı tutun</b>: akım yolları ve <code>digitalRead(2)</code> değeri, <code>buton_led.ino</code> programına göre canlı olarak değişir.</p>
+<div class="figure"><svg id="wb" viewBox="0 0 640 325" width="820">
+<defs><pattern id="wbH" width="14" height="14" patternUnits="userSpaceOnUse"><rect x="4" y="4" width="5" height="5" fill="#c4c4bc"/></pattern></defs>
+<rect x="20" y="108" width="255" height="192" rx="12" fill="#0e7c86" stroke="#064d50" stroke-width="3"/>
+<text x="148" y="195" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Arduino UNO</text>
+<rect x="100" y="215" width="95" height="30" rx="3" fill="#1b1b1b"/><text x="148" y="234" text-anchor="middle" fill="#ccc" font-size="10">ATmega328P</text>
+<rect x="31" y="112" width="228" height="14" fill="#111"/>
+<rect x="37" y="115" width="7" height="8" fill="#c9a227"/><text x="40" y="138" text-anchor="middle" fill="#fff" font-size="8">GND</text>
+<rect x="52" y="115" width="7" height="8" fill="#c9a227"/><text x="55" y="138" text-anchor="middle" fill="#fff" font-size="8">13</text>
+<rect x="67" y="115" width="7" height="8" fill="#c9a227"/><text x="70" y="138" text-anchor="middle" fill="#fff" font-size="8">12</text>
+<rect x="82" y="115" width="7" height="8" fill="#c9a227"/><text x="85" y="138" text-anchor="middle" fill="#fff" font-size="8">11</text>
+<rect x="97" y="115" width="7" height="8" fill="#c9a227"/><text x="100" y="138" text-anchor="middle" fill="#fff" font-size="8">10</text>
+<rect x="112" y="115" width="7" height="8" fill="#c9a227"/><text x="115" y="138" text-anchor="middle" fill="#fff" font-size="8">9</text>
+<rect x="127" y="115" width="7" height="8" fill="#c9a227"/><text x="130" y="138" text-anchor="middle" fill="#fff" font-size="8">8</text>
+<rect x="142" y="115" width="7" height="8" fill="#c9a227"/><text x="145" y="138" text-anchor="middle" fill="#fff" font-size="8">7</text>
+<rect x="157" y="115" width="7" height="8" fill="#c9a227"/><text x="160" y="138" text-anchor="middle" fill="#fff" font-size="8">6</text>
+<rect x="172" y="115" width="7" height="8" fill="#c9a227"/><text x="175" y="138" text-anchor="middle" fill="#fff" font-size="8">5</text>
+<rect x="187" y="115" width="7" height="8" fill="#c9a227"/><text x="190" y="138" text-anchor="middle" fill="#fff" font-size="8">4</text>
+<rect x="202" y="115" width="7" height="8" fill="#c9a227"/><text x="205" y="138" text-anchor="middle" fill="#fff" font-size="8">3</text>
+<rect x="217" y="115" width="7" height="8" fill="#c9a227"/><text x="220" y="138" text-anchor="middle" fill="#fff" font-size="8">2</text>
+<rect x="232" y="115" width="7" height="8" fill="#c9a227"/><text x="235" y="138" text-anchor="middle" fill="#fff" font-size="8">1</text>
+<rect x="247" y="115" width="7" height="8" fill="#c9a227"/><text x="250" y="138" text-anchor="middle" fill="#fff" font-size="8">0</text>
+<rect x="135" y="288" width="60" height="12" fill="#111"/>
+<rect x="146" y="290" width="8" height="8" fill="#c9a227"/><text x="150" y="282" text-anchor="middle" fill="#fff" font-size="10">5V</text>
+<rect x="176" y="290" width="8" height="8" fill="#c9a227"/><text x="180" y="282" text-anchor="middle" fill="#fff" font-size="10">GND</text>
+<text id="wbRead" x="175" y="160" text-anchor="middle" fill="#ff0" font-size="11" font-family="Consolas">digitalRead(2) = 0</text>
+<rect x="320" y="30" width="305" height="270" rx="8" fill="#f2f2ee" stroke="#b9b9b0" stroke-width="2"/>
+<rect x="326" y="36" width="293" height="222" fill="url(#wbH)"/>
+<line x1="328" y1="268" x2="618" y2="268" stroke="#2e86de" stroke-width="2.5"/><line x1="328" y1="284" x2="618" y2="284" stroke="#e74c3c" stroke-width="2.5"/>
+<text x="616" y="263" text-anchor="end" font-size="9" fill="#2e86de">− rayı (GND)</text><text x="616" y="296" text-anchor="end" font-size="9" fill="#e74c3c">+ rayı (5V)</text>
+<path d="M150 298 V312 H340 V284" stroke="#e74c3c" stroke-width="3.5" fill="none"/>
+<path d="M180 298 V304 H330 V268" stroke="#222" stroke-width="3.5" fill="none"/>
+<path d="M405 284 V162" stroke="#e74c3c" stroke-width="3" fill="none"/>
+<path d="M220 119 V60 H435 V138" stroke="#e6b800" stroke-width="3.5" fill="none"/>
+<line x1="435" y1="162" x2="435" y2="195" stroke="#888" stroke-width="2"/><line x1="435" y1="230" x2="435" y2="268" stroke="#888" stroke-width="2"/>
+<rect x="429" y="195" width="12" height="35" rx="5" fill="#e8cfa6" stroke="#a5835a"/>
+<rect x="429" y="201" width="12" height="3" fill="#7b3f00"/>
+<rect x="429" y="207" width="12" height="3" fill="#000"/>
+<rect x="429" y="213" width="12" height="3" fill="#f80"/>
+<rect x="429" y="222" width="12" height="3" fill="#c9a227"/>
+<text x="447" y="210" font-size="10" fill="#333">10 kΩ</text><text x="447" y="222" font-size="9" fill="#777">pull-down</text>
+<g id="wbBtn" class="clk"><rect x="400" y="133" width="10" height="6" fill="#999"/><rect x="430" y="133" width="10" height="6" fill="#999"/><rect x="400" y="161" width="10" height="6" fill="#999"/><rect x="430" y="161" width="10" height="6" fill="#999"/><rect x="405" y="137" width="30" height="26" rx="3" fill="#333"/><circle id="wbCap" cx="420" cy="150" r="9" fill="#c0392b" stroke="#111"/></g>
+<text x="396" y="147" text-anchor="end" font-size="10" fill="#333">buton</text><text x="396" y="159" text-anchor="end" font-size="9" fill="#777">(tıklayın)</text>
+<path d="M130 119 V46 H550 V82" stroke="#e67e22" stroke-width="3.5" fill="none"/>
+<line x1="550" y1="82" x2="550" y2="140" stroke="#888" stroke-width="2"/><line x1="550" y1="175" x2="550" y2="268" stroke="#888" stroke-width="2"/>
+<rect x="544" y="140" width="12" height="35" rx="5" fill="#e8cfa6" stroke="#a5835a"/>
+<rect x="544" y="146" width="12" height="3" fill="#d00"/>
+<rect x="544" y="152" width="12" height="3" fill="#d00"/>
+<rect x="544" y="158" width="12" height="3" fill="#7b3f00"/>
+<rect x="544" y="167" width="12" height="3" fill="#c9a227"/>
+<text x="562" y="162" font-size="10" fill="#333">220 Ω</text>
+<circle id="wbLed" cx="550" cy="100" r="12" fill="#5a1a1a" stroke="#555"/><text x="534" y="96" text-anchor="end" font-size="10" fill="#333">LED</text><text x="534" y="109" text-anchor="end" font-size="9" fill="#777">pin 8</text>
+<path id="wbF1" d="M150 298 V312 H340 V284 H405 V150 H435 V268 H330 V304 H180 V298" fill="none" stroke="#f1c40f" stroke-width="3" class="flow" style="display:none"/>
+<path id="wbF2" d="M435 138 V60 H220 V119" fill="none" stroke="#2e86de" stroke-width="2" class="flow" style="display:none;animation-duration:2s"/>
+<path id="wbF3" d="M130 119 V46 H550 V268 H330 V304 H180 V298" fill="none" stroke="#f1c40f" stroke-width="3" class="flow" style="display:none"/>
+<text x="485" y="323" text-anchor="middle" font-size="10" fill="#555">Sarı: akım yolu · Mavi: pin 2'ye giden sinyal (pin neredeyse hiç akım çekmez)</text>
+</svg><div class="cap">Şekil 2. Buton (pin 2, pull-down) ve LED (pin 8) devresi</div></div>
+<table class="tbl"><tr><th>Malzeme</th><th>Adet</th><th>Bağlantı</th></tr>
+<tr><td>Mikro buton</td><td>1</td><td>Bir ucu + rayına (5V), diğer ucu pin 2'ye</td></tr>
+<tr><td>10 kΩ direnç (kahverengi-siyah-turuncu)</td><td>1</td><td>Butonun pin 2 tarafı ile − rayı (GND) arası</td></tr>
+<tr><td>LED + 220 Ω direnç</td><td>1+1</td><td>Pin 8 → LED anot; katot → 220 Ω → GND</td></tr>
+<tr><td>Köprü kabloları</td><td>5–6</td><td>5V → + ray, GND → − ray, pin 2, pin 8</td></tr></table>
+
+</section>
+
+<section class="card" id="kod1"><h2><span class="num">7</span>Program 1 ve 2: Buton ile LED Kontrolü</h2>
+
+<div><div class="codebox"><span class="lbl">buton_led.ino</span><pre class="code">// Program 1: Buton basılıyken LED yanar (harici 10 kΩ pull-down)
+const int BUTON = 2;     // Buton pin 2'de
+const int LED = 8;       // LED pin 8'de
+int butonDurumu = 0;     // Okunan değer burada saklanır
+
+void setup() {
+  pinMode(BUTON, INPUT);       // Pin 2 giriş
+  pinMode(LED, OUTPUT);        // Pin 8 çıkış
+  Serial.begin(9600);
+}
+
+void loop() {
+  butonDurumu = digitalRead(BUTON);   // HIGH (1) veya LOW (0)
+
+  if (butonDurumu == HIGH) {          // Basılı mı?
+    digitalWrite(LED, HIGH);          // Evet: LED'i yak
+  } else {
+    digitalWrite(LED, LOW);           // Hayır: LED'i söndür
+  }
+
+  Serial.print("Buton: ");
+  Serial.println(butonDurumu);        // Seri Monitör'e 1 veya 0 yaz
+  delay(100);                         // Saniyede 10 okuma
+}</pre></div></div><div><div class="codebox"><span class="lbl">buton_pullup.ino</span><pre class="code">// Program 2: Dahili pull-up ile buton (harici direnç YOK)
+// Bağlantı: pin 2 — buton — GND
+const int BUTON = 2;
+const int LED = 8;
+
+void setup() {
+  pinMode(BUTON, INPUT_PULLUP);  // Dahili pull-up açık
+  pinMode(LED, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int okunan = digitalRead(BUTON);  // Bırakılmış: HIGH, basılı: LOW
+
+  if (okunan == LOW) {              // Ters mantık!
+    digitalWrite(LED, HIGH);
+    Serial.println("BASILDI");
+  } else {
+    digitalWrite(LED, LOW);
+    Serial.println("birakildi");
+  }
+  delay(100);
+}</pre></div></div>
+<div class="sim"><h4>🔬 Simülasyon: Sanal buton (fare ile veya boşluk tuşuyla basılı tutun)</h4>
+<button class="btn" id="vbM1">Program 1: pull-down + INPUT</button><button class="btn alt" id="vbM2">Program 2: INPUT_PULLUP</button>
+<div class="grid2"><div style="text-align:center">
+<button class="vbtn" id="vb">BAS</button>
+<svg viewBox="0 0 260 90" width="260" style="display:block;margin:14px auto 0"><rect width="260" height="90" rx="10" fill="#0e7c86"/>
+ <circle id="vbLed" cx="50" cy="40" r="18" fill="#5a1a1a" stroke="#333"/><text x="50" y="78" text-anchor="middle" fill="#fff" font-size="10">LED (pin 8)</text>
+ <text x="160" y="32" text-anchor="middle" fill="#fff" font-size="11">pin 2 gerilimi</text><text id="vbV" x="160" y="52" text-anchor="middle" fill="#ff0" font-family="Consolas" font-size="14">0 V</text>
+ <text id="vbR" x="160" y="72" text-anchor="middle" fill="#fff" font-family="Consolas" font-size="11">digitalRead = LOW</text></svg>
+</div><div><div class="serial" id="vbSer" style="height:200px"></div></div></div></div>
+<table class="tbl"><tr><th>Yeni yapı</th><th>Açıklama</th></tr>
+<tr><td><code>digitalRead(BUTON)</code></td><td>Pindeki mantık seviyesini döndürür; sonucu bir değişkene atayıp karşılaştırırız.</td></tr>
+<tr><td><code>if (butonDurumu == HIGH)</code></td><td>Okunan değeri HIGH ile karşılaştırır. <code>if (butonDurumu)</code> yazmak da aynı sonucu verir (HIGH = 1 = doğru).</td></tr>
+<tr><td><code>INPUT_PULLUP</code></td><td>Harici dirence gerek bırakmaz; mantık terstir: basılı = LOW.</td></tr></table>
+<div class="tip">Program 1'i daha kısa da yazabilirsiniz: <code>digitalWrite(LED, digitalRead(BUTON));</code>. Ancak if-else biçimi, ileride basılınca başka işler (ses, sayaç…) eklemeyi kolaylaştırır.</div>
+
+</section>
+
+<section class="card" id="bounce"><h2><span class="num">8</span>Buton Sıçraması (Bounce) ve Debounce</h2>
+
+<p>Butonun içindeki metal kontaklar birbirine çarptığında hemen oturmaz; birkaç milisaniye boyunca <b>titreşerek</b> açılıp kapanır. İnsan bunu fark etmez, ancak saniyede on binlerce kez <code>loop()</code> çalıştıran Arduino tek bir basışı <b>birden fazla basış</b> olarak görebilir. Bu olaya <b>sıçrama (bounce)</b>, giderilmesine <b>debounce</b> denir.</p>
+<div class="figure"><svg viewBox="0 0 520 210" width="640">
+ <text x="10" y="40" font-size="11" fill="#333">İdeal</text><text x="10" y="135" font-size="11" fill="#333">Gerçek</text>
+ <path d="M70 70 H180 V25 H360 V70 H500" fill="none" stroke="#27ae60" stroke-width="2.5"/>
+ <path d="M70 165 H180 V120 H184 V165 H188 V120 H193 V158 H196 V120 H360 V165 H364 V120 H368 V165 H373 V120 H377 V165 H500" fill="none" stroke="#e74c3c" stroke-width="2.5"/>
+ <rect x="178" y="112" width="22" height="60" fill="none" stroke="#e67e22" stroke-dasharray="3 2"/><text x="189" y="188" text-anchor="middle" font-size="10" fill="#e67e22">≈1–10 ms</text>
+ <rect x="358" y="112" width="22" height="60" fill="none" stroke="#e67e22" stroke-dasharray="3 2"/>
+ <text x="180" y="200" text-anchor="middle" font-size="10" fill="#5b6b7d">basma</text><text x="365" y="200" text-anchor="middle" font-size="10" fill="#5b6b7d">bırakma</text>
+ <g class="scan"><line x1="100" y1="15" x2="100" y2="175" stroke="#2e86de" stroke-width="1.5" stroke-dasharray="4 3"/></g>
+</svg><div class="cap">Şekil 3. İdeal ve gerçek buton sinyali: basma ve bırakma anlarında kısa süreli sıçramalar</div></div>
+<div class="grid2"><div><h3>Yöntem 1: Bekle ve tekrar oku</h3><p>Değişim fark edilince ≈ 50 ms bekleyip pin <b>yeniden</b> okunur. Basit, ama bekleme sırasında program durur.</p></div>
+<div><h3>Yöntem 2: millis() ile zaman filtresi</h3><p>Ham sinyalin son değiştiği an kaydedilir; sinyal <b>50 ms boyunca değişmeden</b> kalırsa yeni durum kabul edilir. Program hiç durmaz (Arduino'nun resmi <i>Debounce</i> örneğindeki yöntem).</p></div></div>
+<div class="note">Donanımsal debounce da mümkündür: butona paralel ≈ 100 nF kondansatör, kontak titreşimlerini yumuşatır. Bu derste yazılımsal yöntemleri kullanacağız.</div>
+
+</section>
+
+<section class="card" id="toggle"><h2><span class="num">9</span>Aç-Kapa (Toggle): Durum Değişkeni ve Kenar Algılama</h2>
+
+<p>Bir kez basınca LED yansın, bir kez daha basınca sönsün istiyorsak "buton basılı mı?" sorusu yetmez; çünkü buton basılı tutulduğu sürece LED sürekli açılıp kapanır. Bunun yerine butonun <b>yeni basıldığı anı</b> (LOW → HIGH geçişi, <b>yükselen kenar</b>) yakalamalı ve LED'in durumunu bir <b>durum değişkeninde</b> saklamalıyız.</p>
+<div class="codebox"><span class="lbl">toggle_basit.ino</span><pre class="code">// Program 3: Toggle — basit debounce (bekle ve tekrar oku)
+const int BUTON = 2, LED = 8;      // Devre: pull-down'lı buton pin 2, LED pin 8
+bool ledDurumu = false;            // LED şu an açık mı?
+int oncekiOkuma = LOW;             // Bir önceki loop'taki buton değeri
+
+void setup() {
+  pinMode(BUTON, INPUT);
+  pinMode(LED, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int okuma = digitalRead(BUTON);
+
+  if (okuma == HIGH &amp;&amp; oncekiOkuma == LOW) {   // Yükselen kenar: yeni basıldı
+    delay(50);                                  // Sıçramaların bitmesini bekle
+    okuma = digitalRead(BUTON);                 // Tekrar oku
+    if (okuma == HIGH) {                        // Hâlâ basılıysa gerçek basıştır
+      ledDurumu = !ledDurumu;                   // Durumu tersine çevir
+      digitalWrite(LED, ledDurumu);
+      Serial.print("LED: ");
+      Serial.println(ledDurumu ? "ACIK" : "KAPALI");
+    }
+  }
+  oncekiOkuma = okuma;                          // Sonraki tur için sakla
+}</pre></div><div class="codebox"><span class="lbl">toggle_millis.ino</span><pre class="code">// Program 4: Toggle + basma sayacı — millis() ile debounce (program hiç beklemez)
+const int BUTON = 2, LED = 8;
+const unsigned long DEBOUNCE_SURE = 50;   // ms
+
+int butonDurumu = LOW;          // Onaylanmış (kararlı) buton durumu
+int sonOkuma = LOW;             // Bir önceki ham okuma
+unsigned long sonDegisim = 0;   // Ham okumanın son değiştiği an
+bool ledDurumu = false;
+int basmaSayisi = 0;
+
+void setup() {
+  pinMode(BUTON, INPUT);
+  pinMode(LED, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int okuma = digitalRead(BUTON);
+
+  if (okuma != sonOkuma) {                     // Ham sinyal değişti (sıçrama olabilir)
+    sonDegisim = millis();                     // Zamanlayıcıyı yeniden başlat
+  }
+
+  if (millis() - sonDegisim &gt; DEBOUNCE_SURE) { // 50 ms boyunca sabit kaldıysa
+    if (okuma != butonDurumu) {                // ve kararlı durumdan farklıysa
+      butonDurumu = okuma;                     // yeni durumu kabul et
+      if (butonDurumu == HIGH) {               // yalnızca BASMA anında
+        ledDurumu = !ledDurumu;
+        basmaSayisi++;
+        digitalWrite(LED, ledDurumu);
+        Serial.print("Basma: ");
+        Serial.print(basmaSayisi);
+        Serial.print("  LED: ");
+        Serial.println(ledDurumu ? "ACIK" : "KAPALI");
+      }
+    }
+  }
+  sonOkuma = okuma;
+}</pre></div>
+<div class="sim"><h4>🔬 Simülasyon: toggle_millis.ino — sıçramalı buton ve debounce (zaman 1 ms çözünürlükle simüle edilir)</h4>
+<label><input type="checkbox" id="tgD" checked> Debounce açık (Program 4). Kapatırsanız her yükselen kenar bir basış sayılır.</label>
+<div class="grid2"><div style="text-align:center">
+<button class="vbtn" id="tgB">BAS</button>
+<svg viewBox="0 0 260 70" width="260" style="display:block;margin:12px auto 0"><rect width="260" height="70" rx="10" fill="#0e7c86"/>
+ <circle id="tgLed" cx="45" cy="35" r="18" fill="#5a1a1a" stroke="#333"/>
+ <text x="160" y="28" text-anchor="middle" fill="#fff" font-size="11">gerçek basış / algılanan</text><text id="tgCnt" x="160" y="52" text-anchor="middle" fill="#ff0" font-family="Consolas" font-size="16">0 / 0</text></svg>
+</div><div><div class="serial" id="tgSer" style="height:150px"></div></div></div>
+<label>Pin 2 ham sinyali (son 200 ms; kırmızı: ham okuma, yeşil: onaylanmış <code>butonDurumu</code>)</label>
+<svg viewBox="0 0 400 70" width="100%" style="background:#0b1620;border-radius:6px;max-height:110px" preserveAspectRatio="none">
+ <polyline id="tgRaw" fill="none" stroke="#ff6b6b" stroke-width="1.5" points=""/><polyline id="tgSt" fill="none" stroke="#7CFC9a" stroke-width="1.5" stroke-dasharray="4 2" points=""/>
+</svg></div>
+<table class="tbl"><tr><th>Yeni yapı</th><th>Açıklama</th></tr>
+<tr><td><code>okuma == HIGH &amp;&amp; oncekiOkuma == LOW</code></td><td>Kenar algılama: şimdi basılı VE bir önceki turda basılı değil ⟹ yeni basıldı.</td></tr>
+<tr><td><code>ledDurumu = !ledDurumu;</code></td><td>Durum değişkenini tersine çevirir (toggle).</td></tr>
+<tr><td><code>koşul ? "ACIK" : "KAPALI"</code></td><td>Üçlü (ternary) operatör: koşul doğruysa ilk değeri, yanlışsa ikinciyi verir; kısa bir if-else'tir.</td></tr>
+<tr><td><code>millis() - sonDegisim &gt; DEBOUNCE_SURE</code></td><td>Sinyal yeterince uzun süre sabit kaldı mı? Program beklemeden kontrol eder.</td></tr></table>
+
+</section>
+
+<section class="card" id="hata"><h2><span class="num">10</span>Sık Yapılan Hatalar ve Hata Ayıklama</h2>
+
+<table class="tbl"><tr><th>Belirti</th><th>Olası neden</th><th>Çözüm</th></tr>
+<tr><td>Seri Monitör'de butona dokunmadan 0 ve 1 rastgele geliyor</td><td>Pull-down/pull-up direnci yok veya yanlış sütunda (floating)</td><td>10 kΩ direnci pin 2 tarafı ile GND arasına takın ya da <code>INPUT_PULLUP</code> kullanın</td></tr>
+<tr><td>Buton hep "basılı" (sürekli 1) okunuyor</td><td>Butonun içeriden bağlı iki bacağı kullanılmış</td><td>Butonu 90° çevirin veya çapraz bacakları kullanın</td></tr>
+<tr><td>INPUT_PULLUP ile LED ters çalışıyor</td><td>Ters mantık unutulmuş</td><td><code>if (okunan == LOW)</code> kullanın</td></tr>
+<tr><td>Toggle'da bir basışta LED birkaç kez yanıp sönüyor</td><td>Sıçrama (bounce) veya kenar yerine seviye kontrolü</td><td>Kenar algılama + debounce (Program 3 veya 4)</td></tr>
+<tr><td>Butona basınca Arduino resetleniyor / USB bağlantısı kopuyor</td><td>Buton dirençsiz olarak 5V–GND arasına bağlanmış (kısa devre)</td><td>Bağlantıyı şemaya göre düzeltin; butonla GND arasında mutlaka pin veya direnç olmalı</td></tr>
+<tr><td>Seri Monitör'de anlamsız karakterler</td><td>Baud hızı uyuşmuyor</td><td>Seri Monitör'ü 9600 baud'a ayarlayın</td></tr></table>
+<div class="tip">Hata ayıklamada ilk adım her zaman <code>Serial.println(digitalRead(BUTON));</code> satırıyla <b>ham değeri görmek</b>tir. Değer doğruysa sorun yazılımdadır; yanlışsa devreye bakın.</div>
+
+</section>
+
+<section class="card quiz" id="quiz"><h2><span class="num">11</span>Kendini Test Et</h2>
+<div class="q" data-answer="a"><p>1) <code>pinMode(2, INPUT_PULLUP)</code> ile ayarlanmış ve pin 2 — buton — GND şeklinde bağlanmış bir butona <b>basılmıyorken</b> <code>digitalRead(2)</code> ne döndürür?</p><button class="opt" data-k="a">a) HIGH</button><button class="opt" data-k="b">b) LOW</button><button class="opt" data-k="c">c) Rastgele değer</button><div class="fb">✓ Dahili pull-up direnci pini 5 V'a çeker; buton açıkken pin HIGH okunur. Basılınca GND'ye bağlanır ve LOW okunur.</div></div>
+<div class="q" data-answer="b"><p>2) Pull-down direnci olmadan, yalnızca 5V — buton — pin 2 bağlantısında buton bırakıldığında neden rastgele değerler okunur?</p><button class="opt" data-k="a">a) Buton bozuktur</button><button class="opt" data-k="b">b) Pin hiçbir gerilime bağlı değildir (floating) ve gürültü toplar</button><button class="opt" data-k="c">c) Arduino'nun 5V çıkışı dalgalanır</button><div class="fb">✓ Yüksek empedanslı giriş bir yere bağlı değilse elektriksel gürültüyle rastgele HIGH/LOW arasında gezinir.</div></div>
+<div class="q" data-answer="c"><p>3) 5 V ve 10 kΩ pull-down direnciyle kurulan devrede butona basıldığında dirençten geçen akım kaçtır?</p><button class="opt" data-k="a">a) 50 mA</button><button class="opt" data-k="b">b) 5 mA</button><button class="opt" data-k="c">c) 0,5 mA</button><div class="fb">✓ I = V / R = 5 / 10 000 = 0,0005 A = 0,5 mA. Bu yüzden pull-down direnci enerji israfına yol açmaz.</div></div>
+<div class="q" data-answer="a"><p>4) Butonda sıçrama (bounce) tipik olarak ne kadar sürer ve debounce süresi genellikle kaç seçilir?</p><button class="opt" data-k="a">a) Birkaç ms; ≈ 20–50 ms</button><button class="opt" data-k="b">b) Birkaç saniye; ≈ 5 s</button><button class="opt" data-k="c">c) Birkaç µs; ≈ 1 µs</button><div class="fb">✓ Kontak titreşimi birkaç milisaniye sürer; 20–50 ms'lik filtre insan için fark edilmez, sıçramaları ise güvenle örter.</div></div>
+<div class="q" data-answer="b"><p>5) Toggle (aç-kapa) programında buton basılı tutulduğunda LED'in sürekli yanıp sönmemesi için ne yapılır?</p><button class="opt" data-k="a">a) delay() süresi artırılır</button><button class="opt" data-k="b">b) Önceki okuma saklanır ve yalnızca LOW → HIGH geçişinde (yükselen kenar) durum değiştirilir</button><button class="opt" data-k="c">c) INPUT yerine OUTPUT kullanılır</button><div class="fb">✓ Seviye (basılı mı?) yerine kenar (yeni mi basıldı?) kontrol edilir; bunun için önceki okuma bir değişkende tutulur.</div></div>
+</section>
+
+<section class="card" id="odev"><h2><span class="num">12</span>Ödev ve Özet</h2>
+
+<h3>Ödev</h3><ol>
+<li>İki buton kullanın: pin 2'deki buton LED'i <b>yaksın</b>, pin 3'teki buton <b>söndürsün</b>. Butonlardan birini harici pull-down, diğerini <code>INPUT_PULLUP</code> ile bağlayın.</li>
+<li><code>toggle_millis.ino</code> programını, her 5. basışta LED'in 3 kez hızlıca yanıp sönmesini sağlayacak şekilde geliştirin (<code>basmaSayisi % 5 == 0</code>).</li>
+<li>3. haftanın trafik lambasına bir <b>yaya butonu</b> ekleyin: butona basıldığında, yeşil ışık en geç 2 saniye içinde sarıya dönsün. (İpucu: <code>delay()</code> butonu kaçırır, <code>millis()</code> kullanın.)</li>
+<li>Program 3'ü <code>INPUT_PULLUP</code> kullanacak şekilde yeniden yazın (kenar ve karşılaştırmalar nasıl değişir?).</li></ol>
+<details><summary>1. ödev için ipucu (tıklayın)</summary>
+<div class="codebox"><span class="lbl">iki_buton_ipucu.ino</span><pre class="code">const int YAK_BUTON = 2;      // 5V — buton — pin 2, pin 2 — 10 kΩ — GND
+const int SONDUR_BUTON = 3;   // pin 3 — buton — GND (dahili pull-up)
+const int LED = 8;
+
+void setup() {
+  pinMode(YAK_BUTON, INPUT);
+  pinMode(SONDUR_BUTON, INPUT_PULLUP);
+  pinMode(LED, OUTPUT);
+}
+
+void loop() {
+  if (digitalRead(YAK_BUTON) == HIGH) {          // pull-down: basılı = HIGH
+    digitalWrite(LED, HIGH);
+  } else if (digitalRead(SONDUR_BUTON) == LOW) { // pull-up: basılı = LOW
+    digitalWrite(LED, LOW);
+  }
+  // Hiçbiri basılı değilse LED önceki durumunu korur
+}</pre></div></details>
+<h3>Özet</h3><ul>
+<li><code>digitalRead(pin)</code> girişteki gerilimi HIGH/LOW olarak okur; 5 V sistemde ≥ 3 V HIGH, ≤ 1,5 V LOW'dur.</li>
+<li>Bağlı olmayan giriş <b>havada kalır</b> ve rastgele okunur; pull-down veya pull-up direnci şarttır.</li>
+<li>Pull-down: bırakılınca LOW, basılınca HIGH. <code>INPUT_PULLUP</code>: harici direnç yok, bırakılınca HIGH, basılınca LOW.</li>
+<li>Mekanik butonlar birkaç ms <b>sıçrar</b>; bekle-tekrar-oku veya <code>millis()</code> tabanlı debounce kullanılır.</li>
+<li>Toggle için <b>durum değişkeni</b> ve <b>kenar algılama</b> (önceki okuma ile karşılaştırma) gerekir.</li>
+<li><code>Serial.println(digitalRead(pin))</code> ile ham değeri izlemek, hata ayıklamanın ilk adımıdır.</li></ul>
+
+</section>
+
+</main>
+<footer>Arduino ile Programlama · Ders Notları · 4. Hafta<br>Kaynaklar: C. Taşdemir – <i>Arduino</i>; G. Döktaş – <i>Arduino Eğitim Kitabı</i>; E. Delebe – <i>Projeler ile Arduino</i></footer>
+<script>
+(function(){
+ const KW=['void','if','else','for','while','do','return','switch','case','break','default','const','true','false','#include','#define'];
+ const TY=['int','float','long','unsigned','byte','bool','boolean','char','double','String','word'];
+ const CST=['HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP','LED_BUILTIN','A0','A1','A2','A3','A4','A5'];
+ const FN=['pinMode','digitalWrite','digitalRead','analogRead','analogWrite','delay','delayMicroseconds','millis','micros','setup','loop','map','constrain','pulseIn','tone','noTone','Serial','begin','print','println','attach','write','read','available','random'];
+ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+ function hl(src){
+  let out='',i=0;
+  const re=/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(#?[A-Za-z_][A-Za-z0-9_]*)|(\b\d+(?:\.\d+)?\b)/g;let m,last=0;
+  while((m=re.exec(src))){out+=esc(src.slice(last,m.index));
+   if(m[1])out+='<span class="com">'+esc(m[1])+'</span>';
+   else if(m[2])out+='<span class="str">'+esc(m[2])+'</span>';
+   else if(m[3]){const w=m[3];let c=KW.includes(w)?'kw':TY.includes(w)?'ty':CST.includes(w)?'cst':FN.includes(w)?'fn':'';out+=c?'<span class="'+c+'">'+esc(w)+'</span>':esc(w)}
+   else if(m[4])out+='<span class="num">'+m[4]+'</span>';
+   last=re.lastIndex}
+  return out+esc(src.slice(last))}
+ document.querySelectorAll('pre.code').forEach(p=>{const raw=p.textContent;p.innerHTML=hl(raw);
+  const b=document.createElement('button');b.className='copybtn';b.textContent='Kopyala';
+  b.onclick=()=>{navigator.clipboard.writeText(raw).then(()=>{b.textContent='Kopyalandı ✓';setTimeout(()=>b.textContent='Kopyala',1500)})};
+  p.parentElement.appendChild(b)});
+ document.querySelectorAll('.quiz .q').forEach(q=>{const ans=q.dataset.answer;const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{q.querySelectorAll('.opt').forEach(x=>x.classList.remove('ok','no'));
+   if(o.dataset.k===ans){o.classList.add('ok');if(fb)fb.style.display='block'}else{o.classList.add('no')}})});
+ document.querySelectorAll('.quiz .fb').forEach(f=>f.style.display='none');
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+function log(id,txt){const l=$(id);l.textContent+=txt+'\n';if(l.textContent.length>4000)l.textContent=l.textContent.slice(-2500);l.scrollTop=1e9}
+function setLed(id,on,c1,c0){const e=$(id);e.setAttribute('fill',on?c1:c0);e.style.filter=on?`drop-shadow(0 0 8px ${c1})`:'none'}
+// basılı tutma yardımcıları
+function holdable(el,down,up){let d=false;const on=e=>{e.preventDefault();if(!d){d=true;down()}},off=()=>{if(d){d=false;up()}};
+ el.addEventListener('mousedown',on);el.addEventListener('touchstart',on,{passive:false});
+ ['mouseup','mouseleave','touchend','touchcancel'].forEach(ev=>el.addEventListener(ev,off));window.addEventListener('mouseup',off)}
+// ---- lojik seviye
+let lvRnd=0;
+function lvRead(v){if(v>=3.0)return 'HIGH';if(v<=1.5)return 'LOW';return Math.random()<(v-1.5)/1.5?'HIGH':'LOW'}
+function lv(){const v=+$('lvS').value;$('lvV').textContent=v.toFixed(1).replace('.',',');
+ const y=220-v/5*210;$('lvPtr').setAttribute('transform',`translate(0 ${y})`);$('lvPt').textContent=v.toFixed(1).replace('.',',')+' V';
+ const z=v>=3?'kesin HIGH bölgesi':v<=1.5?'kesin LOW bölgesi':'belirsiz bölge: sonuç güvenilmez!';
+ $('lvOut').innerHTML=`${v.toFixed(1).replace('.',',')} V → <b>${z}</b>`}
+$('lvS').oninput=lv;lv();setInterval(()=>log('lvSer','digitalRead(2) = '+lvRead(+$('lvS').value)),400);
+// ---- buton iç yapısı
+let bpOn=false;function bp(){$('bpX').style.display=bpOn?'':'none';$('bpCap').setAttribute('r',bpOn?32:36);$('bpCap').setAttribute('fill',bpOn?'#962d22':'#c0392b');
+ $('bpTxt').textContent=bpOn?'Basıldı: 1-2-3-4 hepsi bağlı':'Bırakıldı: 1-2 ve 3-4 ayrı'}
+holdable($('bp'),()=>{bpOn=true;bp()},()=>{bpOn=false;bp()});bp();
+// ---- floating
+let flPress=false,flHist=[];
+holdable($('flB'),()=>{flPress=true;$('flB').textContent='Basılı…'},()=>{flPress=false;$('flB').textContent='Butona basılı tut'});
+function flTick(){const R=$('flR').checked,H=$('flH').checked;let v;
+ if(flPress)v=1;else if(R)v=0;else{const p=H?0.5:0.25;v=Math.random()<p?1-(flHist.length?flHist[flHist.length-1]:0):(flHist.length?flHist[flHist.length-1]:0)}
+ flHist.push(v);if(flHist.length>60)flHist.shift();log('flSer',String(v));
+ $('flBars').innerHTML=flHist.map(b=>`<span class="bar" style="height:${b?30:4}px;background:${b?'#e67e22':'#00979d'}"></span>`).join('');
+ $('flOut').innerHTML=flPress?'Buton basılı: pin 5 V\'a bağlı → <b>1</b> (kararlı)':R?'Buton bırakılmış, pull-down var: pin 10 kΩ ile GND\'ye çekili → <b>0</b> (kararlı)':'Buton bırakılmış, direnç yok: pin <b>havada</b> → değer rastgele değişiyor!'}
+setInterval(flTick,100);
+// ---- pull-down / pull-up şemaları
+let pdOn=false,puOn=false;
+function pd(){$('pdSw').setAttribute('x2',pdOn?60:82);$('pdSw').setAttribute('y2',pdOn?72:76);$('pdF').style.display=pdOn?'':'none';$('pdT').textContent='okunan: '+(pdOn?'HIGH':'LOW')}
+function pu(){$('puSw').setAttribute('x2',puOn?60:82);$('puSw').setAttribute('y2',puOn?152:156);$('puF').style.display=puOn?'':'none';$('puT').textContent='okunan: '+(puOn?'LOW':'HIGH')}
+holdable($('pd'),()=>{pdOn=true;pd()},()=>{pdOn=false;pd()});holdable($('pu'),()=>{puOn=true;pu()},()=>{puOn=false;pu()});pd();pu();
+// ---- devre şeması (buton_led.ino)
+let wbOn=false;function wb(){$('wbF1').style.display=wbOn?'':'none';$('wbF2').style.display=wbOn?'':'none';$('wbF3').style.display=wbOn?'':'none';
+ $('wbCap').setAttribute('r',wbOn?7:9);$('wbCap').setAttribute('fill',wbOn?'#962d22':'#c0392b');setLed('wbLed',wbOn,'#ff3b3b','#5a1a1a');
+ $('wbRead').textContent='digitalRead(2) = '+(wbOn?1:0)}
+holdable($('wbBtn'),()=>{wbOn=true;wb()},()=>{wbOn=false;wb()});wb();
+// ---- sanal buton (Program 1 / 2)
+let vbMode=1,vbDown=false;
+function vbShow(){const pressed=vbDown;let pinHigh=vbMode===1?pressed:!pressed;const ledOn=pressed;
+ $('vb').classList.toggle('down',pressed);setLed('vbLed',ledOn,'#ff3b3b','#5a1a1a');$('vbV').textContent=pinHigh?'≈ 5 V':'0 V';$('vbR').textContent='digitalRead = '+(pinHigh?'HIGH':'LOW')}
+function vbTick(){const pinHigh=vbMode===1?vbDown:!vbDown;
+ if(vbMode===1)log('vbSer','Buton: '+(pinHigh?1:0));else log('vbSer',pinHigh?'birakildi':'BASILDI');vbShow()}
+holdable($('vb'),()=>{vbDown=true;vbShow()},()=>{vbDown=false;vbShow()});
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&e.target===document.body){e.preventDefault();vbDown=true;vbShow()}});
+document.addEventListener('keyup',e=>{if(e.code==='Space'){vbDown=false;vbShow()}});
+$('vbM1').onclick=()=>{vbMode=1;$('vbSer').textContent='';vbShow()};$('vbM2').onclick=()=>{vbMode=2;$('vbSer').textContent='';vbShow()};
+vbShow();setInterval(vbTick,100);
+// ---- toggle + bounce (1 ms çözünürlük)
+let T=0,raw=0,ev=[],tgPress=false,real=0,det=0,led=false;
+let st=0,sonOkuma=0,sonDegisim=0,prevRaw=0;const hist=[];
+function bounceSeq(final){const n=2+Math.floor(Math.random()*4);let t=T;const out=[];for(let k=0;k<n;k++){out.push([t,final]);t+=1+Math.floor(Math.random()*2);out.push([t,1-final]);t+=1+Math.floor(Math.random()*2)}out.push([t,final]);return out}
+holdable($('tgB'),()=>{tgPress=true;real++;ev=ev.concat(bounceSeq(1));$('tgB').classList.add('down')},()=>{tgPress=false;ev=ev.concat(bounceSeq(0));$('tgB').classList.remove('down')});
+function toggleLed(){led=!led;det++;setLed('tgLed',led,'#ff3b3b','#5a1a1a');log('tgSer',$('tgD').checked?`Basma: ${det}  LED: ${led?'ACIK':'KAPALI'}`:`(debounce yok) kenar ${det}  LED: ${led?'ACIK':'KAPALI'}`)}
+function step1ms(){T++;while(ev.length&&ev[0][0]<=T){raw=ev.shift()[1]}
+ const okuma=raw;
+ if($('tgD').checked){if(okuma!==sonOkuma)sonDegisim=T;if(T-sonDegisim>50&&okuma!==st){st=okuma;if(st===1)toggleLed()}sonOkuma=okuma}
+ else{if(okuma===1&&prevRaw===0)toggleLed();st=okuma;sonOkuma=okuma}
+ prevRaw=okuma;hist.push([raw,st]);if(hist.length>200)hist.shift()}
+function tgTick(){for(let i=0;i<20;i++)step1ms();
+ const n=hist.length;let a='',b='';hist.forEach((h,i)=>{const x=(i+200-n)*2;a+=`${x},${h[0]?12:58} `;b+=`${x},${h[1]?16:62} `});
+ $('tgRaw').setAttribute('points',a);$('tgSt').setAttribute('points',b);$('tgCnt').textContent=`${real} / ${det}`}
+$('tgD').onchange=()=>{real=0;det=0;$('tgSer').textContent=''};
+$('tgSer').textContent='(Butona basın: her basışta 2-5 sıçrama üretilir)\n';
+setInterval(tgTick,20);
+})();
+</script>
+</body></html>

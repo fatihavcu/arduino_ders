@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>12. Hafta – Servo Motor ve Su Seviye Sensörü | Arduino ile Programlama</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#1d2733;--muted:#5b6b7d;--teal:#00979d;--teal2:#00b3b9;--accent:#e67e22;--red:#e74c3c;--green:#27ae60;--code:#0f1b26;--border:#dde5ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+header.top{background:linear-gradient(135deg,#006468,#00979d 60%,#00b3b9);color:#fff;padding:28px 20px 34px;position:relative;overflow:hidden}
+header.top::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px),repeating-linear-gradient(0deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px);pointer-events:none}
+.wrap{max-width:1050px;margin:0 auto;padding:0 18px}
+.badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:3px 12px;border-radius:20px;font-size:.85em;letter-spacing:.5px}
+header.top h1{margin:10px 0 6px;font-size:2em}
+header.top p{margin:0;opacity:.92}
+nav.weeknav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;position:relative;z-index:1}
+nav.weeknav a{color:#fff;text-decoration:none;background:rgba(0,0,0,.18);padding:6px 12px;border-radius:6px;font-size:.9em}
+nav.weeknav a:hover{background:rgba(0,0,0,.35)}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;margin:22px 0}
+.toc ol{margin:6px 0;columns:2}
+.toc a{color:var(--teal);text-decoration:none}
+section.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin:22px 0;box-shadow:0 2px 8px rgba(20,40,60,.05);animation:fadeUp .6s ease both}
+section.card h2{margin-top:0;color:#006468;border-bottom:2px solid #e3f3f3;padding-bottom:8px}
+section.card h2 .num{display:inline-block;background:var(--teal);color:#fff;border-radius:50%;width:32px;height:32px;text-align:center;line-height:32px;margin-right:8px;font-size:.8em}
+h3{color:#0b4f6c}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.goals li{margin:4px 0}
+.note,.warn,.tip{border-radius:8px;padding:12px 16px;margin:14px 0;border-left:5px solid}
+.note{background:#eaf6ff;border-color:#2e86de}.warn{background:#fff3e6;border-color:var(--accent)}.tip{background:#eafaf1;border-color:var(--green)}
+.note::before{content:"ℹ️ Not: ";font-weight:600}.warn::before{content:"⚠️ Dikkat: ";font-weight:600}.tip::before{content:"💡 İpucu: ";font-weight:600}
+.formula{font-family:Cambria,"Times New Roman",serif;font-size:1.5em;text-align:center;background:#f7fbfb;border:1px dashed var(--teal);border-radius:8px;padding:12px;margin:14px 0}
+table.tbl{border-collapse:collapse;width:100%;margin:12px 0;font-size:.95em}
+table.tbl th,table.tbl td{border:1px solid var(--border);padding:7px 10px;text-align:left}
+table.tbl th{background:#e9f6f6;color:#064d50}
+table.tbl tr:nth-child(even) td{background:#fafcfd}
+.codebox{position:relative;margin:14px 0}
+.codebox .lbl{background:#1f3344;color:#9fd7da;font-size:.8em;padding:4px 12px;border-radius:8px 8px 0 0;display:inline-block;font-family:Consolas,monospace}
+pre.code{background:var(--code);color:#d7e3ee;padding:16px 18px;border-radius:0 8px 8px 8px;overflow:auto;font-family:Consolas,"Courier New",monospace;font-size:.92em;line-height:1.5;margin:0}
+pre.code .kw{color:#c792ea}.code .ty{color:#82aaff}.code .fn{color:#f78c6c}.code .num{color:#f7c56c}.code .str{color:#c3e88d}.code .com{color:#6b8299;font-style:italic}.code .cst{color:#ff5370}
+.copybtn{position:absolute;top:30px;right:8px;background:#2b4459;color:#cfe;border:0;border-radius:5px;padding:4px 10px;cursor:pointer;font-size:.8em}
+.copybtn:hover{background:var(--teal)}
+.figure{text-align:center;margin:16px 0}
+.figure svg{max-width:100%;height:auto}
+.figure .cap{font-size:.88em;color:var(--muted);margin-top:6px}
+.sim{background:#f3fafa;border:1px solid #bfe3e4;border-radius:10px;padding:16px;margin:16px 0}
+.sim h4{margin:0 0 10px;color:#006468}
+.sim label{display:block;margin:8px 0 2px;font-weight:600;font-size:.92em}
+.sim input[type=range]{width:100%;accent-color:var(--teal)}
+.sim .out{font-family:Consolas,monospace;background:#fff;border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-top:10px}
+.serial{background:#0b1620;color:#7CFC9a;font-family:Consolas,monospace;border-radius:6px;padding:10px;height:140px;overflow:auto;font-size:.88em;white-space:pre}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:.92em;margin:4px 4px 4px 0}
+.btn:hover{background:#007a7f}.btn.alt{background:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.toc ol{columns:1}}
+/* animations */
+.flow{stroke-dasharray:6 10;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+.glow{filter:drop-shadow(0 0 6px #ff4d4d)}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.spin{transform-origin:center;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* quiz */
+.quiz .q{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0}
+.quiz .q p{margin:0 0 8px;font-weight:600}
+.quiz .opt{display:block;width:100%;text-align:left;background:#f7f9fb;border:1px solid var(--border);border-radius:6px;padding:7px 10px;margin:4px 0;cursor:pointer;font-size:.95em}
+.quiz .opt:hover{background:#eef6f6}
+.quiz .opt.ok{background:#d9f5e3;border-color:var(--green)}
+.quiz .opt.no{background:#fde2df;border-color:var(--red)}
+.quiz .fb{font-size:.9em;margin-top:6px;color:var(--muted)}
+details{background:#fbfcfd;border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin:10px 0}
+details summary{cursor:pointer;font-weight:600;color:#0b4f6c}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding:8px 0 8px 46px;margin:6px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:32px;height:32px;border-radius:50%;background:var(--teal);color:#fff;text-align:center;line-height:32px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:30px 10px 40px}
+.pill{display:inline-block;background:#e3f3f3;color:#064d50;border-radius:12px;padding:2px 10px;font-size:.85em;margin:2px}
+</style></head><body>
+<header class="top"><div class="wrap">
+<span class="badge">ARDUİNO İLE PROGRAMLAMA · 12. HAFTA</span>
+<h1>Servo Motor ve Su Seviye Sensörü</h1><p>SG90 servo, 50 Hz PWM konum sinyali, Servo.h kütüphanesi, potansiyometre ile kontrol; su seviye sensörü, kalibrasyon ve servo kapaklı otomatik seviye kontrolü</p>
+<nav class="weeknav"><a href="index.html">☰ Tüm Haftalar</a><a href="hafta11.html">← 11. Hafta</a><a href="hafta13.html">13. Hafta →</a></nav>
+</div></header>
+<main class="wrap">
+<div class="toc"><strong>Bu haftanın içeriği</strong><ol><li><a href="#hedef">Haftanın Hedefleri</a></li><li><a href="#servo">Servo Motor Nedir?</a></li><li><a href="#pwm">PWM ile Konum Kontrolü</a></li><li><a href="#kutuphane">Servo.h Kütüphanesi</a></li><li><a href="#devre1">Devre: Servo ve Potansiyometre</a></li><li><a href="#uyg12">Uygulama 1–2: Sweep ve Pot-Servo</a></li><li><a href="#seviye">Su Seviye Sensörü</a></li><li><a href="#devre2">Devre: Seviye Kontrol Sistemi</a></li><li><a href="#uyg34">Uygulama 3–4: Seviye Okuma ve LED</a></li><li><a href="#uyg5">Uygulama 5: Servo Kapaklı Kontrol</a></li><li><a href="#quiz">Kendini Test Et</a></li><li><a href="#odev">Ödev ve Özet</a></li></ol></div>
+<style>
+.hornsweep{transform-box:view-box;animation:hsw 3s ease-in-out infinite alternate}
+@keyframes hsw{from{transform:rotate(-80deg)}to{transform:rotate(80deg)}}
+.dot{fill:#111}
+.grid2>*{min-width:0}
+.stream{stroke-dasharray:4 6;animation:flow .5s linear infinite}
+.modebtn.on{background:#006468;box-shadow:inset 0 0 0 2px #9fd7da}
+</style><section class="card" id="hedef"><h2><span class="num">1</span>Haftanın Hedefleri</h2>
+<ul class="goals">
+<li>Servo motorun iç yapısını ve kapalı çevrim (geri beslemeli) konum kontrolünü açıklayabilmek</li>
+<li>50 Hz, 1–2 ms darbe genişlikli servo sinyalini yorumlayabilmek ve açı–darbe ilişkisini hesaplayabilmek</li>
+<li><code>Servo.h</code> kütüphanesinin <code>attach()</code>, <code>write()</code>, <code>writeMicroseconds()</code> fonksiyonlarını kullanabilmek</li>
+<li>Potansiyometre ile servo konumunu kontrol eden ve süpürme (sweep) yapan programlar yazabilmek</li>
+<li>Su seviye sensörünün çalışma ilkesini bilmek, analog okumayı kalibre edip LED'lerle göstermek</li>
+<li>Seviyeye göre servo ile kapak açıp kapatan, <b>histerezisli</b> bir otomatik kontrol sistemi tasarlayabilmek</li>
+</ul>
+</section>
+<section class="card" id="servo"><h2><span class="num">2</span>Servo Motor Nedir?</h2>
+<p><b>Servo motor</b>, milini istenen <b>açıya</b> götürüp orada tutabilen bir motordur. Sürekli dönen DC motordan farkı, içinde bir <b>konum algılayıcısı</b> (potansiyometre) ve bir <b>kontrol devresi</b> bulunmasıdır. Robot kolları, RC modeller, kamera yönlendirme (pan-tilt), otomatik kapı ve vana mekanizmalarında kullanılır.</p>
+<div class="figure"><svg viewBox="0 0 640 190" width="660"><defs><marker id="ar12" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8z" fill="#333"/></marker></defs><rect x="10" y="30" width="110" height="40" rx="7" fill="#e67e22"/><text x="65.0" y="55" text-anchor="middle" font-size="11" fill="#fff">PWM sinyali</text><rect x="160" y="30" width="120" height="40" rx="7" fill="#8e44ad"/><text x="220.0" y="55" text-anchor="middle" font-size="11" fill="#fff">Kontrol devresi</text><rect x="320" y="30" width="100" height="40" rx="7" fill="#2e86de"/><text x="370.0" y="55" text-anchor="middle" font-size="11" fill="#fff">DC motor</text><rect x="460" y="30" width="110" height="40" rx="7" fill="#16a085"/><text x="515.0" y="55" text-anchor="middle" font-size="11" fill="#fff">Dişli kutusu</text><rect x="460" y="120" width="110" height="40" rx="7" fill="#00979d"/><text x="515.0" y="145" text-anchor="middle" font-size="11" fill="#fff">Çıkış mili (kol)</text><rect x="250" y="120" width="160" height="40" rx="7" fill="#c0392b"/><text x="330.0" y="145" text-anchor="middle" font-size="11" fill="#fff">Potansiyometre (konum)</text><path d="M120 50 H158" stroke="#333" stroke-width="2" marker-end="url(#ar12)" class="flow"/><path d="M280 50 H318" stroke="#333" stroke-width="2" marker-end="url(#ar12)" class="flow"/><path d="M420 50 H458" stroke="#333" stroke-width="2" marker-end="url(#ar12)" class="flow"/><path d="M515 70 V118" stroke="#333" stroke-width="2" marker-end="url(#ar12)" class="flow"/><path d="M460 140 H412" stroke="#333" stroke-width="2" marker-end="url(#ar12)" class="flow"/><path d="M250 140 H220 V72" stroke="#c0392b" stroke-width="2" marker-end="url(#ar12)" class="flow"/><text x="140" y="160" font-size="10" fill="#c0392b">geri besleme (kapalı çevrim)</text></svg><div class="cap">Şekil 1. Servo motorun iç yapısı: kontrol devresi, istenen konum (PWM) ile potansiyometreden okunan gerçek konumu karşılaştırır ve fark sıfır olana kadar motoru döndürür.</div></div>
+<div class="grid2"><table class="tbl"><tr><th>SG90 mikro servo</th><th>Değer</th></tr>
+<tr><td>Çalışma gerilimi</td><td>4,8 – 6 V (UNO'da 5 V)</td></tr><tr><td>Dönüş aralığı</td><td>≈ 0° – 180°</td></tr>
+<tr><td>Tork</td><td>≈ 1,8 kg·cm (4,8 V)</td></tr><tr><td>Hız</td><td>≈ 0,1 s / 60°</td></tr>
+<tr><td>Kontrol sinyali</td><td>50 Hz PWM, ≈ 1–2 ms darbe</td></tr><tr><td>Akım</td><td>boşta ≈ 10 mA, hareket ≈ 100–250 mA, zorlanınca ≈ 650 mA'e kadar</td></tr><tr><td>Kütle</td><td>9 g</td></tr></table>
+<table class="tbl"><tr><th>Kablo rengi</th><th>Görevi</th><th>UNO</th></tr>
+<tr><td><span class="pill" style="background:#6d4c41;color:#fff">kahverengi</span></td><td>GND</td><td>GND</td></tr>
+<tr><td><span class="pill" style="background:#d63031;color:#fff">kırmızı</span></td><td>+V (besleme)</td><td>5V</td></tr>
+<tr><td><span class="pill" style="background:#f39c12;color:#fff">turuncu</span></td><td>Sinyal (PWM)</td><td>D9 (herhangi bir dijital pin)</td></tr></table></div>
+<div class="note">Bazı servolarda renkler <b>siyah–kırmızı–beyaz/sarı</b> şeklindedir: siyah GND, kırmızı +V, beyaz/sarı sinyaldir. 360° <i>sürekli dönüşlü</i> servolarda <code>write()</code> değeri açıyı değil <b>dönüş hızını ve yönünü</b> belirler (90 = dur).</div>
+</section>
+<section class="card" id="pwm"><h2><span class="num">3</span>PWM Sinyali ile Konum Kontrolü</h2>
+<p>Servo, sinyal pinine yaklaşık her <b>20 ms</b>'de bir (<b>50 Hz</b>) gelen darbenin <b>genişliğine</b> bakar. Darbe genişliği kolun açısını belirler; darbe sürekli tekrarlandığı sürece servo konumunu korur.</p>
+<div class="figure"><svg viewBox="0 0 700 260" width="700"><path d="M70 60 V30 H92.0 V60 H510 V30 H532.0 V60 H550" fill="none" stroke="#e67e22" stroke-width="2.5"/><text x="81.0" y="24" text-anchor="middle" font-size="11" font-weight="700">1,0 ms</text><text x="10" y="50" font-size="11">0°</text><path d="M626 46 A24 24 0 0 1 674 46" fill="none" stroke="#bbb"/><circle cx="650" cy="46" r="4" fill="#2e7bd6"/><line x1="650" y1="46" x2="672" y2="46" stroke="#2e7bd6" stroke-width="4" stroke-linecap="round" transform="rotate(0 650 46)"/><path d="M70 135 V105 H103.0 V135 H510 V105 H543.0 V135 H550" fill="none" stroke="#e67e22" stroke-width="2.5"/><text x="86.5" y="99" text-anchor="middle" font-size="11" font-weight="700">1,5 ms</text><text x="10" y="125" font-size="11">90°</text><path d="M626 121 A24 24 0 0 1 674 121" fill="none" stroke="#bbb"/><circle cx="650" cy="121" r="4" fill="#2e7bd6"/><line x1="650" y1="121" x2="672" y2="121" stroke="#2e7bd6" stroke-width="4" stroke-linecap="round" transform="rotate(-90 650 121)"/><path d="M70 210 V180 H114.0 V210 H510 V180 H554.0 V210 H550" fill="none" stroke="#e67e22" stroke-width="2.5"/><text x="92.0" y="174" text-anchor="middle" font-size="11" font-weight="700">2,0 ms</text><text x="10" y="200" font-size="11">180°</text><path d="M626 196 A24 24 0 0 1 674 196" fill="none" stroke="#bbb"/><circle cx="650" cy="196" r="4" fill="#2e7bd6"/><line x1="650" y1="196" x2="672" y2="196" stroke="#2e7bd6" stroke-width="4" stroke-linecap="round" transform="rotate(-180 650 196)"/><line x1="70" y1="240" x2="510" y2="240" stroke="#333" marker-start="url(#p12)" marker-end="url(#p12)"/><text x="290" y="255" text-anchor="middle" font-size="11">periyot T = 20 ms (50 Hz)</text><defs><marker id="p12" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse"><path d="M0 0 L8 4 L0 8z" fill="#333"/></marker></defs></svg><div class="cap">Şekil 2. Standart servo kontrol sinyali: her 20 ms'de bir gelen darbenin genişliği kolun açısını belirler (ölçeksiz).</div></div>
+<div class="formula">darbe genişliği ≈ 1 ms + (açı / 180°) · 1 ms &nbsp;&nbsp;(1 ms → 0°, 1,5 ms → 90°, 2 ms → 180°)</div>
+<p>Görev oranı (duty cycle) çok küçüktür: 1,5 ms / 20 ms = <b>%7,5</b>. Bu yüzden servo sinyali, LED parlaklığında kullandığımız <code>analogWrite()</code> (≈ 490/980 Hz) ile üretilemez; zamanlamayı <code>Servo.h</code> kütüphanesi Timer1 donanım zamanlayıcısıyla yapar.</p>
+<div class="warn">Pratikte SG90 gibi servoların tam 0°–180° dönebilmesi için ≈ 0,5–2,4 ms aralığı gerekir. Bu nedenle <code>Servo.h</code> varsayılan olarak <b>544 µs (0°) – 2400 µs (180°)</b> kullanır. Servo uç noktalarda zorlanıp vızıldıyorsa sınırları <code>attach(pin, 1000, 2000)</code> gibi daraltın.</div>
+</section>
+<section class="card" id="kutuphane"><h2><span class="num">4</span>Servo.h Kütüphanesi</h2>
+<p><code>Servo.h</code>, Arduino IDE ile <b>birlikte gelen</b> standart bir kütüphanedir; Kütüphane Yöneticisi'nden ayrıca kurmanız gerekmez. Programın başına <code>#include &lt;Servo.h&gt;</code> yazılır ve her servo için bir <code>Servo</code> nesnesi tanımlanır.</p>
+<table class="tbl"><tr><th>Fonksiyon</th><th>Görevi</th><th>Örnek</th></tr>
+<tr><td><code>Servo s;</code></td><td>Servo nesnesi oluşturur (UNO'da en fazla 12 servo).</td><td><code>Servo servom;</code></td></tr>
+<tr><td><code>s.attach(pin)</code><br><code>s.attach(pin, min, max)</code></td><td>Servoyu pine bağlar; isteğe bağlı olarak 0° ve 180° için darbe sürelerini (µs) belirler.</td><td><code>servom.attach(9, 1000, 2000);</code></td></tr>
+<tr><td><code>s.write(açı)</code></td><td>Kolu 0–180° arasındaki açıya götürür.</td><td><code>servom.write(90);</code></td></tr>
+<tr><td><code>s.writeMicroseconds(us)</code></td><td>Darbe genişliğini doğrudan µs olarak verir (ince ayar).</td><td><code>servom.writeMicroseconds(1500);</code></td></tr>
+<tr><td><code>s.read()</code></td><td>Son <code>write()</code> ile verilen açıyı döndürür (gerçek konumu ölçmez!).</td><td><code>int a = servom.read();</code></td></tr>
+<tr><td><code>s.attached()</code> / <code>s.detach()</code></td><td>Bağlı olup olmadığını sorar / sinyali keser (servo serbest kalır).</td><td><code>servom.detach();</code></td></tr>
+<tr><td><code>constrain(x, a, b)</code></td><td>x'i [a, b] aralığına sınırlar.</td><td><code>constrain(v, 0, 550)</code></td></tr></table>
+<div class="warn">UNO'da <code>Servo.h</code> Timer1'i kullandığı için, kütüphane kullanılırken <b>D9 ve D10</b> pinlerinde <code>analogWrite()</code> çalışmaz (servo pini olarak kullanılabilirler).</div>
+<div class="tip">Tek bir SG90 USB'den beslenen UNO'nun 5V pininden çalıştırılabilir. Ancak birden fazla servo ya da yük altında çalışan servolar için <b>harici 5 V güç kaynağı</b> kullanın ve kaynağın GND'sini Arduino GND'si ile <b>birleştirin</b>. Besleme hattına 100–470 µF kondansatör eklemek, servonun kalkış akımının Arduino'yu resetlemesini önler.</div>
+</section>
+<section class="card" id="devre1"><h2><span class="num">5</span>Devre Şeması: Servo ve Potansiyometre</h2>
+<div class="figure"><svg viewBox="0 0 720 500" width="760"><rect x="10" y="460" width="690" height="32" rx="4" fill="#f4f3ec" stroke="#cfcfc4"/><line x1="16" y1="470" x2="694" y2="470" stroke="#d63031" stroke-width="2"/><line x1="16" y1="482" x2="694" y2="482" stroke="#2e6bd6" stroke-width="2"/><text x="690" y="468" font-size="9" fill="#d63031" text-anchor="end">+5V</text><text x="690" y="491" font-size="9" fill="#2e6bd6" text-anchor="end">GND</text>
+<g class="uno">
+<rect x="60" y="210" width="340" height="170" rx="10" fill="#0e7c86" stroke="#064d50" stroke-width="2.5"/>
+<rect x="46" y="228" width="46" height="36" rx="3" fill="#b8c2cc" stroke="#556"/>
+<text x="69" y="250" text-anchor="middle" font-size="9">USB</text>
+<rect x="50" y="318" width="38" height="32" rx="3" fill="#222"/>
+<text x="69" y="338" text-anchor="middle" font-size="7" fill="#fff">DC</text>
+<rect x="210" y="302" width="150" height="28" rx="3" fill="#1b1b1b"/>
+<text x="285" y="320" text-anchor="middle" font-size="10" fill="#ccc">ATmega328P</text>
+<text x="150" y="296" font-size="15" font-weight="700" fill="#fff">ARDUINO UNO</text>
+<rect x="148" y="215" width="224" height="14" fill="#111"/>
+<rect x="152" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="158" y="234" font-size="7.5" fill="#fff" transform="rotate(90 158 234)">GND</text>
+<rect x="166" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="172" y="234" font-size="7.5" fill="#fff" transform="rotate(90 172 234)">13</text>
+<rect x="180" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="186" y="234" font-size="7.5" fill="#fff" transform="rotate(90 186 234)">12</text>
+<rect x="194" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="200" y="234" font-size="7.5" fill="#fff" transform="rotate(90 200 234)">~11</text>
+<rect x="208" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="214" y="234" font-size="7.5" fill="#fff" transform="rotate(90 214 234)">~10</text>
+<rect x="222" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="228" y="234" font-size="7.5" fill="#fff" transform="rotate(90 228 234)">~9</text>
+<rect x="236" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="242" y="234" font-size="7.5" fill="#fff" transform="rotate(90 242 234)">8</text>
+<rect x="264" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="270" y="234" font-size="7.5" fill="#fff" transform="rotate(90 270 234)">7</text>
+<rect x="278" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="284" y="234" font-size="7.5" fill="#fff" transform="rotate(90 284 234)">~6</text>
+<rect x="292" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="298" y="234" font-size="7.5" fill="#fff" transform="rotate(90 298 234)">~5</text>
+<rect x="306" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="312" y="234" font-size="7.5" fill="#fff" transform="rotate(90 312 234)">4</text>
+<rect x="320" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="326" y="234" font-size="7.5" fill="#fff" transform="rotate(90 326 234)">~3</text>
+<rect x="334" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="340" y="234" font-size="7.5" fill="#fff" transform="rotate(90 340 234)">2</text>
+<rect x="348" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="354" y="234" font-size="7.5" fill="#fff" transform="rotate(90 354 234)">1</text>
+<rect x="362" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="368" y="234" font-size="7.5" fill="#fff" transform="rotate(90 368 234)">0</text>
+<rect x="163" y="361" width="196" height="14" fill="#111"/>
+<rect x="167" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="173" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 173 358)">IOREF</text>
+<rect x="181" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="187" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 187 358)">RES</text>
+<rect x="195" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="201" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 201 358)">3V3</text>
+<rect x="209" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="215" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 215 358)">5V</text>
+<rect x="223" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="229" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 229 358)">GND</text>
+<rect x="237" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="243" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 243 358)">GND</text>
+<rect x="251" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="257" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 257 358)">VIN</text>
+<rect x="279" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="285" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 285 358)">A0</text>
+<rect x="293" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="299" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 299 358)">A1</text>
+<rect x="307" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="313" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 313 358)">A2</text>
+<rect x="321" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="327" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 327 358)">A3</text>
+<rect x="335" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="341" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 341 358)">A4</text>
+<rect x="349" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="355" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 355 358)">A5</text>
+</g>
+<rect x="508" y="252.0" width="134" height="16" rx="4" fill="#1f5fae"/><rect x="520" y="232" width="110" height="56" rx="5" fill="#2e7bd6" stroke="#1a4f8f"/><text x="550" y="264.0" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">SG90</text><circle cx="604" cy="260.0" r="13" fill="#1a4f8f"/><g  class="hornsweep" style="transform-origin:604px 260.0px"><path d="M598 260.0 L601 220.0 a3 3 0 0 1 6 0 L610 260.0 a6 6 0 0 1 -12 0z" fill="#f5f5f5" stroke="#999"/></g><circle cx="604" cy="260.0" r="4" fill="#ddd" stroke="#777"/>
+<path d="M520 248 H450 V190 H225 V222" fill="none" stroke="#f39c12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M520 248 H450 V190 H225 V222" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<path d="M520 262 H470 V470" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M520 262 H470 V470" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" /><circle cx="470" cy="470" r="3.2" class="dot"/>
+<path d="M520 276 H482 V482" fill="none" stroke="#6d4c41" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M520 276 H482 V482" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" /><circle cx="482" cy="482" r="3.2" class="dot"/>
+<path d="M212 368 V470" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M212 368 V470" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" /><circle cx="212" cy="470" r="3.2" class="dot"/>
+<path d="M226 368 V482" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M226 368 V482" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" /><circle cx="226" cy="482" r="3.2" class="dot"/>
+<line x1="320" y1="440" x2="320" y2="454" stroke="#999" stroke-width="2"/><line x1="360" y1="440" x2="360" y2="454" stroke="#999" stroke-width="2"/><line x1="340" y1="410" x2="340" y2="398" stroke="#999" stroke-width="2"/><rect x="310" y="410" width="60" height="30" rx="4" fill="#2e86de" stroke="#1b4f72"/><circle cx="340" cy="425" r="11" fill="#ecf0f1" stroke="#7f8c8d"/><line x1="340" y1="425" x2="340" y2="416" stroke="#333" stroke-width="2.5" class="spin" style="transform-origin:340px 425px;animation-duration:6s"/>
+<path d="M340 398 V392 H282 V368" fill="none" stroke="#16a085" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M340 398 V392 H282 V368" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<path d="M320 454 V470" fill="none" stroke="#d63031" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="320" cy="470" r="3.2" class="dot"/><path d="M360 454 V482" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="360" cy="482" r="3.2" class="dot"/>
+<text x="302" y="424" font-size="10" text-anchor="end">10 kΩ potansiyometre</text>
+<rect x="606" y="420" width="18" height="30" rx="3" fill="#34495e"/><rect x="618" y="420" width="6" height="30" fill="#bdc3c7"/><line x1="610" y1="450" x2="610" y2="470" stroke="#999" stroke-width="2"/><line x1="620" y1="450" x2="620" y2="482" stroke="#999" stroke-width="2"/><circle cx="610" cy="470" r="3.2" class="dot"/><circle cx="620" cy="482" r="3.2" class="dot"/><text x="632" y="440" font-size="10">470 µF</text>
+<g font-size="10" fill="#333"><text x="528" y="226">turuncu: sinyal (D9)</text><text x="528" y="308">kırmızı: +5V · kahverengi: GND</text></g></svg><div class="cap">Şekil 4. Servo ve potansiyometre bağlantısı: servo sinyali D9, potansiyometre orta ucu A0. Siyah noktalar bağlantı noktalarıdır; nokta olmayan kesişimler birbirine bağlı değildir. Servo kolu animasyonla süpürme hareketi yapar.</div></div>
+<p>Potansiyometrenin iki dış ucu 5V ve GND'ye, orta ucu (sürgü) A0'a bağlanır; orta uçtaki gerilim 0–5 V arasında değişir ve <code>analogRead()</code> ile 0–1023 olarak okunur (7. hafta).</p>
+</section>
+<section class="card" id="uyg12"><h2><span class="num">6</span>Uygulama 1–2: Sweep ve Potansiyometre ile Servo</h2>
+<div class="grid2"><div><div class="codebox"><span class="lbl">sweep.ino</span><pre class="code">// Hafta 12 – Uygulama 1: Sweep (servo kolunu 0°–180° arasında süpürme)
+#include &lt;Servo.h&gt;   // Arduino IDE ile birlikte gelir, ayrıca kurulum gerekmez
+
+Servo servom;        // bir servo nesnesi oluştur
+int pos = 0;         // servo açısı (derece)
+
+void setup() {
+  servom.attach(9);  // servonun sinyal kablosu D9'a bağlı
+}
+
+void loop() {
+  for (pos = 0; pos &lt;= 180; pos += 1) {   // 0° -&gt; 180°
+    servom.write(pos);                    // kolu 'pos' açısına götür
+    delay(15);                            // servonun yetişmesi için bekle
+  }
+  for (pos = 180; pos &gt;= 0; pos -= 1) {   // 180° -&gt; 0°
+    servom.write(pos);
+    delay(15);
+  }
+}</pre></div></div><div><div class="codebox"><span class="lbl">pot_servo.ino</span><pre class="code">// Hafta 12 – Uygulama 2: Potansiyometre ile servo kontrolü
+#include &lt;Servo.h&gt;
+
+Servo servom;
+const int potPin = A0;     // potansiyometre orta ucu
+int oncekiAci = -1;        // son yazdırılan açı
+
+void setup() {
+  Serial.begin(9600);
+  servom.attach(9);
+}
+
+void loop() {
+  int deger = analogRead(potPin);          // 0 – 1023
+  int aci = map(deger, 0, 1023, 0, 180);   // 0° – 180°
+  servom.write(aci);
+
+  if (aci != oncekiAci) {                  // yalnızca açı değişince yaz
+    Serial.print("Pot: ");
+    Serial.print(deger);
+    Serial.print("  Açı: ");
+    Serial.println(aci);
+    oncekiAci = aci;
+  }
+  delay(15);
+}</pre></div></div></div>
+<div class="sim"><h4>🔬 Simülasyon: Servo açısı, darbe genişliği ve Seri Monitör</h4>
+<button class="btn modebtn on" id="mPot">Uygulama 2: Potansiyometre</button><button class="btn modebtn" id="mSw">Uygulama 1: Sweep</button>
+<div class="grid2"><div>
+<svg id="svA" viewBox="0 0 420 300" width="100%">
+<path d="M70 190 A140 140 0 0 1 350 190" fill="none" stroke="#cfd8dc" stroke-width="18"/>
+<g id="ticks"></g>
+<rect x="150" y="190" width="120" height="70" rx="6" fill="#2e7bd6" stroke="#1a4f8f"/><rect x="128" y="210" width="164" height="16" rx="4" fill="#1f5fae"/>
+<text x="210" y="250" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">SG90</text>
+<circle cx="210" cy="190" r="18" fill="#1a4f8f"/>
+<g id="hornA"><path d="M200 190 L204 80 a6 6 0 0 1 12 0 L220 190 a10 10 0 0 1 -20 0z" fill="#f5f5f5" stroke="#888"/><circle cx="210" cy="110" r="2" fill="#999"/><circle cx="210" cy="130" r="2" fill="#999"/></g>
+<circle cx="210" cy="190" r="6" fill="#ddd" stroke="#777"/>
+<text id="angTxt" x="20" y="34" text-anchor="start" font-size="18" font-weight="700" fill="#006468">90°</text>
+<path id="pwmPath" d="" fill="none" stroke="#e67e22" stroke-width="2"/>
+<text x="10" y="296" font-size="10" fill="#5b6b7d">D9 sinyali (20 ms)</text>
+</svg></div><div>
+<label id="potLbl">Potansiyometre (analogRead A0) = <span id="potV">512</span></label><input type="range" id="potS" min="0" max="1023" value="512">
+<div class="out" id="outA"></div>
+<div class="serial" id="serA"></div></div></div></div>
+</section>
+<section class="card" id="seviye"><h2><span class="num">7</span>Su Seviye Sensörü</h2>
+<p>Yaygın olarak kullanılan kırmızı renkli <b>su seviye sensörü</b> modülünde, birbirine paralel <b>açık bakır izler</b> bulunur. İzlerin bir kısmı beslemeye, diğerleri bir NPN transistörün (genellikle S8050) beyzine bağlıdır. Su iletken olduğundan, sensör suya daldıkça izler arasındaki direnç azalır, transistör daha fazla iletime geçer ve <b>S</b> çıkışındaki gerilim yükselir. Bu gerilim <code>analogRead()</code> ile okunur.</p>
+<div class="grid2"><div class="figure"><svg viewBox="0 0 420 260" width="440"><rect x="150" y="20" width="70" height="220" rx="4" fill="#c0392b" stroke="#922b21"/><rect x="158" y="30" width="5" height="140" fill="#d4ac0d"/><rect x="168" y="30" width="5" height="140" fill="#f1c40f"/><rect x="178" y="30" width="5" height="140" fill="#d4ac0d"/><rect x="188" y="30" width="5" height="140" fill="#f1c40f"/><rect x="198" y="30" width="5" height="140" fill="#d4ac0d"/><rect x="208" y="30" width="5" height="140" fill="#f1c40f"/><rect x="170" y="182" width="30" height="16" fill="#111"/><text x="185" y="194" text-anchor="middle" font-size="7" fill="#fff">8050</text><circle cx="208" cy="214" r="3" fill="#ff5252" class="blink"/><rect x="160" y="240" width="5" height="14" fill="#c9a227"/><rect x="182" y="240" width="5" height="14" fill="#c9a227"/><rect x="204" y="240" width="5" height="14" fill="#c9a227"/><g font-size="11" text-anchor="middle"><text x="162" y="268">S</text><text x="185" y="268">+</text><text x="207" y="268">−</text></g><rect x="146" y="110" width="78" height="62" fill="#5dade2" opacity=".45"/><path d="M146 110 q10 -4 20 0 t20 0 t20 0 t18 0" stroke="#2e86c1" fill="none" stroke-width="2"/><g font-size="11"><text x="232" y="60">açık iletken izler</text><text x="232" y="74" fill="#5b6b7d">(besleme ve algılama</text><text x="232" y="88" fill="#5b6b7d">hatları dönüşümlü)</text><text x="232" y="140" fill="#2e86c1">su seviyesi ↑ → iletkenlik ↑</text><text x="232" y="194">NPN transistör yükselteç</text><text x="232" y="216">güç LED'i</text><text x="10" y="40">sensörün yalnızca</text><text x="10" y="54">izli bölgesi (≈ 40 mm)</text><text x="10" y="68">suya girmelidir</text></g><path d="M140 30 V170" stroke="#333" marker-start="url(#s12)" marker-end="url(#s12)"/><defs><marker id="s12" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse"><path d="M0 0 L8 4 L0 8z" fill="#333"/></marker></defs></svg><div class="cap">Şekil 5. Su seviye sensörü modülü: su izler arasında köprü kurdukça S çıkışındaki gerilim yükselir.</div></div>
+<div><table class="tbl"><tr><th>Pin</th><th>Görevi</th><th>UNO</th></tr><tr><td>S (Signal)</td><td>Analog çıkış</td><td>A1</td></tr><tr><td>+</td><td>Besleme 3–5 V</td><td>5V (veya D7)</td></tr><tr><td>−</td><td>Toprak</td><td>GND</td></tr></table>
+<table class="tbl"><tr><th>Durum (örnek)</th><th>analogRead</th></tr><tr><td>Kuru</td><td>≈ 0</td></tr><tr><td>Az daldırılmış</td><td>≈ 150 – 300</td></tr><tr><td>Yarıya kadar</td><td>≈ 350 – 450</td></tr><tr><td>İzli bölge tamamen suda</td><td>≈ 500 – 650</td></tr></table></div></div>
+<div class="warn">Okunan değerler <b>doğrusal değildir</b> ve suyun iletkenliğine (musluk suyu, saf su, tuzlu su), sıcaklığa ve sensörün yaşına göre değişir. Tablo yalnızca fikir vermek içindir; kendi düzeneğinizde <b>kalibrasyon</b> yapın. Bu sensör hassas ölçüm için değil, <i>seviye var/yok</i> ve kaba seviye tespiti içindir.</div>
+<div class="note">Sürekli gerilim altındaki izler suda <b>elektroliz</b> nedeniyle zamanla aşınır (korozyon). Ömrü uzatmak için sensörü yalnızca okuma anında beslemek iyi bir uygulamadır:</div>
+<div class="codebox"><span class="lbl">sensor_guc.ino (parça)</span><pre class="code">// Korozyonu azaltmak için sensörü yalnızca okuma anında besleme
+// (sensörün + ucu 5V yerine D7'ye bağlanır; modül &lt; 20 mA çeker)
+const int sensorGuc = 7;
+
+int seviyeOku() {
+  digitalWrite(sensorGuc, HIGH);   // sensörü aç
+  delay(10);                       // çıkışın oturması için kısa bekleme
+  int v = analogRead(A1);
+  digitalWrite(sensorGuc, LOW);    // sensörü kapat
+  return v;
+}
+// setup() içinde: pinMode(sensorGuc, OUTPUT); digitalWrite(sensorGuc, LOW);</pre></div>
+</section>
+<section class="card" id="devre2"><h2><span class="num">8</span>Devre Şeması: Seviye Kontrol Sistemi</h2>
+<div class="figure"><svg viewBox="0 0 730 500" width="770"><rect x="6" y="460" width="718" height="32" rx="4" fill="#f4f3ec" stroke="#cfcfc4"/><line x1="12" y1="470" x2="718" y2="470" stroke="#d63031" stroke-width="2"/><line x1="12" y1="482" x2="718" y2="482" stroke="#2e6bd6" stroke-width="2"/><text x="714" y="468" font-size="9" fill="#d63031" text-anchor="end">+5V</text><text x="714" y="491" font-size="9" fill="#2e6bd6" text-anchor="end">GND</text>
+<g class="uno">
+<rect x="60" y="210" width="340" height="170" rx="10" fill="#0e7c86" stroke="#064d50" stroke-width="2.5"/>
+<rect x="46" y="228" width="46" height="36" rx="3" fill="#b8c2cc" stroke="#556"/>
+<text x="69" y="250" text-anchor="middle" font-size="9">USB</text>
+<rect x="50" y="318" width="38" height="32" rx="3" fill="#222"/>
+<text x="69" y="338" text-anchor="middle" font-size="7" fill="#fff">DC</text>
+<rect x="210" y="302" width="150" height="28" rx="3" fill="#1b1b1b"/>
+<text x="285" y="320" text-anchor="middle" font-size="10" fill="#ccc">ATmega328P</text>
+<text x="150" y="296" font-size="15" font-weight="700" fill="#fff">ARDUINO UNO</text>
+<rect x="148" y="215" width="224" height="14" fill="#111"/>
+<rect x="152" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="158" y="234" font-size="7.5" fill="#fff" transform="rotate(90 158 234)">GND</text>
+<rect x="166" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="172" y="234" font-size="7.5" fill="#fff" transform="rotate(90 172 234)">13</text>
+<rect x="180" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="186" y="234" font-size="7.5" fill="#fff" transform="rotate(90 186 234)">12</text>
+<rect x="194" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="200" y="234" font-size="7.5" fill="#fff" transform="rotate(90 200 234)">~11</text>
+<rect x="208" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="214" y="234" font-size="7.5" fill="#fff" transform="rotate(90 214 234)">~10</text>
+<rect x="222" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="228" y="234" font-size="7.5" fill="#fff" transform="rotate(90 228 234)">~9</text>
+<rect x="236" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="242" y="234" font-size="7.5" fill="#fff" transform="rotate(90 242 234)">8</text>
+<rect x="264" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="270" y="234" font-size="7.5" fill="#fff" transform="rotate(90 270 234)">7</text>
+<rect x="278" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="284" y="234" font-size="7.5" fill="#fff" transform="rotate(90 284 234)">~6</text>
+<rect x="292" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="298" y="234" font-size="7.5" fill="#fff" transform="rotate(90 298 234)">~5</text>
+<rect x="306" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="312" y="234" font-size="7.5" fill="#fff" transform="rotate(90 312 234)">4</text>
+<rect x="320" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="326" y="234" font-size="7.5" fill="#fff" transform="rotate(90 326 234)">~3</text>
+<rect x="334" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="340" y="234" font-size="7.5" fill="#fff" transform="rotate(90 340 234)">2</text>
+<rect x="348" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="354" y="234" font-size="7.5" fill="#fff" transform="rotate(90 354 234)">1</text>
+<rect x="362" y="219" width="6" height="6" fill="#c9a227"/>
+<text x="368" y="234" font-size="7.5" fill="#fff" transform="rotate(90 368 234)">0</text>
+<rect x="163" y="361" width="196" height="14" fill="#111"/>
+<rect x="167" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="173" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 173 358)">IOREF</text>
+<rect x="181" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="187" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 187 358)">RES</text>
+<rect x="195" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="201" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 201 358)">3V3</text>
+<rect x="209" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="215" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 215 358)">5V</text>
+<rect x="223" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="229" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 229 358)">GND</text>
+<rect x="237" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="243" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 243 358)">GND</text>
+<rect x="251" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="257" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 257 358)">VIN</text>
+<rect x="279" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="285" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 285 358)">A0</text>
+<rect x="293" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="299" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 299 358)">A1</text>
+<rect x="307" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="313" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 313 358)">A2</text>
+<rect x="321" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="327" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 327 358)">A3</text>
+<rect x="335" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="341" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 341 358)">A4</text>
+<rect x="349" y="365" width="6" height="6" fill="#c9a227"/>
+<text x="355" y="358" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 355 358)">A5</text>
+</g>
+<line x1="155" y1="30" x2="560" y2="30" stroke="#2e6bd6" stroke-width="2"/><text x="565" y="33" font-size="9" fill="#2e6bd6">GND</text>
+<path d="M155 222 V30" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M155 222 V30" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" /><circle cx="155" cy="30" r="3.2" class="dot"/>
+<path d="M309 222 V175 H420 V160" fill="none" stroke="#e74c3c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M309 222 V175 H420 V160" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<line x1="420" y1="118" x2="420" y2="160" stroke="#999" stroke-width="2"/><rect x="415" y="126.0" width="10" height="26" rx="4" fill="#e8cfa6" stroke="#a5835a"/><rect x="415" y="130.0" width="10" height="3" fill="#d00"/><rect x="415" y="135.0" width="10" height="3" fill="#d00"/><rect x="415" y="140.0" width="10" height="3" fill="#7b3f00"/><rect x="415" y="146.0" width="10" height="2" fill="#c9a227"/><text x="429" y="143.0" font-size="9" fill="#555">220 Ω</text>
+<g transform="rotate(180 420 96)"><line x1="420" y1="74" x2="420" y2="88" stroke="#999" stroke-width="2"/><line x1="420" y1="104" x2="420" y2="118" stroke="#999" stroke-width="2"/><path  class="" d="M412 104 V94 a8 8 0 0 1 16 0 V104 Z" fill="#e74c3c" stroke="#333" stroke-width=".8"/><rect x="410" y="103" width="20" height="3" fill="#777"/></g>
+<path d="M420 74 V30" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="420" cy="30" r="3.2" class="dot"/>
+<text x="420" y="20" font-size="9" text-anchor="middle">D4 yüksek</text>
+<path d="M323 222 V185 H470 V160" fill="none" stroke="#f1c40f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M323 222 V185 H470 V160" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<line x1="470" y1="118" x2="470" y2="160" stroke="#999" stroke-width="2"/><rect x="465" y="126.0" width="10" height="26" rx="4" fill="#e8cfa6" stroke="#a5835a"/><rect x="465" y="130.0" width="10" height="3" fill="#d00"/><rect x="465" y="135.0" width="10" height="3" fill="#d00"/><rect x="465" y="140.0" width="10" height="3" fill="#7b3f00"/><rect x="465" y="146.0" width="10" height="2" fill="#c9a227"/><text x="479" y="143.0" font-size="9" fill="#555">220 Ω</text>
+<g transform="rotate(180 470 96)"><line x1="470" y1="74" x2="470" y2="88" stroke="#999" stroke-width="2"/><line x1="470" y1="104" x2="470" y2="118" stroke="#999" stroke-width="2"/><path  class="" d="M462 104 V94 a8 8 0 0 1 16 0 V104 Z" fill="#f1c40f" stroke="#333" stroke-width=".8"/><rect x="460" y="103" width="20" height="3" fill="#777"/></g>
+<path d="M470 74 V30" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="470" cy="30" r="3.2" class="dot"/>
+<text x="470" y="20" font-size="9" text-anchor="middle">D3 orta</text>
+<path d="M337 222 V195 H520 V160" fill="none" stroke="#27ae60" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M337 222 V195 H520 V160" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<line x1="520" y1="118" x2="520" y2="160" stroke="#999" stroke-width="2"/><rect x="515" y="126.0" width="10" height="26" rx="4" fill="#e8cfa6" stroke="#a5835a"/><rect x="515" y="130.0" width="10" height="3" fill="#d00"/><rect x="515" y="135.0" width="10" height="3" fill="#d00"/><rect x="515" y="140.0" width="10" height="3" fill="#7b3f00"/><rect x="515" y="146.0" width="10" height="2" fill="#c9a227"/><text x="529" y="143.0" font-size="9" fill="#555">220 Ω</text>
+<g transform="rotate(180 520 96)"><line x1="520" y1="74" x2="520" y2="88" stroke="#999" stroke-width="2"/><line x1="520" y1="104" x2="520" y2="118" stroke="#999" stroke-width="2"/><path  class="" d="M512 104 V94 a8 8 0 0 1 16 0 V104 Z" fill="#27ae60" stroke="#333" stroke-width=".8"/><rect x="510" y="103" width="20" height="3" fill="#777"/></g>
+<path d="M520 74 V30" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="520" cy="30" r="3.2" class="dot"/>
+<text x="520" y="20" font-size="9" text-anchor="middle">D2 düşük</text>
+<rect x="18" y="72.0" width="114" height="16" rx="4" fill="#1f5fae"/><rect x="30" y="58" width="90" height="44" rx="5" fill="#2e7bd6" stroke="#1a4f8f"/><text x="60" y="84.0" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">SG90</text><circle cx="94" cy="80.0" r="13" fill="#1a4f8f"/><g  class="" style="transform-origin:94px 80.0px"><path d="M88 80.0 L91 40.0 a3 3 0 0 1 6 0 L100 80.0 a6 6 0 0 1 -12 0z" fill="#f5f5f5" stroke="#999"/></g><circle cx="94" cy="80.0" r="4" fill="#ddd" stroke="#777"/>
+<path d="M120 70 H225 V222" fill="none" stroke="#f39c12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M120 70 H225 V222" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<path d="M18 76 H10 V482" fill="none" stroke="#6d4c41" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 76 H10 V482" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" /><circle cx="10" cy="482" r="3.2" class="dot"/>
+<path d="M18 88 H24 V470" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 88 H24 V470" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" /><circle cx="24" cy="470" r="3.2" class="dot"/>
+<text x="40" y="122" font-size="9">kapak servosu (D9)</text>
+<path d="M212 368 V470" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M212 368 V470" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" /><circle cx="212" cy="470" r="3.2" class="dot"/>
+<path d="M226 368 V482" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M226 368 V482" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" /><circle cx="226" cy="482" r="3.2" class="dot"/>
+<rect x="570" y="250" width="130" height="190" fill="#eaf6ff" stroke="#5d6d7e" stroke-width="2"/><rect x="572" y="350" width="126" height="88" fill="#5dade2" opacity=".75"/><path d="M572 350 q16 -5 32 0 t32 0 t32 0 t30 0" stroke="#2e86c1" fill="none" stroke-width="2" class="pulse"/><text x="576" y="268" font-size="9">su tankı</text>
+<rect x="610" y="262" width="40" height="170" rx="3" fill="#c0392b" stroke="#922b21"/><rect x="616.0" y="270" width="2.4" height="120" fill="#d4ac0d"/><rect x="621.2" y="270" width="2.4" height="120" fill="#d4ac0d"/><rect x="626.4" y="270" width="2.4" height="120" fill="#d4ac0d"/><rect x="631.6" y="270" width="2.4" height="120" fill="#d4ac0d"/><rect x="636.8" y="270" width="2.4" height="120" fill="#d4ac0d"/><rect x="642.0" y="270" width="2.4" height="120" fill="#d4ac0d"/><rect x="622" y="396" width="16" height="10" fill="#111"/><circle cx="630" cy="418" r="3" fill="#ff5252" class="blink"/><g font-size="8" fill="#333" text-anchor="middle"><text x="618" y="250">S</text><text x="630" y="250">+</text><text x="642" y="250">−</text></g><rect x="616" y="254" width="4" height="8" fill="#c9a227"/><rect x="628" y="254" width="4" height="8" fill="#c9a227"/><rect x="640" y="254" width="4" height="8" fill="#c9a227"/>
+<path d="M618 254 V218 H540 V420 H296 V368" fill="none" stroke="#16a085" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M618 254 V218 H540 V420 H296 V368" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<path d="M630 254 V224 H714 V470" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="714" cy="470" r="3.2" class="dot"/>
+<path d="M642 254 V230 H706 V482" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="706" cy="482" r="3.2" class="dot"/></svg><div class="cap">Şekil 7. Seviye kontrol sistemi: su seviye sensörü S → A1 (+ → 5V, − → GND), LED'ler D2–D4 (220 Ω), kapak servosu D9. Siyah noktalar bağlantı noktalarıdır.</div></div>
+<p>Bu devrede sensör doğrudan 5V hattından beslenmiştir. Yukarıdaki korozyon önleyici yöntemi kullanacaksanız sensörün + ucunu D7'ye taşıyın.</p>
+</section>
+<section class="card" id="uyg34"><h2><span class="num">9</span>Uygulama 3–4: Seviye Okuma ve LED Göstergesi</h2>
+<p><b>Kalibrasyon adımları:</b></p><ol class="steps">
+<li>Uygulama 3'ü yükleyin; sensör <b>kuruyken</b> Seri Monitörde okunan değeri <code>KURU</code> sabitine yazın.</li>
+<li>Sensörün izli bölgesini bir bardak suya <b>tamamen</b> daldırın; okunan değeri <code>DOLU</code> sabitine yazın.</li>
+<li>Birkaç ara seviyede değerleri not edip LED eşiklerini (<code>ESIK_DUSUK</code>, <code>ESIK_ORTA</code>, <code>ESIK_YUKSEK</code>) belirleyin.</li></ol>
+<div class="grid2"><div><div class="codebox"><span class="lbl">seviye_okuma.ino</span><pre class="code">// Hafta 12 – Uygulama 3: Su seviye sensörünü okuma ve kalibrasyon
+const int sensorPin = A1;
+const int KURU = 0;      // sensör kuruyken okunan değer (kendi ölçümünüzü yazın)
+const int DOLU = 550;    // izli bölge tamamen sudayken okunan değer
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int ham = analogRead(sensorPin);               // 0 – 1023
+  int sinirli = constrain(ham, KURU, DOLU);      // aralık dışını kırp
+  int yuzde = map(sinirli, KURU, DOLU, 0, 100);  // yaklaşık doluluk %
+  float volt = ham * 5.0 / 1023.0;               // S pinindeki gerilim
+
+  Serial.print("Ham: ");
+  Serial.print(ham);
+  Serial.print("  Gerilim: ");
+  Serial.print(volt, 2);
+  Serial.print(" V  Seviye: %");
+  Serial.println(yuzde);
+  delay(500);
+}</pre></div></div><div><div class="codebox"><span class="lbl">seviye_led.ino</span><pre class="code">// Hafta 12 – Uygulama 4: Seviyeyi LED çubuğuyla gösterme
+const int sensorPin = A1;
+const int ledDusuk = 2;    // yeşil
+const int ledOrta  = 3;    // sarı
+const int ledYuksek = 4;   // kırmızı
+
+const int ESIK_DUSUK  = 150;   // eşikler kalibrasyona göre ayarlanır
+const int ESIK_ORTA   = 300;
+const int ESIK_YUKSEK = 450;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(ledDusuk, OUTPUT);
+  pinMode(ledOrta, OUTPUT);
+  pinMode(ledYuksek, OUTPUT);
+}
+
+void loop() {
+  int s = analogRead(sensorPin);
+  digitalWrite(ledDusuk,  s &gt;= ESIK_DUSUK  ? HIGH : LOW);
+  digitalWrite(ledOrta,   s &gt;= ESIK_ORTA   ? HIGH : LOW);
+  digitalWrite(ledYuksek, s &gt;= ESIK_YUKSEK ? HIGH : LOW);
+  Serial.println(s);
+  delay(200);
+}</pre></div></div></div>
+<p><code>map()</code> doğrusal bir dönüşüm yaptığından, doğrusal olmayan sensörde elde edilen yüzde yalnızca <b>yaklaşıktır</b>. Daha doğru sonuç için birkaç ölçüm noktası arasında parça parça doğrusal (tablo ile) dönüşüm yapılabilir.</p>
+</section>
+<section class="card" id="uyg5"><h2><span class="num">10</span>Uygulama 5: Servo Kapaklı Otomatik Seviye Kontrolü</h2>
+<p>Tank dolduğunda servo bir tahliye kapağını açar, seviye yeterince düşünce kapatır. Tek bir eşik kullanılsaydı, seviye eşik civarında dalgalandığında kapak saniyede birkaç kez açılıp kapanırdı (<i>titreşim, chattering</i>). Bunu önlemek için <b>iki farklı eşik</b> kullanılır: buna <b>histerezis</b> denir (termostatlar da aynı yöntemle çalışır).</p>
+<div class="formula" style="font-size:1.15em">s ≥ 450 → kapak AÇ (90°) &nbsp;&nbsp;|&nbsp;&nbsp; s &lt; 300 → kapak KAPAT (0°) &nbsp;&nbsp;|&nbsp;&nbsp; 300 ≤ s &lt; 450 → durumu koru</div>
+<div class="codebox"><span class="lbl">seviye_kapak.ino</span><pre class="code">// Hafta 12 – Uygulama 5: Seviyeye göre servo ile tahliye kapağı (histerezisli)
+#include &lt;Servo.h&gt;
+
+Servo kapak;
+const int sensorPin = A1;
+const int servoPin = 9;
+const int ledDusuk = 2, ledOrta = 3, ledYuksek = 4;
+
+const int ACMA_ESIGI  = 450;   // bu değere ulaşınca kapağı aç
+const int KAPAMA_ESIGI = 300;  // bunun altına inince kapağı kapat
+const int KAPALI_ACI = 0;
+const int ACIK_ACI   = 90;
+
+bool kapakAcik = false;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(ledDusuk, OUTPUT);
+  pinMode(ledOrta, OUTPUT);
+  pinMode(ledYuksek, OUTPUT);
+  kapak.attach(servoPin);
+  kapak.write(KAPALI_ACI);       // başlangıçta kapak kapalı
+}
+
+void loop() {
+  int s = analogRead(sensorPin);
+
+  digitalWrite(ledDusuk,  s &gt;= 150 ? HIGH : LOW);
+  digitalWrite(ledOrta,   s &gt;= 300 ? HIGH : LOW);
+  digitalWrite(ledYuksek, s &gt;= 450 ? HIGH : LOW);
+
+  // Histerezis: iki farklı eşik, kapağın eşik civarında titreşmesini önler
+  if (!kapakAcik &amp;&amp; s &gt;= ACMA_ESIGI) {
+    kapak.write(ACIK_ACI);
+    kapakAcik = true;
+  } else if (kapakAcik &amp;&amp; s &lt; KAPAMA_ESIGI) {
+    kapak.write(KAPALI_ACI);
+    kapakAcik = false;
+  }
+
+  Serial.print("Seviye: ");
+  Serial.print(s);
+  Serial.print("  Kapak: ");
+  Serial.println(kapakAcik ? "AÇIK" : "KAPALI");
+  delay(200);
+}</pre></div>
+<div class="sim"><h4>🔬 Simülasyon: Su tankı, seviye sensörü ve servo kapak</h4>
+<div class="grid2"><div>
+<svg id="svB" viewBox="0 0 420 330" width="100%">
+<rect x="20" y="20" width="80" height="14" rx="4" fill="#7f8c8d"/><rect x="88" y="20" width="14" height="30" fill="#7f8c8d"/>
+<rect x="60" y="60" width="240" height="250" fill="#f8fbff" stroke="#5d6d7e" stroke-width="3"/>
+<rect id="water" x="62" y="300" width="236" height="8" fill="#5dade2" opacity=".8"/>
+<line id="inStream" x1="95" y1="50" x2="95" y2="300" stroke="#3498db" stroke-width="5" class="stream"/>
+
+<line x1="56" y1="110" x2="66" y2="110" stroke="#c0392b" stroke-width="2"/><text x="52" y="113" font-size="9" text-anchor="end" fill="#c0392b">taşma</text>
+<rect x="200" y="90" width="34" height="220" rx="3" fill="#c0392b" opacity=".9"/>
+<g id="trc"></g>
+<text x="217" y="84" text-anchor="middle" font-size="9">sensör</text>
+<rect id="gate" x="300" y="268" width="8" height="40" fill="#34495e"/>
+<rect x="300" y="290" width="70" height="18" fill="#d6eaf8" stroke="#5d6d7e"/>
+<line id="outStream" x1="372" y1="300" x2="372" y2="325" stroke="#3498db" stroke-width="5" class="stream" opacity="0"/>
+<rect x="312" y="196" width="70" height="40" rx="5" fill="#2e7bd6"/><text x="347" y="222" text-anchor="middle" font-size="10" fill="#fff">SG90</text>
+<circle cx="347" cy="196" r="8" fill="#1a4f8f"/>
+<g id="hornB"><rect x="345" y="168" width="4" height="28" rx="2" fill="#f5f5f5" stroke="#888"/></g>
+<line id="rod" x1="347" y1="170" x2="304" y2="268" stroke="#7f8c8d" stroke-width="2"/>
+<g transform="translate(320,20)"><rect width="90" height="36" rx="6" fill="#263238"/><circle id="L1" cx="20" cy="18" r="9" fill="#1e3d27"/><circle id="L2" cx="45" cy="18" r="9" fill="#3d3510"/><circle id="L3" cx="70" cy="18" r="9" fill="#3d1512"/></g>
+<text x="365" y="72" text-anchor="middle" font-size="9">D2 D3 D4</text>
+<text id="ovf" x="180" y="50" text-anchor="middle" font-size="13" fill="#e74c3c" font-weight="700"></text>
+</svg></div><div>
+<label>Musluk debisi = <span id="qV">2,0</span> mm/s</label><input type="range" id="qS" min="0" max="6" step="0.1" value="2">
+<button class="btn alt" id="drain">Tankı boşalt</button><button class="btn" id="pause">Duraklat</button>
+<div class="out" id="outB"></div><div class="serial" id="serB"></div></div></div>
+<p style="font-size:.9em;color:#5b6b7d">Model: sensör değeri s ≈ 620·(1 − e<sup>−h/18</sup>) (h: izli bölgedeki su yüksekliği, mm; izli bölge 40 mm). Simülasyon zamanı gerçek zamanın 2 katı hızındadır. Debiyi 2 mm/s civarında tutup kapağın 450'de açılıp 300'ün altında kapandığını gözleyin.</p></div>
+</section>
+<section class="card quiz" id="quiz"><h2><span class="num">11</span>Kendini Test Et</h2>
+<p>Doğru seçeneği bulduğunuzda kısa bir açıklama görüntülenir.</p><div class="q" data-answer="b"><p>1) Standart bir servo sinyalinin periyodu ve frekansı nedir?</p><button class="opt" data-k="a">a) 2 ms – 500 Hz</button><button class="opt" data-k="b">b) 20 ms – 50 Hz</button><button class="opt" data-k="c">c) 1 s – 1 Hz</button><div class="fb">✓ Servo her 20 ms'de (50 Hz) bir gelen darbenin genişliğine göre konum alır.</div></div>
+<div class="q" data-answer="c"><p>2) 1,5 ms genişlikli darbe standart bir servoda hangi açıya karşılık gelir?</p><button class="opt" data-k="a">a) 0°</button><button class="opt" data-k="b">b) 45°</button><button class="opt" data-k="c">c) 90°</button><div class="fb">✓ 1 ms → 0°, 2 ms → 180° ise ortadaki 1,5 ms → 90° (orta konum).</div></div>
+<div class="q" data-answer="b"><p>3) <code>servom.write(45);</code> komutu ne yapar?</p><button class="opt" data-k="a">a) Servoyu 45 saniye döndürür</button><button class="opt" data-k="b">b) Servo kolunu 45° konumuna götürür</button><button class="opt" data-k="c">c) Servonun hızını %45 yapar</button><div class="fb">✓ Standart (180°) servolarda write() mutlak açı verir; servo bu konuma gidip orada kalır.</div></div>
+<div class="q" data-answer="c"><p>4) UNO'da Servo.h kullanılırken hangi pinlerde analogWrite() çalışmaz?</p><button class="opt" data-k="a">a) D3 ve D11</button><button class="opt" data-k="b">b) D5 ve D6</button><button class="opt" data-k="c">c) D9 ve D10</button><div class="fb">✓ Servo.h, UNO'da Timer1'i kullanır; Timer1 D9 ve D10'un PWM'ini üretir.</div></div>
+<div class="q" data-answer="b"><p>5) Uygulama 5'te neden iki farklı eşik (450 ve 300) kullanıldı?</p><button class="opt" data-k="a">a) Sensörü kalibre etmek için</button><button class="opt" data-k="b">b) Seviye eşik civarında dalgalanırken kapağın sürekli açılıp kapanmasını önlemek için</button><button class="opt" data-k="c">c) Servonun daha hızlı dönmesi için</button><div class="fb">✓ Histerezis: açma ve kapama eşikleri arasındaki boşluk, gürültü ve dalgalanmalarda kararsız davranışı (chattering) önler.</div></div>
+</section>
+<section class="card" id="odev"><h2><span class="num">12</span>Ödev ve Özet</h2>
+<h3>Ödev</h3><ol>
+<li>İki servo ve iki potansiyometre ile bir <b>pan-tilt</b> (yatay/dikey) kamera tutucu düzeneği programlayın (servolar D9 ve D10'a).</li>
+<li>Sweep programını, süpürme hızı A0'daki potansiyometreyle ayarlanacak şekilde değiştirin.</li>
+<li>Seviye %90'ı geçtiğinde buzzer ile alarm veren ve Seri Monitöre "TAŞMA UYARISI" yazan bir sistem ekleyin.</li>
+<li>Kapağı yalnızca açık/kapalı değil, seviyeyle <b>orantılı</b> açan bir program yazın (300 → 0°, 550 → 90°). Histerezisli ve orantılı kontrolü karşılaştırın.</li></ol>
+<details><summary>2. ödev için ipucu (tıklayın)</summary><div class="codebox"><span class="lbl">sweep_hiz_ipucu.ino</span><pre class="code">// İpucu: süpürme hızını potansiyometre ile ayarlamak
+#include &lt;Servo.h&gt;
+Servo servom;
+
+void setup() { servom.attach(9); }
+
+void loop() {
+  for (int pos = 0; pos &lt;= 180; pos++) {
+    servom.write(pos);
+    int bekle = map(analogRead(A0), 0, 1023, 2, 40);  // adım başına 2–40 ms
+    delay(bekle);
+  }
+  for (int pos = 180; pos &gt;= 0; pos--) {
+    servom.write(pos);
+    delay(map(analogRead(A0), 0, 1023, 2, 40));
+  }
+}</pre></div></details>
+<h3>Özet</h3><ul>
+<li>Servo = DC motor + dişli + potansiyometre + kontrol devresi; kapalı çevrimle açıyı korur.</li>
+<li>Sinyal 50 Hz (20 ms); darbe ≈ 1 ms → 0°, 1,5 ms → 90°, 2 ms → 180° (Servo.h varsayılanı 544–2400 µs).</li>
+<li><code>#include &lt;Servo.h&gt;</code> → <code>attach(pin)</code> → <code>write(açı)</code>; UNO'da D9/D10 PWM'i devre dışı kalır.</li>
+<li>Su seviye sensörü iletkenliğe dayalı analog çıkış verir; doğrusal değildir, kalibrasyon gerekir, korozyona dikkat.</li>
+<li>Açma/kapama kararlarında histerezis (iki eşik) kullanmak kararlı bir kontrol sağlar.</li></ul>
+</section>
+
+</main>
+<footer>Arduino ile Programlama · Ders Notları · 12. Hafta<br>Kaynaklar: C. Taşdemir – <i>Arduino</i>; G. Döktaş – <i>Arduino Eğitim Kitabı</i>; E. Delebe – <i>Projeler ile Arduino</i></footer>
+<script>
+(function(){
+ const KW=['void','if','else','for','while','do','return','switch','case','break','default','const','true','false','#include','#define'];
+ const TY=['int','float','long','unsigned','byte','bool','boolean','char','double','String','word'];
+ const CST=['HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP','LED_BUILTIN','A0','A1','A2','A3','A4','A5'];
+ const FN=['pinMode','digitalWrite','digitalRead','analogRead','analogWrite','delay','delayMicroseconds','millis','micros','setup','loop','map','constrain','pulseIn','tone','noTone','Serial','begin','print','println','attach','write','read','available','random'];
+ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+ function hl(src){
+  let out='',i=0;
+  const re=/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(#?[A-Za-z_][A-Za-z0-9_]*)|(\b\d+(?:\.\d+)?\b)/g;let m,last=0;
+  while((m=re.exec(src))){out+=esc(src.slice(last,m.index));
+   if(m[1])out+='<span class="com">'+esc(m[1])+'</span>';
+   else if(m[2])out+='<span class="str">'+esc(m[2])+'</span>';
+   else if(m[3]){const w=m[3];let c=KW.includes(w)?'kw':TY.includes(w)?'ty':CST.includes(w)?'cst':FN.includes(w)?'fn':'';out+=c?'<span class="'+c+'">'+esc(w)+'</span>':esc(w)}
+   else if(m[4])out+='<span class="num">'+m[4]+'</span>';
+   last=re.lastIndex}
+  return out+esc(src.slice(last))}
+ document.querySelectorAll('pre.code').forEach(p=>{const raw=p.textContent;p.innerHTML=hl(raw);
+  const b=document.createElement('button');b.className='copybtn';b.textContent='Kopyala';
+  b.onclick=()=>{navigator.clipboard.writeText(raw).then(()=>{b.textContent='Kopyalandı ✓';setTimeout(()=>b.textContent='Kopyala',1500)})};
+  p.parentElement.appendChild(b)});
+ document.querySelectorAll('.quiz .q').forEach(q=>{const ans=q.dataset.answer;const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{q.querySelectorAll('.opt').forEach(x=>x.classList.remove('ok','no'));
+   if(o.dataset.k===ans){o.classList.add('ok');if(fb)fb.style.display='block'}else{o.classList.add('no')}})});
+ document.querySelectorAll('.quiz .fb').forEach(f=>f.style.display='none');
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+function amap(x,a1,a2,b1,b2){return Math.trunc((x-a1)*(b2-b1)/(a2-a1))+b1}
+// ----- Simülasyon A -----
+(function(){let t='';for(let a=0;a<=180;a+=30){const r=a*Math.PI/180,x1=210+128*Math.cos(r),y1=190-128*Math.sin(r),x2=210+152*Math.cos(r),y2=190-152*Math.sin(r),xt=210+168*Math.cos(r),yt=194-168*Math.sin(r);
+ t+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#78909c" stroke-width="2"/><text x="${xt}" y="${yt}" font-size="10" text-anchor="middle">${a}°</text>`}$('ticks').innerHTML=t})();
+let mode='pot',target=90,cur=90,swPos=0,swDir=1,swAcc=0,prevAng=-1,last=performance.now(),potAcc=0;
+function serA(line){const s=$('serA');s.textContent+=line+'\n';const L=s.textContent.split('\n');if(L.length>50)s.textContent=L.slice(-50).join('\n');s.scrollTop=1e9}
+function pulse(us){const x0=10,k=20; // 1 ms = 20 px, 20 ms = 400 px
+ const w=us/1000*k;$('pwmPath').setAttribute('d',`M${x0} 280 V262 H${x0+w} V280 H${x0+400} `);}
+function info(){const us=Math.round(544+target*(2400-544)/180);pulse(us);
+ const v=+$('potS').value;
+ $('outA').innerHTML=(mode==='pot'?`analogRead(A0) = ${v}<br>aci = map(${v}, 0, 1023, 0, 180) = <b>${target}°</b><br>`:`Sweep: pos = <b>${target}°</b> (adım 1°, 15 ms)<br>`)+
+ `Darbe genişliği (Servo.h varsayılanı) ≈ <b>${us} µs</b><br>Kolun anlık konumu: ${cur.toFixed(0)}° (SG90 ≈ 600°/s)`}
+function potStep(){const v=+$('potS').value;$('potV').textContent=v;const a=amap(v,0,1023,0,180);target=a;
+ if(a!==prevAng){serA(`Pot: ${v}  Açı: ${a}`);prevAng=a}}
+$('potS').oninput=()=>{if(mode==='pot'){potStep();info()}};
+function setMode(m){mode=m;$('mPot').classList.toggle('on',m==='pot');$('mSw').classList.toggle('on',m==='sw');$('potS').disabled=(m!=='pot');
+ $('serA').textContent='';if(m==='sw'){swPos=0;swDir=1;serA('// Sweep: Serial çıktısı yok; write() çağrıları her 30°\'de gösteriliyor')}else{prevAng=-1;potStep()}info()}
+$('mPot').onclick=()=>setMode('pot');$('mSw').onclick=()=>setMode('sw');
+function frame(now){const dt=Math.min(0.1,(now-last)/1000);last=now;
+ if(mode==='sw'){swAcc+=dt*1000;while(swAcc>=15){swAcc-=15;swPos+=swDir;if(swPos>180){swPos=180;swDir=-1}if(swPos<0){swPos=0;swDir=1}
+   if(swPos%30===0)serA(`servom.write(${swPos});`)}target=swPos;info()}
+ const sp=600*dt;if(Math.abs(target-cur)<=sp)cur=target;else cur+=Math.sign(target-cur)*sp;
+ $('hornA').setAttribute('transform',`rotate(${90-cur} 210 190)`);$('angTxt').textContent=Math.round(cur)+'°';
+ requestAnimationFrame(frame)}
+setMode('pot');requestAnimationFrame(frame);
+
+// ----- Simülasyon B -----
+(function(){let t='';for(let i=0;i<5;i++)t+=`<rect x="${205+i*5.5}" y="100" width="2.5" height="160" fill="#d4ac0d"/>`;$('trc').innerHTML=t})();
+// geometri: tank tabanı y=308, 1 mm = 4 px; sensör izleri y=150..260 -> izlerin altı tabandan 48 px (12 mm) yukarıda
+const BASE=308,PX=4,TR0=(BASE-260)/PX,TRL=40; // izli bölge 12..52 mm
+let h=4,q=2,open=false,ang=0,paused=false,acc=0,serAcc=0;
+function sens(){const hh=Math.max(0,Math.min(TRL,h-TR0));return Math.max(0,Math.min(1023,Math.round(620*(1-Math.exp(-hh/18))+(Math.random()*6-3)*(hh>0?1:0))))}
+function led(id,on,c,o){$(id).setAttribute('fill',on?c:o);$(id).style.filter=on?`drop-shadow(0 0 5px ${c})`:'none'}
+let lastS=0;
+function ctrl(){const s=sens();lastS=s;
+ led('L1',s>=150,'#2ecc71','#1e3d27');led('L2',s>=300,'#f1c40f','#3d3510');led('L3',s>=450,'#ff4d4d','#3d1512');
+ if(!open&&s>=450)open=true;else if(open&&s<300)open=false;
+ const sb=$('serB');sb.textContent+=`Seviye: ${s}  Kapak: ${open?'AÇIK':'KAPALI'}\n`;const L=sb.textContent.split('\n');if(L.length>50)sb.textContent=L.slice(-50).join('\n');sb.scrollTop=1e9}
+let lb=performance.now();
+function fB(now){const dt=Math.min(0.1,(now-lb)/1000)*2;lb=now;
+ if(!paused){const outQ=(ang>45?0.8*Math.sqrt(Math.max(0,h))*(ang/90):0);h+=(q-outQ)*dt;h=Math.max(0,Math.min(62,h));
+  serAcc+=dt*1000;if(serAcc>=200){serAcc-=200;ctrl()}
+  const tgt=open?90:0,sp=600*dt/2;if(Math.abs(tgt-ang)<=sp)ang=tgt;else ang+=Math.sign(tgt-ang)*sp;
+  $('outStream').setAttribute('opacity',ang>45&&h>0.3?1:0)}
+ const top=BASE-h*PX;$('water').setAttribute('y',top);$('water').setAttribute('height',Math.max(0,BASE-top));
+ $('inStream').setAttribute('opacity',q>0?1:0);$('inStream').setAttribute('y2',top);$('inStream').setAttribute('stroke-width',1+q);
+ $('hornB').setAttribute('transform',`rotate(${-ang} 347 196)`);
+ const rx=347-28*Math.sin(ang*Math.PI/180),ry=196-28*Math.cos(ang*Math.PI/180);
+ const gy=268-ang/90*36;$('gate').setAttribute('y',gy);$('rod').setAttribute('x1',rx);$('rod').setAttribute('y1',ry);$('rod').setAttribute('y2',gy);
+ $('ovf').textContent=h>=49.5?'⚠ TAŞMA SEVİYESİ!':'';
+ $('outB').innerHTML=`Su yüksekliği h = ${h.toFixed(1)} mm<br>analogRead(A1) = <b>${lastS}</b><br>LED: D2 ${lastS>=150?'●':'○'} D3 ${lastS>=300?'●':'○'} D4 ${lastS>=450?'●':'○'}<br>Kapak: <b>${open?'AÇIK':'KAPALI'}</b> (servo ${ang.toFixed(0)}°)`;
+ requestAnimationFrame(fB)}
+$('qS').oninput=e=>{q=+e.target.value;$('qV').textContent=q.toFixed(1).replace('.',',')};
+$('drain').onclick=()=>{h=0};$('pause').onclick=()=>{paused=!paused;$('pause').textContent=paused?'Devam et':'Duraklat'};
+ctrl();requestAnimationFrame(fB);
+})();
+</script>
+</body></html>

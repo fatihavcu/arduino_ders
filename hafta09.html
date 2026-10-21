@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>9. Hafta – Analog Yazma (PWM), Solma Etkisi ve RGB LED | Arduino ile Programlama</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#1d2733;--muted:#5b6b7d;--teal:#00979d;--teal2:#00b3b9;--accent:#e67e22;--red:#e74c3c;--green:#27ae60;--code:#0f1b26;--border:#dde5ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+header.top{background:linear-gradient(135deg,#006468,#00979d 60%,#00b3b9);color:#fff;padding:28px 20px 34px;position:relative;overflow:hidden}
+header.top::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px),repeating-linear-gradient(0deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px);pointer-events:none}
+.wrap{max-width:1050px;margin:0 auto;padding:0 18px}
+.badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:3px 12px;border-radius:20px;font-size:.85em;letter-spacing:.5px}
+header.top h1{margin:10px 0 6px;font-size:2em}
+header.top p{margin:0;opacity:.92}
+nav.weeknav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;position:relative;z-index:1}
+nav.weeknav a{color:#fff;text-decoration:none;background:rgba(0,0,0,.18);padding:6px 12px;border-radius:6px;font-size:.9em}
+nav.weeknav a:hover{background:rgba(0,0,0,.35)}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;margin:22px 0}
+.toc ol{margin:6px 0;columns:2}
+.toc a{color:var(--teal);text-decoration:none}
+section.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin:22px 0;box-shadow:0 2px 8px rgba(20,40,60,.05);animation:fadeUp .6s ease both}
+section.card h2{margin-top:0;color:#006468;border-bottom:2px solid #e3f3f3;padding-bottom:8px}
+section.card h2 .num{display:inline-block;background:var(--teal);color:#fff;border-radius:50%;width:32px;height:32px;text-align:center;line-height:32px;margin-right:8px;font-size:.8em}
+h3{color:#0b4f6c}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.goals li{margin:4px 0}
+.note,.warn,.tip{border-radius:8px;padding:12px 16px;margin:14px 0;border-left:5px solid}
+.note{background:#eaf6ff;border-color:#2e86de}.warn{background:#fff3e6;border-color:var(--accent)}.tip{background:#eafaf1;border-color:var(--green)}
+.note::before{content:"ℹ️ Not: ";font-weight:600}.warn::before{content:"⚠️ Dikkat: ";font-weight:600}.tip::before{content:"💡 İpucu: ";font-weight:600}
+.formula{font-family:Cambria,"Times New Roman",serif;font-size:1.5em;text-align:center;background:#f7fbfb;border:1px dashed var(--teal);border-radius:8px;padding:12px;margin:14px 0}
+table.tbl{border-collapse:collapse;width:100%;margin:12px 0;font-size:.95em}
+table.tbl th,table.tbl td{border:1px solid var(--border);padding:7px 10px;text-align:left}
+table.tbl th{background:#e9f6f6;color:#064d50}
+table.tbl tr:nth-child(even) td{background:#fafcfd}
+.codebox{position:relative;margin:14px 0}
+.codebox .lbl{background:#1f3344;color:#9fd7da;font-size:.8em;padding:4px 12px;border-radius:8px 8px 0 0;display:inline-block;font-family:Consolas,monospace}
+pre.code{background:var(--code);color:#d7e3ee;padding:16px 18px;border-radius:0 8px 8px 8px;overflow:auto;font-family:Consolas,"Courier New",monospace;font-size:.92em;line-height:1.5;margin:0}
+pre.code .kw{color:#c792ea}.code .ty{color:#82aaff}.code .fn{color:#f78c6c}.code .num{color:#f7c56c}.code .str{color:#c3e88d}.code .com{color:#6b8299;font-style:italic}.code .cst{color:#ff5370}
+.copybtn{position:absolute;top:30px;right:8px;background:#2b4459;color:#cfe;border:0;border-radius:5px;padding:4px 10px;cursor:pointer;font-size:.8em}
+.copybtn:hover{background:var(--teal)}
+.figure{text-align:center;margin:16px 0}
+.figure svg{max-width:100%;height:auto}
+.figure .cap{font-size:.88em;color:var(--muted);margin-top:6px}
+.sim{background:#f3fafa;border:1px solid #bfe3e4;border-radius:10px;padding:16px;margin:16px 0}
+.sim h4{margin:0 0 10px;color:#006468}
+.sim label{display:block;margin:8px 0 2px;font-weight:600;font-size:.92em}
+.sim input[type=range]{width:100%;accent-color:var(--teal)}
+.sim .out{font-family:Consolas,monospace;background:#fff;border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-top:10px}
+.serial{background:#0b1620;color:#7CFC9a;font-family:Consolas,monospace;border-radius:6px;padding:10px;height:140px;overflow:auto;font-size:.88em;white-space:pre}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:.92em;margin:4px 4px 4px 0}
+.btn:hover{background:#007a7f}.btn.alt{background:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.toc ol{columns:1}}
+/* animations */
+.flow{stroke-dasharray:6 10;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+.glow{filter:drop-shadow(0 0 6px #ff4d4d)}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.spin{transform-origin:center;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* quiz */
+.quiz .q{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0}
+.quiz .q p{margin:0 0 8px;font-weight:600}
+.quiz .opt{display:block;width:100%;text-align:left;background:#f7f9fb;border:1px solid var(--border);border-radius:6px;padding:7px 10px;margin:4px 0;cursor:pointer;font-size:.95em}
+.quiz .opt:hover{background:#eef6f6}
+.quiz .opt.ok{background:#d9f5e3;border-color:var(--green)}
+.quiz .opt.no{background:#fde2df;border-color:var(--red)}
+.quiz .fb{font-size:.9em;margin-top:6px;color:var(--muted)}
+details{background:#fbfcfd;border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin:10px 0}
+details summary{cursor:pointer;font-weight:600;color:#0b4f6c}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding:8px 0 8px 46px;margin:6px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:32px;height:32px;border-radius:50%;background:var(--teal);color:#fff;text-align:center;line-height:32px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:30px 10px 40px}
+.pill{display:inline-block;background:#e3f3f3;color:#064d50;border-radius:12px;padding:2px 10px;font-size:.85em;margin:2px}
+</style></head><body>
+<header class="top"><div class="wrap">
+<span class="badge">ARDUİNO İLE PROGRAMLAMA · 9. HAFTA</span>
+<h1>Analog Yazma (PWM), Solma Etkisi ve RGB LED</h1><p>PWM ve görev döngüsü, analogWrite(), solma etkisi, potansiyometre ve LDR ile parlaklık kontrolü, RGB renk karışımı</p>
+<nav class="weeknav"><a href="index.html">☰ Tüm Haftalar</a><a href="hafta08.html">← 8. Hafta</a><a href="hafta10.html">10. Hafta →</a></nav>
+</div></header>
+<main class="wrap">
+<div class="toc"><strong>Bu haftanın içeriği</strong><ol><li><a href="#hedef">Haftanın Hedefleri</a></li><li><a href="#pwm">Analog Çıkış Problemi ve PWM</a></li><li><a href="#duty">Görev Döngüsü ve Ortalama Gerilim</a></li><li><a href="#aw">analogWrite() ve PWM Pinleri</a></li><li><a href="#fade">Uygulama 1: Solma Etkisi (Fade)</a></li><li><a href="#map">map() Fonksiyonu</a></li><li><a href="#pot">Uygulama 2: Potansiyometre ile Parlaklık</a></li><li><a href="#ldr">Uygulama 3: LDR ile Ters Parlaklık</a></li><li><a href="#rgb">Uygulama 4: RGB LED Renk Karışımı</a></li><li><a href="#fn">Yeni Fonksiyonlar Tablosu</a></li><li><a href="#quiz">Kendini Test Et</a></li><li><a href="#odev">Ödev ve Özet</a></li></ol></div>
+<style>.grid2>*{min-width:0}.sim svg{max-width:100%;height:auto}</style>
+<section class="card" id="hedef"><h2><span class="num">1</span>Haftanın Hedefleri</h2>
+<ul class="goals">
+<li>Mikrodenetleyicinin neden "gerçek" analog gerilim üretemediğini ve PWM'in bu sorunu nasıl çözdüğünü açıklayabilmek</li>
+<li>Periyot, frekans, görev döngüsü (duty cycle) ve ortalama gerilim kavramlarını hesaplamalarda kullanabilmek</li>
+<li><code>analogWrite(pin, değer)</code> fonksiyonunu yalnızca PWM pinlerinde (3, 5, 6, 9, 10, 11) doğru biçimde kullanmak</li>
+<li>Solma etkisi (fade) programını hem değişken adımla hem de <code>for</code> döngüleriyle yazabilmek</li>
+<li><code>map()</code> ve <code>constrain()</code> ile 0–1023 aralığındaki okumayı 0–255 aralığına ölçeklendirmek</li>
+<li>Potansiyometre ve LDR ile LED parlaklığını kontrol etmek; RGB LED ile renk karıştırmak</li>
+</ul>
+<div class="note">Bu hafta 6. ve 7. haftalarda öğrendiğimiz <b>analog okuma</b> (<code>analogRead</code>) ile bugünkü <b>analog yazma</b>yı (<code>analogWrite</code>) birleştiriyoruz: sensörden oku → ölçekle → PWM ile yaz.</div>
+</section>
+<section class="card" id="pwm"><h2><span class="num">2</span>Analog Çıkış Problemi ve PWM</h2>
+<p>Dijital bir pin yalnızca iki gerilim üretebilir: <b>HIGH = 5 V</b> veya <b>LOW = 0 V</b>. Peki LED'i yarı parlaklıkta yakmak ya da bir motoru yavaş döndürmek için 2,5 V gibi ara bir değere ihtiyaç duyarsak ne olur? Arduino UNO'daki ATmega328P'de gerçek bir <b>DAC</b> (Dijital-Analog Çevirici) yoktur. Bunun yerine <b>PWM</b> (Pulse Width Modulation – <i>Darbe Genişlik Modülasyonu</i>) tekniği kullanılır.</p>
+<p>PWM'de pin, saniyede yüzlerce kez çok hızlı biçimde <b>açılıp kapanır</b>. Bir periyot içinde pinin HIGH kaldığı süre oranı değiştirilerek yüke aktarılan <b>ortalama</b> güç ayarlanır. LED gibi yükler ve insan gözü bu hızlı değişimi takip edemez; göz yalnızca ortalama parlaklığı algılar (görme sürekliliği).</p>
+<div class="grid2"><div class="figure"><svg viewBox="0 0 330 170" width="330">
+<text x="10" y="18" font-size="11" font-weight="700">Gerçek analog (DAC)</text>
+<line x1="20" y1="70" x2="290" y2="70" stroke="#ccc"/><path d="M20 70 V45 H290" fill="none" stroke="#2e86de" stroke-width="3"/><text x="292" y="49" font-size="9">2,5 V</text>
+<text x="10" y="100" font-size="11" font-weight="700">PWM (%50 görev döngüsü)</text>
+<line x1="20" y1="160" x2="290" y2="160" stroke="#ccc"/>
+<path d="M20 160 V115 H50 V160 H80 V115 H110 V160 H140 V115 H170 V160 H200 V115 H230 V160 H260 V115 H290" fill="none" stroke="#e67e22" stroke-width="3"/>
+<path d="M20 160 V115 H50 V160 H80 V115 H110 V160 H140 V115 H170 V160 H200 V115 H230 V160 H260 V115 H290" fill="none" stroke="#fff" stroke-width="1.5" class="flow"/>
+<line x1="20" y1="137" x2="290" y2="137" stroke="#27ae60" stroke-dasharray="4 3"/><text x="292" y="140" font-size="9" fill="#27ae60">ort.</text>
+</svg><div class="cap">Şekil 1. DAC sabit ara gerilim üretir; PWM ise 0/5 V arasında hızla anahtarlayarak aynı <i>ortalamayı</i> sağlar.</div></div>
+<div><h3>PWM nerelerde kullanılır?</h3><ul><li>LED parlaklık kontrolü (bu hafta)</li><li>DC motor hız kontrolü (motor sürücü ile)</li><li>Servo motor konum kontrolü (12. hafta – farklı bir darbe protokolü)</li><li>Buzzer/hoparlörle ses üretimi (<code>tone()</code>)</li><li>RC filtre ile gerçek analog gerilim elde etme</li></ul>
+<div class="tip">PWM çıkışını bir <b>RC alçak geçiren filtreden</b> (örn. 10 kΩ + 10 µF) geçirirseniz, multimetrede gerçekten ortalama gerilime yakın sabit bir değer ölçersiniz.</div></div></div>
+</section>
+<section class="card" id="duty"><h2><span class="num">3</span>Görev Döngüsü (Duty Cycle) ve Ortalama Gerilim</h2>
+<p>Bir PWM sinyalinde bir tam açma-kapama süresine <b>periyot (T)</b>, saniyedeki periyot sayısına <b>frekans (f)</b> denir. Pinin HIGH kaldığı süre <b>t<sub>on</sub></b>, LOW kaldığı süre <b>t<sub>off</sub></b>'tur.</p>
+<div class="formula">T = 1 / f &nbsp;&nbsp;·&nbsp;&nbsp; D = t<sub>on</sub> / T × %100 &nbsp;&nbsp;·&nbsp;&nbsp; V<sub>ort</sub> = D × 5 V</div>
+<p>Arduino'da görev döngüsü 8 bitlik bir değerle (0–255) verilir. Dolayısıyla <code>analogWrite(pin, x)</code> için:</p>
+<div class="formula">D = x / 255 &nbsp;&nbsp;⟹&nbsp;&nbsp; V<sub>ort</sub> = 5 V × x / 255</div>
+<table class="tbl"><tr><th>analogWrite değeri</th><th>Görev döngüsü</th><th>Ortalama gerilim</th><th>LED</th></tr>
+<tr><td>0</td><td>%0</td><td>0 V</td><td>Sönük</td></tr><tr><td>64</td><td>≈ %25</td><td>≈ 1,25 V</td><td>Loş</td></tr>
+<tr><td>127</td><td>≈ %50</td><td>≈ 2,49 V</td><td>Orta</td></tr><tr><td>191</td><td>≈ %75</td><td>≈ 3,75 V</td><td>Parlak</td></tr><tr><td>255</td><td>%100</td><td>5 V</td><td>Tam parlak</td></tr></table>
+<p><b>Çözümlü örnek:</b> 9. pinde (f ≈ 490 Hz) <code>analogWrite(9, 51)</code> yazılırsa: T = 1/490 ≈ 2,04 ms; D = 51/255 = %20; t<sub>on</sub> = 0,2 × 2,04 ≈ 0,41 ms; V<sub>ort</sub> = 0,2 × 5 = <b>1 V</b>.</p>
+<div class="sim"><h4>🔬 Simülasyon 1: PWM sinyali, görev döngüsü ve ortalama gerilim</h4>
+<div class="grid2"><div>
+<label>analogWrite(<span id="pPinT">9</span>, <span id="pValT">127</span>)</label><input type="range" id="pVal" min="0" max="255" value="127">
+<label>PWM pini</label><select id="pPin"><option value="3">~3 (Timer2, ≈490 Hz)</option><option value="5">~5 (Timer0, ≈980 Hz)</option><option value="6">~6 (Timer0, ≈980 Hz)</option><option value="9" selected>~9 (Timer1, ≈490 Hz)</option><option value="10">~10 (Timer1, ≈490 Hz)</option><option value="11">~11 (Timer2, ≈490 Hz)</option></select>
+<div class="out" id="pOut"></div>
+<button class="btn" id="pPause">⏸ Durdur</button></div>
+<div class="figure"><svg id="pwmSvg" viewBox="0 0 420 210" width="420">
+<rect x="0" y="0" width="420" height="210" fill="#0b1620" rx="8"/>
+<g stroke="#1f3344"><line x1="40" y1="20" x2="40" y2="160"/><line x1="70" y1="20" x2="70" y2="160"/><line x1="100" y1="20" x2="100" y2="160"/><line x1="130" y1="20" x2="130" y2="160"/><line x1="160" y1="20" x2="160" y2="160"/><line x1="190" y1="20" x2="190" y2="160"/><line x1="220" y1="20" x2="220" y2="160"/><line x1="250" y1="20" x2="250" y2="160"/><line x1="280" y1="20" x2="280" y2="160"/><line x1="310" y1="20" x2="310" y2="160"/></g>
+<line x1="40" y1="160" x2="330" y2="160" stroke="#5b6b7d"/><line x1="40" y1="20" x2="40" y2="160" stroke="#5b6b7d"/>
+<text x="34" y="44" fill="#9fb3c8" font-size="10" text-anchor="end">5 V</text><text x="34" y="163" fill="#9fb3c8" font-size="10" text-anchor="end">0 V</text>
+<path id="pWave" d="" fill="none" stroke="#f1c40f" stroke-width="2.5"/>
+<line id="pAvg" x1="40" x2="330" y1="100" y2="100" stroke="#27ae60" stroke-width="2" stroke-dasharray="6 4"/>
+<text id="pAvgT" x="44" y="95" fill="#7CFC9a" font-size="10">V ort</text>
+<text x="185" y="180" fill="#9fb3c8" font-size="10" text-anchor="middle">zaman (yavaşlatılmış gösterim)</text>
+<circle id="pHalo" cx="375" cy="85" r="34" fill="#ff3b3b" opacity="0"/>
+<path id="pLed" d="M361 105 V82 a14 14 0 0 1 28 0 V105 Z" fill="#ff3b3b" stroke="#a00"/>
+<line x1="368" y1="105" x2="368" y2="130" stroke="#888" stroke-width="3"/><line x1="382" y1="105" x2="382" y2="125" stroke="#888" stroke-width="3"/>
+<text x="375" y="150" fill="#9fb3c8" font-size="10" text-anchor="middle">LED</text>
+<text id="pDutyT" x="375" y="198" fill="#fff" font-size="12" text-anchor="middle" font-family="Consolas">%50</text>
+</svg><div class="cap">Sarı: pin gerilimi · Yeşil kesikli: ortalama gerilim · LED parlaklığı görev döngüsüyle orantılıdır.</div></div></div></div>
+<div class="note">Gözümüz parlaklığı doğrusal algılamaz: 0→64 arası değişim, 191→255 arasından çok daha belirgin görünür. Bu nedenle profesyonel uygulamalarda <b>gama düzeltmesi</b> (örn. değerin karesiyle orantılı PWM) kullanılır.</div>
+</section>
+<section class="card" id="aw"><h2><span class="num">4</span>analogWrite() ve PWM Pinleri</h2>
+<p><code>analogWrite(pin, değer)</code> fonksiyonu seçilen pinde, <b>değer/255</b> görev döngüsüne sahip bir PWM sinyali başlatır. Sinyal, başka bir <code>analogWrite</code>, <code>digitalWrite</code> veya <code>digitalRead</code> çağrılana kadar arka planda (zamanlayıcı donanımı tarafından) kesintisiz üretilir; <code>delay()</code> sırasında da devam eder.</p>
+<div class="figure"><svg viewBox="0 0 520 120" width="520"><rect x="10" y="10" width="500" height="100" rx="10" fill="#0e7c86"/><rect x="30" y="30" width="460" height="26" fill="#111"/><rect x="40" y="36" width="14" height="14" fill="#c9a227"/><text x="47" y="76" text-anchor="middle" font-size="12" fill="#fff" font-weight="400">13</text><rect x="73" y="36" width="14" height="14" fill="#c9a227"/><text x="80" y="76" text-anchor="middle" font-size="12" fill="#fff" font-weight="400">12</text><rect x="106" y="36" width="14" height="14" fill="#f1c40f" class="pulse" style="transform-box:fill-box;transform-origin:center"/><text x="113" y="76" text-anchor="middle" font-size="12" fill="#ffe28a" font-weight="700">~11</text><rect x="139" y="36" width="14" height="14" fill="#f1c40f" class="pulse" style="transform-box:fill-box;transform-origin:center"/><text x="146" y="76" text-anchor="middle" font-size="12" fill="#ffe28a" font-weight="700">~10</text><rect x="172" y="36" width="14" height="14" fill="#f1c40f" class="pulse" style="transform-box:fill-box;transform-origin:center"/><text x="179" y="76" text-anchor="middle" font-size="12" fill="#ffe28a" font-weight="700">~9</text><rect x="205" y="36" width="14" height="14" fill="#c9a227"/><text x="212" y="76" text-anchor="middle" font-size="12" fill="#fff" font-weight="400">8</text><rect x="238" y="36" width="14" height="14" fill="#c9a227"/><text x="245" y="76" text-anchor="middle" font-size="12" fill="#fff" font-weight="400">7</text><rect x="271" y="36" width="14" height="14" fill="#f1c40f" class="pulse" style="transform-box:fill-box;transform-origin:center"/><text x="278" y="76" text-anchor="middle" font-size="12" fill="#ffe28a" font-weight="700">~6</text><rect x="304" y="36" width="14" height="14" fill="#f1c40f" class="pulse" style="transform-box:fill-box;transform-origin:center"/><text x="311" y="76" text-anchor="middle" font-size="12" fill="#ffe28a" font-weight="700">~5</text><rect x="337" y="36" width="14" height="14" fill="#c9a227"/><text x="344" y="76" text-anchor="middle" font-size="12" fill="#fff" font-weight="400">4</text><rect x="370" y="36" width="14" height="14" fill="#f1c40f" class="pulse" style="transform-box:fill-box;transform-origin:center"/><text x="377" y="76" text-anchor="middle" font-size="12" fill="#ffe28a" font-weight="700">~3</text><rect x="403" y="36" width="14" height="14" fill="#c9a227"/><text x="410" y="76" text-anchor="middle" font-size="12" fill="#fff" font-weight="400">2</text><rect x="436" y="36" width="14" height="14" fill="#c9a227"/><text x="443" y="76" text-anchor="middle" font-size="12" fill="#fff" font-weight="400">1</text><rect x="469" y="36" width="14" height="14" fill="#c9a227"/><text x="476" y="76" text-anchor="middle" font-size="12" fill="#fff" font-weight="400">0</text><text x="260" y="100" text-anchor="middle" font-size="11" fill="#fff">Sarı ve nabız gibi atan pinler: 3, 5, 6, 9, 10, 11 (PWM)</text></svg><div class="cap">Şekil 2. Arduino UNO dijital pin başlığı: yalnızca ~ işaretli 6 pin PWM üretebilir.</div></div>
+<table class="tbl"><tr><th>PWM pinleri</th><th>Zamanlayıcı (Timer)</th><th>Frekans</th><th>Dikkat edilecek durum</th></tr>
+<tr><td>5, 6</td><td>Timer0</td><td>≈ 980 Hz (976,6 Hz)</td><td><code>millis()</code> ve <code>delay()</code> de Timer0'ı kullanır</td></tr>
+<tr><td>9, 10</td><td>Timer1</td><td>≈ 490 Hz</td><td><b>Servo.h</b> kütüphanesi kullanılırsa bu pinlerde PWM çalışmaz (12. hafta)</td></tr>
+<tr><td>3, 11</td><td>Timer2</td><td>≈ 490 Hz</td><td><code>tone()</code> fonksiyonu Timer2'yi kullanır; aynı anda PWM bozulabilir</td></tr></table>
+<div class="grid2"><div>
+<h3>Önemli kurallar</h3><ul>
+<li>Değer aralığı <b>0–255</b>'tir (8 bit). <code>analogRead</code> ise <b>0–1023</b> (10 bit) döndürür; doğrudan aktarılamaz.</li>
+<li><code>analogWrite(pin, 0)</code> pini sürekli LOW, <code>analogWrite(pin, 255)</code> sürekli HIGH yapar.</li>
+<li>Analog giriş pinleri (A0–A5) <b>PWM çıkışı veremez</b>; "analog" adına rağmen analogWrite için kullanılmaz.</li>
+<li>PWM olmayan bir pine (örn. 7) analogWrite yazılırsa pin 128'den küçük değerlerde LOW, 128 ve üzerinde HIGH olur; ara parlaklık elde edilmez.</li>
+</ul></div>
+<div><h3>Kod karşılaştırması</h3><div class="codebox"><span class="lbl">dogru_yanlis.ino</span><pre class="code">analogWrite(9, 128);   // ✓ ~%50 parlaklık
+analogWrite(7, 128);   // ✗ 7 PWM değil: LED tam yanar
+analogWrite(A0, 100);  // ✗ A0 PWM çıkışı veremez
+analogWrite(10, analogRead(A0));      // ✗ 0–1023 &gt; 255
+analogWrite(10, analogRead(A0) / 4);  // ✓ 0–255</pre></div></div></div>
+<div class="warn">PWM pini de olsa her pin en fazla <b>20 mA</b> (mutlak sınır 40 mA) verebilir. LED'i mutlaka seri dirençle (≈ 220 Ω) bağlayın; motor gibi yüksek akımlı yükler için transistör veya motor sürücü kullanın.</div>
+</section>
+<section class="card" id="fade"><h2><span class="num">5</span>Uygulama 1: Solma Etkisi (Fade)</h2>
+<p>LED'in parlaklığını yavaşça artırıp azaltan bu program, Arduino IDE'deki <b>Dosya → Örnekler → 01.Basics → Fade</b> örneğinin açıklamalı hâlidir. Devre: <b>D9 → LED anot, LED katot → 220 Ω → GND</b> (Şekil 3'teki devrenin LED kısmı).</p>
+<div class="grid2"><div><div class="codebox"><span class="lbl">Fade.ino</span><pre class="code">// Solma etkisi (Fade): 9 numaralı PWM pinindeki LED yavaşça yanar ve söner
+const int ledPin = 9;      // ~9 : PWM destekli pin
+int parlaklik = 0;         // o anki PWM değeri (0–255)
+int adim = 5;              // her döngüde parlaklığın değişim miktarı
+
+void setup() {
+  pinMode(ledPin, OUTPUT); // (analogWrite bunu kendisi de yapar, yazmak iyi alışkanlıktır)
+  Serial.begin(9600);      // değerleri Seri Monitör / Seri Çizici'de izlemek için
+}
+
+void loop() {
+  analogWrite(ledPin, parlaklik);   // görev döngüsü = parlaklik / 255
+  Serial.println(parlaklik);
+
+  parlaklik = parlaklik + adim;     // bir sonraki değer
+  // Uçlara ulaşınca yönü tersine çevir
+  if (parlaklik &lt;= 0 || parlaklik &gt;= 255) {
+    adim = -adim;
+  }
+  delay(30);                        // 30 ms bekle -&gt; solma hızı
+}</pre></div></div>
+<div class="sim"><h4>🔬 Simülasyon 2: Fade programını çalıştırın</h4>
+<label>adim = <select id="fStep"><option>1</option><option>3</option><option selected>5</option><option>15</option><option>17</option><option>51</option></select> &nbsp; (255'i tam bölen değerler)</label>
+<label>delay = <span id="fDelT">30</span> ms</label><input type="range" id="fDel" min="10" max="200" step="10" value="30">
+<svg viewBox="0 0 330 150" width="100%">
+<rect x="0" y="0" width="330" height="150" rx="8" fill="#0b1620"/>
+<circle id="fHalo" cx="45" cy="60" r="34" fill="#ff3b3b" opacity="0"/>
+<path id="fLed" d="M31 80 V57 a14 14 0 0 1 28 0 V80 Z" fill="#ff3b3b" stroke="#a00"/>
+<text id="fVal" x="45" y="110" fill="#fff" font-size="12" text-anchor="middle" font-family="Consolas">0</text>
+<text x="45" y="130" fill="#9fb3c8" font-size="9" text-anchor="middle">parlaklik</text>
+<rect x="95" y="15" width="225" height="120" fill="#0f2230" stroke="#1f3344"/>
+<text x="100" y="27" fill="#9fb3c8" font-size="8">255</text><text x="100" y="132" fill="#9fb3c8" font-size="8">0</text>
+<polyline id="fPlot" points="" fill="none" stroke="#7CFC9a" stroke-width="1.6"/>
+<text x="318" y="27" fill="#9fb3c8" font-size="8" text-anchor="end">Seri Çizici</text>
+</svg>
+<div class="serial" id="fSer" style="height:100px"></div>
+<button class="btn" id="fRun">⏸ Durdur</button><button class="btn alt" id="fReset">↺ Sıfırla</button>
+<div class="out" id="fOut"></div></div></div>
+<div class="warn">Adım değeri 255'i tam bölmüyorsa (örn. 7) parlaklık 252 → 259 olur ve 255'i aşar. analogWrite'a 255'ten büyük bir değer yazmak beklenmedik sonuç verir (değer 8 bitlik yazmaca sığmaz). Güvenli yazım: <code>if (parlaklik &gt;= 255) { parlaklik = 255; adim = -adim; }</code> veya <code>constrain()</code> kullanmak.</div>
+<h3>Aynı etki for döngüleriyle</h3>
+<div class="grid2"><div><div class="codebox"><span class="lbl">Fade_for.ino</span><pre class="code">// Solma etkisinin for döngüleri ile yazılmış hâli
+const int ledPin = 9;
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+  // 0'dan 255'e: yavaşça aydınlan
+  for (int deger = 0; deger &lt;= 255; deger++) {
+    analogWrite(ledPin, deger);
+    delay(8);               // 256 adım x 8 ms ≈ 2 saniye
+  }
+  // 255'ten 0'a: yavaşça kararan LED
+  for (int deger = 255; deger &gt;= 0; deger--) {
+    analogWrite(ledPin, deger);
+    delay(8);
+  }
+  delay(500);               // tamamen sönükken yarım saniye bekle
+}</pre></div></div>
+<div><p>Bu sürümde LED, 256 adımda yaklaşık <b>256 × 8 ms ≈ 2 s</b>'de aydınlanır ve yine 2 s'de söner. 5. haftada öğrendiğimiz <code>for</code> döngüsünün sayacı doğrudan PWM değeri olarak kullanılmıştır.</p>
+<table class="tbl"><tr><th></th><th>Değişken adımlı (Fade.ino)</th><th>for döngülü</th></tr>
+<tr><td>loop() süresi</td><td>Kısa (30 ms)</td><td>Uzun (≈ 4,6 s)</td></tr>
+<tr><td>Başka iş yapabilme</td><td>Her turda sensör okunabilir</td><td>Döngü bitene kadar program meşgul</td></tr>
+<tr><td>Okunabilirlik</td><td>Orta</td><td>Yüksek</td></tr></table>
+<div class="tip">Tek bir döngü içinde birden çok işi "aynı anda" yürütmek istiyorsanız ilk yaklaşım (her <code>loop()</code> turunda küçük bir adım) daha esnektir; ileride <code>millis()</code> ile <code>delay()</code>'siz hâle getirilebilir.</div></div></div>
+</section>
+<section class="card" id="map"><h2><span class="num">6</span>map() Fonksiyonu: Aralık Dönüştürme</h2>
+<p><code>analogRead()</code> 10 bitlik ADC kullanır ve 0–1023 döndürür; <code>analogWrite()</code> ise 8 bitlik 0–255 değer bekler. Bir aralıktaki sayıyı başka bir aralığa <b>doğrusal</b> olarak taşımak için <code>map()</code> kullanılır:</p>
+<div class="formula">map(x, a<sub>min</sub>, a<sub>max</sub>, b<sub>min</sub>, b<sub>max</sub>) = (x − a<sub>min</sub>) · (b<sub>max</sub> − b<sub>min</sub>) / (a<sub>max</sub> − a<sub>min</sub>) + b<sub>min</sub></div>
+<div class="grid2"><div>
+<p><b>Örnek 1:</b> map(512, 0, 1023, 0, 255) = 512 · 255 / 1023 = 127,6 → <b>127</b></p>
+<p><b>Örnek 2 (ters):</b> map(200, 0, 1023, 255, 0) = 200 · (−255) / 1023 + 255 = −49,8 → −49 + 255 = <b>206</b></p>
+<p><b>Örnek 3:</b> map(700, 0, 1023, 0, 100) → <b>68</b> (yüzde olarak)</p></div>
+<div><ul><li><code>map()</code> <b>tam sayı</b> (long) aritmetiği kullanır; ondalık kısım <b>kesilir</b> (yuvarlanmaz).</li>
+<li>Sonucu aralıkla <b>sınırlamaz</b>: map(1200, 0, 1023, 0, 255) = 299 olur. Sınırlamak için <code>constrain(x, alt, üst)</code> kullanılır.</li>
+<li>Hedef aralık ters yazılırsa (255, 0) eşleme <b>ters orantılı</b> olur.</li>
+<li>Pratik kısa yol: <code>analogRead(A0) / 4</code> da 0–255 verir (1023/4 = 255).</li></ul></div></div>
+<div class="sim"><h4>🔬 map() hesaplayıcı</h4><div class="grid2"><div>
+<label>x = <span id="mXT">512</span></label><input type="range" id="mX" min="0" max="1023" value="512">
+<label><input type="checkbox" id="mInv"> Ters eşleme (255 → 0)</label></div>
+<div class="out" id="mOut" style="margin-top:0"></div></div></div>
+</section>
+<section class="card" id="pot"><h2><span class="num">7</span>Uygulama 2: Potansiyometre ile LED Parlaklığı</h2>
+<p>7. haftada potansiyometreyi bir <b>ayarlı gerilim bölücü</b> olarak kullanmıştık: dış uçlar 5 V ve GND'ye, orta uç (silecek) A0'a bağlanır. Bu hafta okunan değeri PWM'e çevirip LED'i süreceğiz.</p>
+<div class="figure"><svg id="potDevre" viewBox="0 0 760 400" width="760">
+<defs><pattern id="delik" width="12" height="12" patternUnits="userSpaceOnUse"><rect x="4" y="4" width="4" height="4" fill="#cfc8b8"/></pattern></defs>
+<rect x="15" y="50" width="300" height="270" rx="12" fill="#0e7c86" stroke="#064d50" stroke-width="3"/>
+<rect x="40" y="62" width="262" height="18" fill="#111"/><rect x="40" y="291" width="250" height="17" fill="#111"/>
+<rect x="47" y="66" width="10" height="11" fill="#c9a227"/><text x="52" y="92" text-anchor="middle" font-size="8.5" fill="#fff">13</text><rect x="68" y="66" width="10" height="11" fill="#c9a227"/><text x="73" y="92" text-anchor="middle" font-size="8.5" fill="#fff">12</text><rect x="89" y="66" width="10" height="11" fill="#c9a227"/><text x="94" y="92" text-anchor="middle" font-size="8.5" fill="#ffe28a">~11</text><rect x="110" y="66" width="10" height="11" fill="#c9a227"/><text x="115" y="92" text-anchor="middle" font-size="8.5" fill="#ffe28a">~10</text><rect x="131" y="66" width="10" height="11" fill="#f1c40f"/><text x="136" y="92" text-anchor="middle" font-size="8.5" fill="#ffe28a">~9</text><rect x="152" y="66" width="10" height="11" fill="#c9a227"/><text x="157" y="92" text-anchor="middle" font-size="8.5" fill="#fff">8</text><rect x="173" y="66" width="10" height="11" fill="#c9a227"/><text x="178" y="92" text-anchor="middle" font-size="8.5" fill="#fff">7</text><rect x="194" y="66" width="10" height="11" fill="#c9a227"/><text x="199" y="92" text-anchor="middle" font-size="8.5" fill="#ffe28a">~6</text><rect x="215" y="66" width="10" height="11" fill="#c9a227"/><text x="220" y="92" text-anchor="middle" font-size="8.5" fill="#ffe28a">~5</text><rect x="236" y="66" width="10" height="11" fill="#c9a227"/><text x="241" y="92" text-anchor="middle" font-size="8.5" fill="#fff">4</text><rect x="257" y="66" width="10" height="11" fill="#c9a227"/><text x="262" y="92" text-anchor="middle" font-size="8.5" fill="#ffe28a">~3</text><rect x="278" y="66" width="10" height="11" fill="#c9a227"/><text x="283" y="92" text-anchor="middle" font-size="8.5" fill="#fff">2</text><rect x="47" y="294" width="10" height="11" fill="#c9a227"/><text x="52" y="287" text-anchor="middle" font-size="8.5" fill="#fff">3.3V</text><rect x="71" y="294" width="10" height="11" fill="#c9a227"/><text x="76" y="287" text-anchor="middle" font-size="8.5" fill="#fff">5V</text><rect x="95" y="294" width="10" height="11" fill="#c9a227"/><text x="100" y="287" text-anchor="middle" font-size="8.5" fill="#fff">GND</text><rect x="119" y="294" width="10" height="11" fill="#c9a227"/><text x="124" y="287" text-anchor="middle" font-size="8.5" fill="#fff">GND</text><rect x="143" y="294" width="10" height="11" fill="#c9a227"/><text x="148" y="287" text-anchor="middle" font-size="8.5" fill="#fff">Vin</text><rect x="185" y="294" width="10" height="11" fill="#c9a227"/><text x="190" y="287" text-anchor="middle" font-size="8.5" fill="#fff">A0</text><rect x="206" y="294" width="10" height="11" fill="#c9a227"/><text x="211" y="287" text-anchor="middle" font-size="8.5" fill="#fff">A1</text><rect x="227" y="294" width="10" height="11" fill="#c9a227"/><text x="232" y="287" text-anchor="middle" font-size="8.5" fill="#fff">A2</text><rect x="248" y="294" width="10" height="11" fill="#c9a227"/><text x="253" y="287" text-anchor="middle" font-size="8.5" fill="#fff">A3</text><rect x="269" y="294" width="10" height="11" fill="#c9a227"/><text x="274" y="287" text-anchor="middle" font-size="8.5" fill="#fff">A4</text><rect x="290" y="294" width="10" height="11" fill="#c9a227"/><text x="295" y="287" text-anchor="middle" font-size="8.5" fill="#fff">A5</text>
+<rect x="110" y="170" width="140" height="40" rx="4" fill="#1b1b1b"/><text x="180" y="195" text-anchor="middle" font-size="12" fill="#ddd">ATmega328P</text>
+<text x="40" y="130" font-size="15" fill="#fff" font-weight="700">ARDUINO UNO</text>
+<text x="40" y="148" font-size="10" fill="#cfe">~ işaretli pinler PWM</text>
+<rect x="380" y="40" width="365" height="290" rx="8" fill="#f4f1ea" stroke="#c9bfa8"/>
+<rect x="392" y="60" width="341" height="190" fill="url(#delik)"/>
+<line x1="392" y1="268" x2="733" y2="268" stroke="#2e86de" stroke-width="2"/><text x="386" y="272" font-size="10" text-anchor="end" fill="#2e86de">–</text>
+<line x1="392" y1="300" x2="733" y2="300" stroke="#e74c3c" stroke-width="2"/><text x="386" y="304" font-size="10" text-anchor="end" fill="#e74c3c">+</text>
+<rect x="392" y="274" width="341" height="20" fill="url(#delik)"/>
+<!-- 5V ve GND kabloları -->
+<path d="M76 305 V375 H740 V300" fill="none" stroke="#e74c3c" stroke-width="3"/>
+<path d="M100 305 V360 H725 V268" fill="none" stroke="#222" stroke-width="3"/>
+<path class="flow fl" d="M725 268 V360 H100 V305" fill="none" stroke="#ffe066" stroke-width="2"/>
+<!-- Potansiyometre -->
+<rect x="455" y="175" width="70" height="44" rx="6" fill="#2e5d8c"/><circle id="potKnob" cx="490" cy="197" r="16" fill="#cfd8e3" stroke="#555"/>
+<line id="potInd" x1="490" y1="197" x2="490" y2="183" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+<text x="532" y="201" font-size="10">10 kΩ pot</text>
+<path d="M470 219 V300" stroke="#e74c3c" stroke-width="3"/><path d="M510 219 V268" stroke="#222" stroke-width="3"/>
+<path d="M490 181 V154 H360 V340 H190 V305" fill="none" stroke="#2e86de" stroke-width="3"/>
+<text x="425" y="141" font-size="10" fill="#2e86de" text-anchor="middle">silecek → A0</text>
+<!-- LED ve direnç -->
+<path d="M136 66 V28 H595 V140 H620" fill="none" stroke="#f39c12" stroke-width="3"/>
+<path class="flow fl" d="M136 66 V28 H595 V140 H620" fill="none" stroke="#ffe066" stroke-width="2"/>
+<text x="380" y="22" font-size="10" fill="#b9770e" text-anchor="middle">~9 (PWM) → LED anot</text>
+<circle id="ledHalo" cx="630" cy="100" r="30" fill="#ff3b3b" opacity="0"/>
+<path id="ledBody" d="M616 118 V96 a14 14 0 0 1 28 0 V118 Z" fill="#ff3b3b" stroke="#a00"/>
+<rect x="612" y="118" width="36" height="5" fill="#c33"/>
+<line x1="620" y1="123" x2="620" y2="140" stroke="#888" stroke-width="3"/><line x1="640" y1="123" x2="640" y2="140" stroke="#888" stroke-width="3"/>
+<text x="590" y="132" font-size="9" text-anchor="end">anot (+)</text><text x="656" y="150" font-size="9">katot (–)</text>
+<path d="M640 140 V170" stroke="#888" stroke-width="3"/>
+<rect x="632" y="170" width="16" height="44" rx="6" fill="#d9b38c" stroke="#7a5230"/>
+<rect x="632" y="178" width="16" height="4" fill="#d00"/><rect x="632" y="186" width="16" height="4" fill="#d00"/><rect x="632" y="194" width="16" height="4" fill="#7b3f00"/><rect x="632" y="204" width="16" height="3" fill="#c9a227"/>
+<text x="656" y="196" font-size="10">220 Ω</text>
+<path d="M640 214 V268" stroke="#888" stroke-width="3"/>
+<path class="flow fl" d="M640 140 V268" fill="none" stroke="#ffe066" stroke-width="2"/>
+<text x="560" y="392" font-size="10" fill="#5b6b7d" text-anchor="middle">Sarı kesikli çizgiler: LED akımının yolu (D9 → LED → 220 Ω → GND)</text>
+</svg><div class="cap">Şekil 3. Potansiyometre (A0) ve LED (D9 + 220 Ω) devresi. Aşağıdaki kaydırıcı devreyi canlı olarak çalıştırır.</div></div>
+<div class="grid2"><div><div class="codebox"><span class="lbl">Pot_LED.ino</span><pre class="code">// Potansiyometre ile LED parlaklığı kontrolü
+const int potPin = A0;     // potansiyometrenin orta ucu (silecek)
+const int ledPin = 9;      // LED + 220 Ω, PWM pini
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int potDeger = analogRead(potPin);              // 0–1023 (10 bit ADC)
+  int pwm = map(potDeger, 0, 1023, 0, 255);       // 0–255 (8 bit PWM)
+  analogWrite(ledPin, pwm);
+
+  float gerilim = potDeger * 5.0 / 1023.0;        // pot ucundaki gerilim (yaklaşık)
+  Serial.print("Pot: ");
+  Serial.print(potDeger);
+  Serial.print("  Gerilim: ");
+  Serial.print(gerilim, 2);
+  Serial.print(" V  PWM: ");
+  Serial.println(pwm);
+  delay(200);
+}</pre></div></div>
+<div class="sim"><h4>🔬 Simülasyon 3: Potansiyometreyi çevirin</h4>
+<label>Potansiyometre konumu: <span id="kPosT">%50</span></label><input type="range" id="kPos" min="0" max="1000" value="500">
+<div class="out" id="kOut"></div>
+<label>Seri Monitör (9600 baud)</label><div class="serial" id="kSer"></div></div></div>
+<div class="note">Hesaplamada 1023'e bölmek (5,0/1023,0) potun en uç konumunda tam 5,00 V gösterir; ADC'nin tanımına göre teorik olarak doğru bölen 1024'tür. İki yöntem arasındaki fark yaklaşık %0,1'dir ve bu uygulama için önemsizdir.</div>
+</section>
+<section class="card" id="ldr"><h2><span class="num">8</span>Uygulama 3: LDR ile Ters Orantılı Parlaklık (Gece Lambası)</h2>
+<p>LDR (fotodirenç) üzerine düşen ışık arttıkça direnci <b>azalır</b> (aydınlıkta ≈ birkaç yüz Ω – birkaç kΩ, karanlıkta yüzlerce kΩ – MΩ). LDR'yi 10 kΩ ile gerilim bölücü yaparız:</p>
+<div class="formula">V<sub>A0</sub> = 5 V · R<sub>sabit</sub> / (R<sub>LDR</sub> + R<sub>sabit</sub>) &nbsp;&nbsp; (5V – LDR – A0 – 10 kΩ – GND)</div>
+<p>Bu bağlantıda ışık arttıkça V<sub>A0</sub> artar. Gece lambasında ise <b>karanlıkta LED parlak</b> olmalıdır; bu yüzden <code>map()</code> hedef aralığı <b>ters</b> yazılır (255, 0). Ayrıca LDR hiçbir zaman tam 0 veya 1023 vermediğinden, gerçek ortamda ölçtüğünüz uç değerler kalibrasyon sabitleri olarak kullanılır ve <code>constrain()</code> ile sınırlanır.</p>
+<div class="grid2"><div><div class="codebox"><span class="lbl">GeceLambasi.ino</span><pre class="code">// Gece lambası: ortam karardıkça LED daha parlak yanar (ters orantı)
+// Bağlantı: 5V -- LDR -- A0 -- 10 kΩ -- GND  (ışık arttıkça A0 gerilimi artar)
+const int ldrPin = A0;
+const int ledPin = 9;
+const int KARANLIK = 150;  // karanlık ortamda okunan değer (kendi ortamınızda ölçün)
+const int AYDINLIK = 900;  // aydınlık ortamda okunan değer (kendi ortamınızda ölçün)
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int isik = analogRead(ldrPin);                       // 0–1023
+  int sinirli = constrain(isik, KARANLIK, AYDINLIK);    // aralık dışına taşmayı engelle
+  int parlaklik = map(sinirli, KARANLIK, AYDINLIK, 255, 0); // TERS eşleme
+  analogWrite(ledPin, parlaklik);
+
+  Serial.print("LDR: ");
+  Serial.print(isik);
+  Serial.print("  PWM: ");
+  Serial.println(parlaklik);
+  delay(100);
+}</pre></div></div>
+<div class="sim"><h4>🔬 Simülasyon 4: Ortam ışığını değiştirin</h4>
+<label>Ortam aydınlığı: <span id="lLuxT"></span></label><input type="range" id="lLux" min="0" max="100" value="45">
+<svg viewBox="0 0 330 140" width="100%">
+<rect id="lSky" x="0" y="0" width="330" height="140" rx="8" fill="#87ceeb"/>
+<circle id="lSun" cx="50" cy="45" r="22" fill="#ffd54f"/>
+<g id="lStars" fill="#fff"><circle cx="120" cy="20" r="1.5"/><circle cx="200" cy="35" r="1.2"/><circle cx="260" cy="15" r="1.5"/><circle cx="160" cy="55" r="1"/></g>
+<rect x="120" y="85" width="40" height="16" rx="7" fill="#e8cfa6" stroke="#a5835a"/><path d="M125 93 h5 l3 -5 l4 10 l4 -10 l4 10 l3 -5 h5" fill="none" stroke="#b5341a" stroke-width="1.5"/>
+<text x="140" y="118" text-anchor="middle" font-size="10" fill="#123">LDR</text><text id="lRT" x="140" y="132" text-anchor="middle" font-size="10" fill="#123" font-family="Consolas"></text>
+<circle id="lHalo" cx="265" cy="80" r="36" fill="#ffe28a" opacity="0"/>
+<path id="lLed" d="M251 100 V77 a14 14 0 0 1 28 0 V100 Z" fill="#ffd31a" stroke="#b08900"/>
+<text x="265" y="125" text-anchor="middle" font-size="10" fill="#123">Gece lambası</text>
+</svg>
+<div class="out" id="lOut"></div><div class="serial" id="lSer" style="height:90px"></div></div></div>
+<div class="tip">Kalibrasyon için önce yalnızca <code>Serial.println(analogRead(A0));</code> yazan bir program yükleyin; LDR'yi elinizle kapatıp (KARANLIK) fenere tutarak (AYDINLIK) değerleri not edin.</div>
+</section>
+<section class="card" id="rgb"><h2><span class="num">9</span>Uygulama 4: RGB LED ile Renk Karışımı</h2>
+<p>RGB LED, tek bir kılıf içinde <b>kırmızı (R), yeşil (G) ve mavi (B)</b> üç LED barındırır ve 4 bacaklıdır. En uzun bacak <b>ortak uçtur</b>:</p>
+<ul><li><b>Ortak katot</b> (en yaygını): ortak bacak GND'ye bağlanır; renk bacağına yüksek PWM değeri = parlak renk.</li>
+<li><b>Ortak anot</b>: ortak bacak 5 V'a bağlanır; mantık terstir, <b>0 = tam parlak, 255 = sönük</b> (<code>255 − değer</code> yazılır).</li></ul>
+<p>Üç rengin PWM değerleri ayrı ayrı ayarlanarak <b>toplamsal renk karışımı</b> ile (her biri 256 seviye) 256³ ≈ 16,7 milyon renk tonu elde edilebilir. Her renk bacağına ayrı bir ≈ 220 Ω direnç bağlanmalıdır.</p>
+<div class="grid2"><div><div class="codebox"><span class="lbl">RGB_Renkler.ino</span><pre class="code">// Ortak katotlu RGB LED ile renk karışımı
+const int kirmiziPin = 9;    // R bacağı -&gt; 220 Ω -&gt; ~9
+const int yesilPin   = 10;   // G bacağı -&gt; 220 Ω -&gt; ~10
+const int maviPin    = 11;   // B bacağı -&gt; 220 Ω -&gt; ~11
+// En uzun bacak (ortak katot) -&gt; GND
+
+// Üç rengi tek seferde ayarlayan yardımcı fonksiyon
+void renkAyarla(int r, int g, int b) {
+  analogWrite(kirmiziPin, r);
+  analogWrite(yesilPin, g);
+  analogWrite(maviPin, b);
+  // Ortak ANOTLU LED kullanıyorsanız: analogWrite(kirmiziPin, 255 - r); ...
+}
+
+void setup() {
+  pinMode(kirmiziPin, OUTPUT);
+  pinMode(yesilPin, OUTPUT);
+  pinMode(maviPin, OUTPUT);
+}
+
+void loop() {
+  renkAyarla(255, 0, 0);     delay(1000);  // kırmızı
+  renkAyarla(0, 255, 0);     delay(1000);  // yeşil
+  renkAyarla(0, 0, 255);     delay(1000);  // mavi
+  renkAyarla(255, 255, 0);   delay(1000);  // sarı   = kırmızı + yeşil
+  renkAyarla(0, 255, 255);   delay(1000);  // camgöbeği = yeşil + mavi
+  renkAyarla(255, 0, 255);   delay(1000);  // mor (eflatun) = kırmızı + mavi
+  renkAyarla(255, 80, 0);    delay(1000);  // turuncu
+  renkAyarla(255, 255, 255); delay(1000);  // beyaz
+}</pre></div></div>
+<div class="sim"><h4>🔬 Simülasyon 5: RGB renk karıştırıcı</h4>
+<div class="figure" style="margin:0"><svg id="rgbSvg" viewBox="0 0 380 230" width="380">
+<rect x="10" y="20" width="110" height="190" rx="10" fill="#0e7c86"/><text x="65" y="45" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">UNO</text>
+<text x="105" y="83" text-anchor="end" fill="#ffe28a" font-size="11">~9</text><text x="105" y="123" text-anchor="end" fill="#ffe28a" font-size="11">~10</text><text x="105" y="163" text-anchor="end" fill="#ffe28a" font-size="11">~11</text><text x="105" y="198" text-anchor="end" fill="#fff" font-size="11">GND</text>
+<path d="M120 80 H260 V112" fill="none" stroke="#e74c3c" stroke-width="3"/><path id="rgbFr" class="flow" d="M120 80 H260 V112" fill="none" stroke="#ffe066" stroke-width="2"/>
+<path d="M120 120 H230 V140 H284 V112" fill="none" stroke="#27ae60" stroke-width="3"/><path id="rgbFg" class="flow" d="M120 120 H230 V140 H284 V112" fill="none" stroke="#ffe066" stroke-width="2"/>
+<path d="M120 160 H296 V112" fill="none" stroke="#2e86de" stroke-width="3"/><path id="rgbFb" class="flow" d="M120 160 H296 V112" fill="none" stroke="#ffe066" stroke-width="2"/>
+<path d="M120 195 H272 V112" fill="none" stroke="#222" stroke-width="3"/>
+<rect x="160" y="73" width="30" height="14" rx="5" fill="#d9b38c" stroke="#7a5230"/><rect x="160" y="113" width="30" height="14" rx="5" fill="#d9b38c" stroke="#7a5230"/><rect x="160" y="153" width="30" height="14" rx="5" fill="#d9b38c" stroke="#7a5230"/>
+<text x="175" y="68" text-anchor="middle" font-size="9">220 Ω</text>
+<circle id="rgbHalo" cx="278" cy="70" r="40" fill="#fff" opacity="0"/>
+<path id="rgbBody" d="M256 112 V70 a22 22 0 0 1 44 0 V112 Z" fill="#eee" stroke="#999"/>
+<text x="330" y="60" font-size="10">R G K B</text><text x="330" y="74" font-size="9" fill="#5b6b7d">K = ortak</text><text x="330" y="86" font-size="9" fill="#5b6b7d">katot (en</text><text x="330" y="98" font-size="9" fill="#5b6b7d">uzun bacak)</text>
+</svg></div>
+<label style="color:#c0392b">R (~9) = <span id="cRT">255</span></label><input type="range" id="cR" min="0" max="255" value="255">
+<label style="color:#1e8449">G (~10) = <span id="cGT">80</span></label><input type="range" id="cG" min="0" max="255" value="80">
+<label style="color:#1f5fa8">B (~11) = <span id="cBT">0</span></label><input type="range" id="cB" min="0" max="255" value="0">
+<label><input type="checkbox" id="cAnot"> Ortak anotlu LED kullanıyorum</label>
+<div><button class="btn" data-c="255,0,255">Mor</button><button class="btn" data-c="0,255,255">Camgöbeği</button><button class="btn" data-c="255,255,0">Sarı</button><button class="btn" data-c="255,255,255">Beyaz</button><button class="btn" data-c="0,0,0">Kapalı</button></div>
+<div class="out" id="cOut"></div></div></div>
+<table class="tbl"><tr><th>Renk</th><th>R</th><th>G</th><th>B</th></tr>
+<tr><td>Sarı</td><td>255</td><td>255</td><td>0</td></tr><tr><td>Camgöbeği (cyan)</td><td>0</td><td>255</td><td>255</td></tr>
+<tr><td>Mor / eflatun (magenta)</td><td>255</td><td>0</td><td>255</td></tr><tr><td>Beyaz</td><td>255</td><td>255</td><td>255</td></tr></table>
+<div class="note">LED'lerin verimleri farklı olduğundan (yeşil genelde daha parlak görünür) 255,255,255 tam beyaz yerine hafif renkli görünebilir. Renk dengesini, renk bacaklarındaki dirençleri farklı seçerek (örn. kırmızıya 220 Ω, yeşil ve maviye 330 Ω) veya yazılımda katsayı uygulayarak düzeltebilirsiniz.</div>
+</section>
+<section class="card" id="fn"><h2><span class="num">10</span>Yeni Fonksiyonlar Tablosu</h2>
+<table class="tbl"><tr><th>Fonksiyon</th><th>Görevi</th><th>Örnek</th></tr>
+<tr><td><code>analogWrite(pin, değer)</code></td><td>PWM pinine (3,5,6,9,10,11) 0–255 görev döngüsünde PWM sinyali verir</td><td><code>analogWrite(9, 127);</code></td></tr>
+<tr><td><code>map(x, aMin, aMax, bMin, bMax)</code></td><td>x'i bir aralıktan diğerine doğrusal eşler; tam sayı döndürür, sınırlamaz</td><td><code>map(deger, 0, 1023, 0, 255)</code></td></tr>
+<tr><td><code>constrain(x, alt, üst)</code></td><td>x'i [alt, üst] aralığına sıkıştırır</td><td><code>constrain(isik, 150, 900)</code></td></tr>
+<tr><td><code>analogRead(pin)</code> (tekrar)</td><td>A0–A5 gerilimini 0–1023 olarak okur</td><td><code>analogRead(A0)</code></td></tr>
+<tr><td><code>Serial.print(x, basamak)</code></td><td>Ondalıklı sayıyı istenen basamakla yazdırır</td><td><code>Serial.print(v, 2);</code></td></tr>
+<tr><td>Kullanıcı fonksiyonu</td><td>Tekrarlanan işlemleri tek isim altında toplar</td><td><code>void renkAyarla(int r, int g, int b)</code></td></tr></table>
+<div class="tip">IDE'deki <b>Araçlar → Seri Çizici (Serial Plotter)</b>, <code>Serial.println(deger)</code> ile gönderilen sayıları grafik olarak çizer. Fade programında parlaklığın üçgen dalga şeklinde değiştiğini görebilirsiniz.</div>
+</section>
+<section class="card quiz" id="quiz"><h2><span class="num">11</span>Kendini Test Et</h2><div class="q" data-answer="b"><p>1) <code>analogWrite(6, 64);</code> komutunun görev döngüsü ve ortalama gerilimi yaklaşık nedir?</p><button class="opt" data-k="a">a) %64 – 3,2 V</button><button class="opt" data-k="b">b) %25 – 1,25 V</button><button class="opt" data-k="c">c) %6 – 0,3 V</button><div class="fb">✓ D = 64/255 ≈ 0,25 → V<sub>ort</sub> = 0,25 × 5 V ≈ 1,25 V.</div></div><div class="q" data-answer="c"><p>2) Arduino UNO'da aşağıdaki pinlerden hangisi PWM çıkışı veremez?</p><button class="opt" data-k="a">a) 3</button><button class="opt" data-k="b">b) 10</button><button class="opt" data-k="c">c) 7</button><div class="fb">✓ UNO'da PWM pinleri yalnızca 3, 5, 6, 9, 10, 11'dir. 7 numaralı pin sadece HIGH/LOW verebilir.</div></div><div class="q" data-answer="a"><p>3) <code>map(512, 0, 1023, 0, 255)</code> ifadesinin sonucu nedir?</p><button class="opt" data-k="a">a) 127</button><button class="opt" data-k="b">b) 128</button><button class="opt" data-k="c">c) 512</button><div class="fb">✓ 512·255/1023 = 127,6; map() tam sayı aritmetiği kullandığı için ondalık kısım kesilir → 127.</div></div><div class="q" data-answer="b"><p>4) Ortak anotlu bir RGB LED'in kırmızı rengini TAM parlak yakmak için kırmızı pine hangi değer yazılmalıdır?</p><button class="opt" data-k="a">a) analogWrite(9, 255)</button><button class="opt" data-k="b">b) analogWrite(9, 0)</button><button class="opt" data-k="c">c) analogWrite(9, 127)</button><div class="fb">✓ Ortak anotta ortak uç 5 V'tadır; akım, renk pini LOW olduğunda akar. Bu yüzden 0 = tam parlak, 255 = sönüktür.</div></div><div class="q" data-answer="c"><p>5) <code>analogWrite(10, analogRead(A0));</code> satırının sorunu nedir?</p><button class="opt" data-k="a">a) 10 numaralı pin PWM değildir</button><button class="opt" data-k="b">b) analogRead dijital pinlerde çalışmaz</button><button class="opt" data-k="c">c) analogRead 0–1023 döndürür, analogWrite ise 0–255 bekler; ölçekleme (map veya /4) gerekir</button><div class="fb">✓ 10 bitlik okuma 8 bitlik yazmaya sığmaz; 255'ten büyük değerler beklenmedik parlaklık üretir. Doğrusu: <code>analogWrite(10, map(analogRead(A0), 0, 1023, 0, 255));</code></div></div></section>
+<section class="card" id="odev"><h2><span class="num">12</span>Ödev ve Özet</h2>
+<h3>Ödev</h3><ol>
+<li><b>Nefes alan LED:</b> Fade programını, LED tamamen sönükken 1 s, tamamen parlakken 0,5 s bekleyecek şekilde düzenleyin.</li>
+<li><b>Hız ayarlı solma:</b> Potansiyometreyi A0'a bağlayın; pot değeri ile <code>delay</code> süresini 2–50 ms arasında ayarlayan bir Fade programı yazın (<code>map</code> kullanın).</li>
+<li><b>Renk geçişi:</b> RGB LED'in rengini kırmızı → yeşil → mavi → kırmızı şeklinde <i>yumuşak</i> geçişlerle (for döngüleriyle) değiştirin.</li>
+<li><b>Hesap:</b> 5. pinde <code>analogWrite(5, 200)</code> için frekans, periyot, t<sub>on</sub>, t<sub>off</sub> ve ortalama gerilimi hesaplayın.</li></ol>
+<details><summary>2. ödev için ipucu (tıklayın)</summary><div class="codebox"><span class="lbl">hizli_fade_ipucu.ino</span><pre class="code">int parlaklik = 0, adim = 5;
+
+void setup() { pinMode(9, OUTPUT); }
+
+void loop() {
+  int bekleme = map(analogRead(A0), 0, 1023, 2, 50);  // 2–50 ms
+  analogWrite(9, parlaklik);
+  parlaklik += adim;
+  if (parlaklik &lt;= 0 || parlaklik &gt;= 255) adim = -adim;
+  delay(bekleme);
+}</pre></div></details>
+<h3>Özet</h3><ul>
+<li>UNO'da gerçek DAC yoktur; ara gerilim etkisi <b>PWM</b> ile elde edilir: V<sub>ort</sub> = 5 V × değer / 255.</li>
+<li><code>analogWrite(pin, 0–255)</code> yalnızca <b>3, 5, 6, 9, 10, 11</b> pinlerinde çalışır (5, 6: ≈980 Hz; diğerleri ≈490 Hz).</li>
+<li>Solma etkisi, PWM değerinin küçük adımlarla artırılıp azaltılmasıyla yapılır; adım uçları aşmamalıdır.</li>
+<li><code>map()</code> aralık dönüştürür (tam sayı, sınırsız); <code>constrain()</code> sınırlar. Ters eşleme: <code>map(x, 0, 1023, 255, 0)</code>.</li>
+<li>RGB LED'de üç PWM kanalı ile renk karıştırılır; ortak anotta değerler ters çevrilir (255 − değer).</li></ul>
+</section>
+</main>
+<footer>Arduino ile Programlama · Ders Notları · 9. Hafta<br>Kaynaklar: C. Taşdemir – <i>Arduino</i>; G. Döktaş – <i>Arduino Eğitim Kitabı</i>; E. Delebe – <i>Projeler ile Arduino</i></footer>
+<script>
+(function(){
+ const KW=['void','if','else','for','while','do','return','switch','case','break','default','const','true','false','#include','#define'];
+ const TY=['int','float','long','unsigned','byte','bool','boolean','char','double','String','word'];
+ const CST=['HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP','LED_BUILTIN','A0','A1','A2','A3','A4','A5'];
+ const FN=['pinMode','digitalWrite','digitalRead','analogRead','analogWrite','delay','delayMicroseconds','millis','micros','setup','loop','map','constrain','pulseIn','tone','noTone','Serial','begin','print','println','attach','write','read','available','random'];
+ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+ function hl(src){
+  let out='',i=0;
+  const re=/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(#?[A-Za-z_][A-Za-z0-9_]*)|(\b\d+(?:\.\d+)?\b)/g;let m,last=0;
+  while((m=re.exec(src))){out+=esc(src.slice(last,m.index));
+   if(m[1])out+='<span class="com">'+esc(m[1])+'</span>';
+   else if(m[2])out+='<span class="str">'+esc(m[2])+'</span>';
+   else if(m[3]){const w=m[3];let c=KW.includes(w)?'kw':TY.includes(w)?'ty':CST.includes(w)?'cst':FN.includes(w)?'fn':'';out+=c?'<span class="'+c+'">'+esc(w)+'</span>':esc(w)}
+   else if(m[4])out+='<span class="num">'+m[4]+'</span>';
+   last=re.lastIndex}
+  return out+esc(src.slice(last))}
+ document.querySelectorAll('pre.code').forEach(p=>{const raw=p.textContent;p.innerHTML=hl(raw);
+  const b=document.createElement('button');b.className='copybtn';b.textContent='Kopyala';
+  b.onclick=()=>{navigator.clipboard.writeText(raw).then(()=>{b.textContent='Kopyalandı ✓';setTimeout(()=>b.textContent='Kopyala',1500)})};
+  p.parentElement.appendChild(b)});
+ document.querySelectorAll('.quiz .q').forEach(q=>{const ans=q.dataset.answer;const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{q.querySelectorAll('.opt').forEach(x=>x.classList.remove('ok','no'));
+   if(o.dataset.k===ans){o.classList.add('ok');if(fb)fb.style.display='block'}else{o.classList.add('no')}})});
+ document.querySelectorAll('.quiz .fb').forEach(f=>f.style.display='none');
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const imap=(x,a,b,c,d)=>Math.trunc((x-a)*(d-c)/(b-a))+c;  // Arduino map(): long aritmetiği, sıfıra doğru kesme
+function ledSet(body,halo,frac,col){body.style.opacity=0.25+0.75*frac;halo.setAttribute('opacity',(0.55*frac).toFixed(2));if(col){body.setAttribute('fill',col);halo.setAttribute('fill',col)}}
+// ---- Sim 1: PWM ----
+let ph=0,paused=false;
+function pwmText(){const x=+$('pVal').value,pin=+$('pPin').value;const f=(pin==5||pin==6)?976.56:490.2;const T=1000/f,D=x/255;
+ $('pValT').textContent=x;$('pPinT').textContent=pin;
+ $('pOut').innerHTML=`f ≈ ${f.toFixed(1)} Hz · T = ${T.toFixed(2)} ms<br>D = ${x}/255 = <b>%${(D*100).toFixed(1)}</b> · t<sub>on</sub> = ${(D*T).toFixed(3)} ms · t<sub>off</sub> = ${((1-D)*T).toFixed(3)} ms<br>V<sub>ort</sub> = 5 × ${x}/255 = <b>${(5*D).toFixed(2)} V</b>`;
+ const y=160-140*D*0.857;$('pAvg').setAttribute('y1',y);$('pAvg').setAttribute('y2',y);$('pAvgT').setAttribute('y',Math.max(30,y-5));$('pAvgT').textContent='V ort = '+(5*D).toFixed(2)+' V';
+ $('pDutyT').textContent='%'+(D*100).toFixed(0);ledSet($('pLed'),$('pHalo'),D)}
+function pwmDraw(){const D=+$('pVal').value/255;const pin=+$('pPin').value;const P=(pin==5||pin==6)?36:72;const X0=40,X1=330,HI=40,LO=160;
+ let d='';let start=X0-(ph%P);let first=true;
+ for(let s=start;s<X1;s+=P){const on=s+P*D;
+  const seg=[[s,HI,on],[on,LO,s+P]];
+  seg.forEach(([a,y,b])=>{const aa=Math.max(a,X0),bb=Math.min(b,X1);if(bb<=aa)return;d+=(first?`M${aa} ${y}`:`L${aa} ${y}`)+` L${bb} ${y}`;first=false})}
+ $('pWave').setAttribute('d',d)}
+function pwmLoop(){if(!paused){ph+=0.6;pwmDraw()}requestAnimationFrame(pwmLoop)}
+$('pVal').oninput=()=>{pwmText();pwmDraw()};$('pPin').onchange=()=>{pwmText();pwmDraw()};
+$('pPause').onclick=()=>{paused=!paused;$('pPause').textContent=paused?'▶ Devam':'⏸ Durdur'};
+pwmText();pwmDraw();requestAnimationFrame(pwmLoop);
+// ---- Sim 2: Fade ----
+let par=0,adim=5,fT=null,fRun=true,plot=[],tms=0;
+function fTick(){
+ const yaz=par;  // analogWrite(ledPin, parlaklik)
+ ledSet($('fLed'),$('fHalo'),Math.min(255,Math.max(0,yaz))/255);$('fVal').textContent=yaz;
+ const s=$('fSer');s.textContent+=yaz+'\n';if(s.textContent.length>3000)s.textContent=s.textContent.slice(-1500);s.scrollTop=1e9;
+ plot.push(yaz);if(plot.length>110)plot.shift();
+ $('fPlot').setAttribute('points',plot.map((v,i)=>`${97+i*2},${133-v/255*104}`).join(' '));
+ par=par+adim;if(par<=0||par>=255){adim=-adim}
+ tms+=+$('fDel').value;
+ $('fOut').innerHTML=`t = ${tms} ms · sonraki parlaklik = ${par} · adim = ${adim}<br>Tam bir aydınlanma–sönme turu ≈ 2 × (255/${Math.abs(adim)}) × ${$('fDel').value} ms = <b>${(2*255/Math.abs(adim)*+$('fDel').value/1000).toFixed(2)} s</b>`;
+ fT=setTimeout(fTick,Math.max(30,+$('fDel').value))}
+$('fDel').oninput=()=>$('fDelT').textContent=$('fDel').value;
+$('fStep').onchange=()=>{const v=+$('fStep').value;adim=adim<0?-v:v;par=Math.round(par/v)*v;par=Math.min(255,Math.max(0,par))};
+$('fRun').onclick=()=>{fRun=!fRun;$('fRun').textContent=fRun?'⏸ Durdur':'▶ Devam';if(fRun)fTick();else clearTimeout(fT)};
+$('fReset').onclick=()=>{par=0;adim=+$('fStep').value;plot=[];tms=0;$('fSer').textContent=''};
+fTick();
+// ---- map hesaplayıcı ----
+function mCalc(){const x=+$('mX').value,inv=$('mInv').checked;$('mXT').textContent=x;const c=inv?255:0,d=inv?0:255;
+ const exact=(x-0)*(d-c)/1023+c;const r=imap(x,0,1023,c,d);
+ $('mOut').innerHTML=`map(${x}, 0, 1023, ${c}, ${d})<br>= (${x} − 0)·(${d} − ${c}) / (1023 − 0) + ${c}<br>= ${exact.toFixed(2)} → <b>${r}</b> &nbsp; <span style="color:#5b6b7d">(analogRead/4 = ${Math.floor(x/4)})</span>`}
+$('mX').oninput=mCalc;$('mInv').onchange=mCalc;mCalc();
+// ---- Sim 3: Pot -> LED (devre şemasıyla bağlı) ----
+let kLast=null;
+function kCalc(){const pos=+$('kPos').value/1000;const V=5*pos;const adc=Math.min(1023,Math.floor(V*1024/5));const pwm=imap(adc,0,1023,0,255);
+ $('kPosT').textContent='%'+(pos*100).toFixed(0);
+ const ang=-135+270*pos;$('potInd').setAttribute('transform',`rotate(${ang} 490 197)`);
+ ledSet($('ledBody'),$('ledHalo'),pwm/255);
+ document.querySelectorAll('#potDevre .fl').forEach(p=>{p.style.opacity=pwm==0?0:0.35+0.65*pwm/255;p.style.animationDuration=(1.6-1.2*pwm/255).toFixed(2)+'s'});
+ const g=adc*5.0/1023.0;
+ $('kOut').innerHTML=`Silecek gerilimi ≈ ${V.toFixed(2)} V → analogRead = <b>${adc}</b><br>map(${adc}, 0, 1023, 0, 255) = <b>${pwm}</b> → D = %${(pwm/255*100).toFixed(1)}, V<sub>ort</sub> = ${(5*pwm/255).toFixed(2)} V`;
+ kLast=`Pot: ${adc}  Gerilim: ${g.toFixed(2)} V  PWM: ${pwm}`}
+function kSerial(){if(kLast){const s=$('kSer');s.textContent+=kLast+'\n';if(s.textContent.length>4000)s.textContent=s.textContent.slice(-2000);s.scrollTop=1e9}}
+$('kPos').oninput=kCalc;kCalc();setInterval(kSerial,200);
+// ---- Sim 4: LDR gece lambası ----
+let lLast='';
+function lCalc(){const s=+$('lLux').value;const lux=Math.pow(10,-1+s*0.043);
+ const R=10000*Math.pow(10/lux,0.7);const V=5*10000/(R+10000);const adc=Math.min(1023,Math.floor(V*1024/5));
+ const sn=Math.min(900,Math.max(150,adc));const pwm=imap(sn,150,900,255,0);
+ $('lLuxT').textContent=(lux<10?lux.toFixed(1):lux.toFixed(0))+' lüks';
+ $('lRT').textContent=R>=1000?(R/1000).toFixed(1)+' kΩ':R.toFixed(0)+' Ω';
+ const day=Math.min(1,s/80);const c1=[10,20,50],c2=[135,206,235];$('lSky').setAttribute('fill',`rgb(${c1.map((c,i)=>Math.round(c+(c2[i]-c)*day)).join(',')})`);
+ $('lSun').setAttribute('cy',110-70*day);$('lSun').setAttribute('fill',day>0.35?'#ffd54f':'#e8e8f0');$('lStars').setAttribute('opacity',(1-day).toFixed(2));
+ ledSet($('lLed'),$('lHalo'),pwm/255);
+ $('lOut').innerHTML=`R<sub>LDR</sub> ≈ ${$('lRT').textContent} → V<sub>A0</sub> = 5·10k/(R+10k) = ${V.toFixed(2)} V → analogRead = <b>${adc}</b><br>constrain → ${sn} · map(${sn}, 150, 900, 255, 0) = <b>${pwm}</b>`;
+ lLast=`LDR: ${adc}  PWM: ${pwm}`}
+$('lLux').oninput=lCalc;lCalc();setInterval(()=>{const s=$('lSer');s.textContent+=lLast+'\n';if(s.textContent.length>3000)s.textContent=s.textContent.slice(-1500);s.scrollTop=1e9},300);
+// ---- Sim 5: RGB ----
+function cCalc(){const r=+$('cR').value,g=+$('cG').value,b=+$('cB').value,an=$('cAnot').checked;
+ $('cRT').textContent=r;$('cGT').textContent=g;$('cBT').textContent=b;
+ const col=`rgb(${r},${g},${b})`;const mx=Math.max(r,g,b)/255;
+ $('rgbBody').setAttribute('fill',mx==0?'#eee':col);$('rgbHalo').setAttribute('fill',col);$('rgbHalo').setAttribute('opacity',(0.6*mx).toFixed(2));
+ [['rgbFr',r],['rgbFg',g],['rgbFb',b]].forEach(([id,v])=>{$(id).style.opacity=v==0?0:0.3+0.7*v/255});
+ const hex='#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('').toUpperCase();
+ const w=v=>an?255-v:v;
+ $('cOut').innerHTML=`Renk: <b>${hex}</b> <span style="display:inline-block;width:40px;height:14px;background:${col};border:1px solid #999;vertical-align:middle"></span><br>`+
+  (an?'// ortak anot: 255 − değer yazılır<br>':'')+`analogWrite(9, ${w(r)});<br>analogWrite(10, ${w(g)});<br>analogWrite(11, ${w(b)});<br>`+
+  `V<sub>ort</sub>: R ${(5*w(r)/255).toFixed(2)} V · G ${(5*w(g)/255).toFixed(2)} V · B ${(5*w(b)/255).toFixed(2)} V`}
+['cR','cG','cB'].forEach(i=>$(i).oninput=cCalc);$('cAnot').onchange=cCalc;
+document.querySelectorAll('#rgb .btn[data-c]').forEach(b=>b.onclick=()=>{const [r,g,bb]=b.dataset.c.split(',');$('cR').value=r;$('cG').value=g;$('cB').value=bb;cCalc()});
+cCalc();
+})();
+</script>
+</body></html>

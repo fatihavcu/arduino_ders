@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>11. Hafta – Ultrasonik Mesafe Sensörü (HC-SR04) | Arduino ile Programlama</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#1d2733;--muted:#5b6b7d;--teal:#00979d;--teal2:#00b3b9;--accent:#e67e22;--red:#e74c3c;--green:#27ae60;--code:#0f1b26;--border:#dde5ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+header.top{background:linear-gradient(135deg,#006468,#00979d 60%,#00b3b9);color:#fff;padding:28px 20px 34px;position:relative;overflow:hidden}
+header.top::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px),repeating-linear-gradient(0deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px);pointer-events:none}
+.wrap{max-width:1050px;margin:0 auto;padding:0 18px}
+.badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:3px 12px;border-radius:20px;font-size:.85em;letter-spacing:.5px}
+header.top h1{margin:10px 0 6px;font-size:2em}
+header.top p{margin:0;opacity:.92}
+nav.weeknav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;position:relative;z-index:1}
+nav.weeknav a{color:#fff;text-decoration:none;background:rgba(0,0,0,.18);padding:6px 12px;border-radius:6px;font-size:.9em}
+nav.weeknav a:hover{background:rgba(0,0,0,.35)}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;margin:22px 0}
+.toc ol{margin:6px 0;columns:2}
+.toc a{color:var(--teal);text-decoration:none}
+section.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin:22px 0;box-shadow:0 2px 8px rgba(20,40,60,.05);animation:fadeUp .6s ease both}
+section.card h2{margin-top:0;color:#006468;border-bottom:2px solid #e3f3f3;padding-bottom:8px}
+section.card h2 .num{display:inline-block;background:var(--teal);color:#fff;border-radius:50%;width:32px;height:32px;text-align:center;line-height:32px;margin-right:8px;font-size:.8em}
+h3{color:#0b4f6c}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.goals li{margin:4px 0}
+.note,.warn,.tip{border-radius:8px;padding:12px 16px;margin:14px 0;border-left:5px solid}
+.note{background:#eaf6ff;border-color:#2e86de}.warn{background:#fff3e6;border-color:var(--accent)}.tip{background:#eafaf1;border-color:var(--green)}
+.note::before{content:"ℹ️ Not: ";font-weight:600}.warn::before{content:"⚠️ Dikkat: ";font-weight:600}.tip::before{content:"💡 İpucu: ";font-weight:600}
+.formula{font-family:Cambria,"Times New Roman",serif;font-size:1.5em;text-align:center;background:#f7fbfb;border:1px dashed var(--teal);border-radius:8px;padding:12px;margin:14px 0}
+table.tbl{border-collapse:collapse;width:100%;margin:12px 0;font-size:.95em}
+table.tbl th,table.tbl td{border:1px solid var(--border);padding:7px 10px;text-align:left}
+table.tbl th{background:#e9f6f6;color:#064d50}
+table.tbl tr:nth-child(even) td{background:#fafcfd}
+.codebox{position:relative;margin:14px 0}
+.codebox .lbl{background:#1f3344;color:#9fd7da;font-size:.8em;padding:4px 12px;border-radius:8px 8px 0 0;display:inline-block;font-family:Consolas,monospace}
+pre.code{background:var(--code);color:#d7e3ee;padding:16px 18px;border-radius:0 8px 8px 8px;overflow:auto;font-family:Consolas,"Courier New",monospace;font-size:.92em;line-height:1.5;margin:0}
+pre.code .kw{color:#c792ea}.code .ty{color:#82aaff}.code .fn{color:#f78c6c}.code .num{color:#f7c56c}.code .str{color:#c3e88d}.code .com{color:#6b8299;font-style:italic}.code .cst{color:#ff5370}
+.copybtn{position:absolute;top:30px;right:8px;background:#2b4459;color:#cfe;border:0;border-radius:5px;padding:4px 10px;cursor:pointer;font-size:.8em}
+.copybtn:hover{background:var(--teal)}
+.figure{text-align:center;margin:16px 0}
+.figure svg{max-width:100%;height:auto}
+.figure .cap{font-size:.88em;color:var(--muted);margin-top:6px}
+.sim{background:#f3fafa;border:1px solid #bfe3e4;border-radius:10px;padding:16px;margin:16px 0}
+.sim h4{margin:0 0 10px;color:#006468}
+.sim label{display:block;margin:8px 0 2px;font-weight:600;font-size:.92em}
+.sim input[type=range]{width:100%;accent-color:var(--teal)}
+.sim .out{font-family:Consolas,monospace;background:#fff;border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-top:10px}
+.serial{background:#0b1620;color:#7CFC9a;font-family:Consolas,monospace;border-radius:6px;padding:10px;height:140px;overflow:auto;font-size:.88em;white-space:pre}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:.92em;margin:4px 4px 4px 0}
+.btn:hover{background:#007a7f}.btn.alt{background:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.toc ol{columns:1}}
+/* animations */
+.flow{stroke-dasharray:6 10;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+.glow{filter:drop-shadow(0 0 6px #ff4d4d)}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.spin{transform-origin:center;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* quiz */
+.quiz .q{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0}
+.quiz .q p{margin:0 0 8px;font-weight:600}
+.quiz .opt{display:block;width:100%;text-align:left;background:#f7f9fb;border:1px solid var(--border);border-radius:6px;padding:7px 10px;margin:4px 0;cursor:pointer;font-size:.95em}
+.quiz .opt:hover{background:#eef6f6}
+.quiz .opt.ok{background:#d9f5e3;border-color:var(--green)}
+.quiz .opt.no{background:#fde2df;border-color:var(--red)}
+.quiz .fb{font-size:.9em;margin-top:6px;color:var(--muted)}
+details{background:#fbfcfd;border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin:10px 0}
+details summary{cursor:pointer;font-weight:600;color:#0b4f6c}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding:8px 0 8px 46px;margin:6px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:32px;height:32px;border-radius:50%;background:var(--teal);color:#fff;text-align:center;line-height:32px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:30px 10px 40px}
+.pill{display:inline-block;background:#e3f3f3;color:#064d50;border-radius:12px;padding:2px 10px;font-size:.85em;margin:2px}
+</style></head><body>
+<header class="top"><div class="wrap">
+<span class="badge">ARDUİNO İLE PROGRAMLAMA · 11. HAFTA</span>
+<h1>Ultrasonik Mesafe Sensörü (HC-SR04)</h1><p>Ses dalgaları ve yankı ilkesi, HC-SR04 zamanlaması, pulseIn() ile süre ölçümü, mesafe hesabı ve park sensörü uygulaması</p>
+<nav class="weeknav"><a href="index.html">☰ Tüm Haftalar</a><a href="hafta10.html">← 10. Hafta</a><a href="hafta12.html">12. Hafta →</a></nav>
+</div></header>
+<main class="wrap">
+<div class="toc"><strong>Bu haftanın içeriği</strong><ol><li><a href="#hedef">Haftanın Hedefleri</a></li><li><a href="#ses">Ses, Ultrason ve Yankı</a></li><li><a href="#modul">HC-SR04 Modülünü Tanıyalım</a></li><li><a href="#prensip">Çalışma Prensibi ve Zamanlama</a></li><li><a href="#hesap">Mesafe Hesabı</a></li><li><a href="#fonk">Yeni Fonksiyonlar</a></li><li><a href="#devre">Devre Şeması</a></li><li><a href="#uyg1">Uygulama 1: Mesafe Ölçer</a></li><li><a href="#uyg2">Uygulama 2: Park Sensörü</a></li><li><a href="#hata">Ölçüm Hataları ve İyi Uygulamalar</a></li><li><a href="#quiz">Kendini Test Et</a></li><li><a href="#odev">Ödev ve Özet</a></li></ol></div>
+<style>
+.wv{fill:none;stroke:#00979d;stroke-width:3;opacity:0;animation:wvGo 2.4s linear infinite}
+@keyframes wvGo{0%{transform:translateX(0);opacity:1}46%{transform:translateX(335px);opacity:.9}49%,100%{transform:translateX(335px);opacity:0}}
+.wr{fill:none;stroke:#e67e22;stroke-width:3;opacity:0;animation:wrBack 2.4s linear infinite}
+@keyframes wrBack{0%,49%{transform:translateX(0);opacity:0}50%{transform:translateX(0);opacity:.95}96%{transform:translateX(-335px);opacity:.7}100%{transform:translateX(-335px);opacity:0}}
+.scan{animation:scan 4s linear infinite}
+@keyframes scan{from{transform:translateX(0)}to{transform:translateX(600px)}}
+.drag{cursor:ew-resize}
+.zone{display:inline-block;padding:2px 10px;border-radius:10px;color:#fff;font-weight:600}
+</style><section class="card" id="hedef"><h2><span class="num">1</span>Haftanın Hedefleri</h2>
+<ul class="goals">
+<li>Sesin yayılması, ultrason ve yankı (eko) ile mesafe ölçme ilkesini açıklayabilmek</li>
+<li>HC-SR04 ultrasonik sensörünün pinlerini, teknik özelliklerini ve zamanlama diyagramını yorumlayabilmek</li>
+<li>Yankı süresinden mesafeyi <b>d = t · 0,0343 / 2</b> bağıntısıyla hesaplayabilmek; sıcaklığın etkisini değerlendirebilmek</li>
+<li><code>pulseIn()</code>, <code>delayMicroseconds()</code>, <code>tone()</code> ve <code>map()</code> fonksiyonlarını kullanabilmek</li>
+<li>Mesafeyi Seri Monitöre yazan ve LED + buzzer ile çalışan bir <b>park sensörü</b> uygulaması geliştirebilmek</li>
+</ul>
+</section>
+<section class="card" id="ses"><h2><span class="num">2</span>Ses Dalgaları, Ultrason ve Yankı</h2>
+<p>Ses, havadaki moleküllerin sıkışıp genleşmesiyle ilerleyen <b>mekanik bir dalgadır</b>; boşlukta yayılamaz. İnsan kulağı yaklaşık <b>20 Hz – 20 kHz</b> aralığını duyar. 20 kHz'in üzerindeki seslere <b>ultrason</b> denir. Yarasalar ve yunuslar ultrasonik sesler yayıp yankılarını dinleyerek çevrelerini algılar (<i>ekolokasyon</i>). Aynı ilke araç park sensörlerinde, robotlarda ve sıvı seviye ölçümünde kullanılır.</p>
+<p>Ses dalgası sert bir yüzeye çarptığında bir kısmı geri yansır. Gönderme anı ile yankının geri gelme anı arasındaki süre <b>t</b> ölçülürse, ses hızı <b>c</b> bilindiğinde mesafe bulunabilir. Ses engele gidip <b>geri döndüğü</b> için toplam yol <b>2·d</b>'dir.</p>
+<div class="figure"><svg viewBox="0 0 560 230" width="620">
+<rect x="20" y="50" width="62" height="140" rx="6" fill="#1565c0"/>
+<circle cx="66" cy="87" r="22" fill="#cfd8dc" stroke="#78909c" stroke-width="3"/><text x="66" y="91" text-anchor="middle" font-size="12" font-weight="700">T</text>
+<circle cx="66" cy="147" r="22" fill="#cfd8dc" stroke="#78909c" stroke-width="3"/><text x="66" y="151" text-anchor="middle" font-size="12" font-weight="700">R</text>
+<path class="wv" style="animation-delay:0.00s" d="M102 62 Q124 87 102 112"/><path class="wv" style="animation-delay:0.18s" d="M102 62 Q124 87 102 112"/><path class="wv" style="animation-delay:0.36s" d="M102 62 Q124 87 102 112"/><path class="wr" style="animation-delay:0.00s" d="M448 122 Q426 147 448 172"/><path class="wr" style="animation-delay:0.18s" d="M448 122 Q426 147 448 172"/><path class="wr" style="animation-delay:0.36s" d="M448 122 Q426 147 448 172"/>
+<rect x="455" y="30" width="26" height="175" fill="#a1887f" stroke="#6d4c41"/>
+<path d="M455 40 l26 -10 M455 70 l26 -10 M455 100 l26 -10 M455 130 l26 -10 M455 160 l26 -10 M455 190 l26 -10" stroke="#6d4c41"/>
+<text x="468" y="222" text-anchor="middle" font-size="11">Engel</text>
+<line x1="88" y1="210" x2="452" y2="210" stroke="#555" marker-start="url(#a11)" marker-end="url(#a11)"/>
+<text x="270" y="204" text-anchor="middle" font-size="11" fill="#333">mesafe d</text>
+<text x="250" y="30" text-anchor="middle" font-size="12" fill="#00979d">giden ultrasonik darbe (40 kHz)</text>
+<text x="250" y="196" text-anchor="middle" font-size="12" fill="#e67e22">yansıyan yankı</text>
+<defs><marker id="a11" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse"><path d="M0 0 L8 4 L0 8z" fill="#555"/></marker></defs>
+</svg><div class="cap">Şekil 1. Verici (T) ses darbesini gönderir, engelden yansıyan yankıyı alıcı (R) yakalar. Ses yolu <b>2·d</b> uzunluğundadır.</div></div>
+<div class="grid2"><div><h3>Neden 40 kHz?</h3><ul><li>İnsanlar duymaz; ortamı rahatsız etmez</li><li>Dalga boyu kısa (λ = c/f ≈ 343/40000 ≈ <b>8,6 mm</b>) olduğundan küçük cisimleri de algılar</li><li>Piezoelektrik dönüştürücüler bu frekansta verimli çalışır</li></ul></div>
+<div><h3>Ses hızı ve sıcaklık</h3><p>Havada ses hızı sıcaklıkla artar:</p><div class="formula" style="font-size:1.2em">c ≈ 331,3 + 0,606 · T &nbsp;(m/s, T: °C)</div><p>20 °C'de c ≈ 343 m/s = <b>0,0343 cm/µs</b>.</p></div></div>
+</section>
+<section class="card" id="modul"><h2><span class="num">3</span>HC-SR04 Modülünü Tanıyalım</h2>
+<p>HC-SR04, üzerinde bir <b>verici (T)</b> ve bir <b>alıcı (R)</b> piezoelektrik dönüştürücü ile bunları süren bir kontrol devresi bulunan ucuz ve yaygın bir modüldür. Arduino yalnızca ölçümü <b>başlatır</b> (Trig) ve yankı süresini <b>ölçer</b> (Echo); 40 kHz sinyal üretme ve yankıyı yükseltme işini modül kendisi yapar.</p>
+<div class="figure"><svg viewBox="0 0 420 220" width="460">
+<rect x="20" y="20" width="380" height="140" rx="8" fill="#1565c0" stroke="#0d47a1" stroke-width="2"/>
+<circle cx="100" cy="88" r="52" fill="#b0bec5" stroke="#78909c" stroke-width="5"/><circle cx="100" cy="88" r="38" fill="#455a64"/>
+<path d="M70 88 h60 M100 58 v60" stroke="#37474f" stroke-width="2"/><circle cx="100" cy="88" r="38" fill="url(#mesh11)"/>
+<circle cx="320" cy="88" r="52" fill="#b0bec5" stroke="#78909c" stroke-width="5"/><circle cx="320" cy="88" r="38" fill="url(#mesh11)"/>
+<defs><pattern id="mesh11" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#455a64"/><circle cx="3" cy="3" r="1.4" fill="#263238"/></pattern></defs>
+<text x="100" y="158" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">T (verici)</text>
+<text x="320" y="158" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">R (alıcı)</text>
+<rect x="190" y="40" width="40" height="16" rx="7" fill="#cfd8dc"/><text x="210" y="52" text-anchor="middle" font-size="8">12 MHz</text>
+<text x="210" y="80" text-anchor="middle" font-size="16" fill="#fff" font-weight="700">HC-SR04</text>
+<g font-size="11" text-anchor="middle">
+<rect x="164" y="160" width="6" height="26" fill="#c9a227"/><text x="167" y="202">VCC</text>
+<rect x="194" y="160" width="6" height="26" fill="#c9a227"/><text x="197" y="202">Trig</text>
+<rect x="224" y="160" width="6" height="26" fill="#c9a227"/><text x="227" y="202">Echo</text>
+<rect x="254" y="160" width="6" height="26" fill="#c9a227"/><text x="257" y="202">GND</text></g>
+<circle cx="197" cy="214" r="3" fill="#e67e22" class="blink"/>
+</svg><div class="cap">Şekil 2. HC-SR04 ultrasonik mesafe sensörü ve pin dizilimi (soldan sağa VCC, Trig, Echo, GND)</div></div>
+<div class="grid2"><table class="tbl"><tr><th>Pin</th><th>Görevi</th><th>UNO bağlantısı</th></tr>
+<tr><td>VCC</td><td>Besleme +5 V</td><td>5V</td></tr>
+<tr><td>Trig</td><td>Tetik girişi: ≥10 µs HIGH darbe ölçümü başlatır</td><td>D9 (çıkış)</td></tr>
+<tr><td>Echo</td><td>Yankı çıkışı: yankı süresi boyunca HIGH (5 V)</td><td>D10 (giriş)</td></tr>
+<tr><td>GND</td><td>Toprak</td><td>GND</td></tr></table>
+<table class="tbl"><tr><th>Özellik</th><th>Değer</th></tr>
+<tr><td>Çalışma gerilimi / akımı</td><td>5 V DC / ≈15 mA</td></tr><tr><td>Ölçüm aralığı</td><td>2 cm – 400 cm</td></tr>
+<tr><td>Çözünürlük</td><td>≈ 0,3 cm</td></tr><tr><td>Ölçüm açısı</td><td>≈ 15° (koni)</td></tr>
+<tr><td>Frekans</td><td>40 kHz</td></tr><tr><td>Önerilen ölçüm aralığı</td><td>≥ 60 ms</td></tr></table></div>
+<div class="note">Echo pini 5 V seviyesinde çıkış verir; UNO için uygundur. 3,3 V ile çalışan kartlarda (ESP32 vb.) Echo hattına gerilim bölücü konmalı ya da 3–5,5 V ile çalışan <b>HC-SR04P</b> sürümü kullanılmalıdır.</div>
+</section>
+<section class="card" id="prensip"><h2><span class="num">4</span>Çalışma Prensibi ve Zamanlama Diyagramı</h2>
+<ol class="steps">
+<li>Arduino, Trig pinine en az <b>10 µs</b> süren bir HIGH darbe gönderir.</li>
+<li>Modül, verici üzerinden <b>8 adet 40 kHz</b>'lik ses darbesi (yaklaşık 200 µs) yayar ve Echo pinini HIGH yapar.</li>
+<li>Ses engele çarpıp geri döner; alıcı yankıyı algıladığı anda Echo pini LOW olur.</li>
+<li>Echo pininin HIGH kaldığı süre <b>t</b>, sesin gidiş + dönüş süresidir. Arduino bu süreyi <code>pulseIn()</code> ile mikrosaniye cinsinden ölçer.</li>
+<li>Yankı hiç gelmezse modül yaklaşık 38 ms sonra Echo'yu kendiliğinden LOW yapar (zaman aşımı).</li></ol>
+<div class="figure"><svg viewBox="0 0 700 250" width="700">
+<g font-size="12" font-weight="600"><text x="10" y="45">Trig</text><text x="10" y="112">Ses</text><text x="10" y="182">Echo</text></g>
+<path d="M80 55 H120 V25 H150 V55 H680" fill="none" stroke="#e67e22" stroke-width="2.5"/>
+<text x="135" y="18" text-anchor="middle" font-size="11">10 µs</text>
+<path d="M80 120 H160" stroke="#00979d" stroke-width="2.5" fill="none"/><path d="M160 120 v-28 h5 v28 h5 v-28 h5 v28 h5 v-28 h5 v28 h5 v-28 h5 v28 h5 v-28 h5 v28 h5 v-28 h5 v28 h5 v-28 h5 v28 h5 v-28 h5 v28 h5 H680" stroke="#00979d" stroke-width="2.5" fill="none"/>
+<text x="200" y="140" text-anchor="middle" font-size="11">8 × 40 kHz ≈ 200 µs (sensör üretir)</text>
+<path d="M80 190 H250 V160 H560 V190 H680" fill="none" stroke="#8e44ad" stroke-width="2.5"/>
+<line x1="250" y1="210" x2="560" y2="210" stroke="#333" marker-start="url(#t11)" marker-end="url(#t11)"/>
+<text x="405" y="230" text-anchor="middle" font-size="12">Echo HIGH süresi t = sesin gidiş + dönüş süresi</text>
+<text x="405" y="153" text-anchor="middle" font-size="11" fill="#8e44ad">pulseIn(echoPin, HIGH) bu süreyi µs olarak ölçer</text>
+<line x1="80" y1="10" x2="80" y2="200" stroke="#e74c3c" stroke-dasharray="4 4" class="scan"/>
+<defs><marker id="t11" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse"><path d="M0 0 L8 4 L0 8z" fill="#333"/></marker></defs>
+</svg><div class="cap">Şekil 3. HC-SR04 zamanlama diyagramı (ölçeksiz). Kırmızı kesikli çizgi zamanın akışını gösterir.</div></div>
+<div class="tip">İki ölçüm arasında en az <b>60 ms</b> bekleyin. Aksi hâlde bir önceki darbenin geç gelen yankısı yeni ölçümü bozabilir.</div>
+</section>
+<section class="card" id="hesap"><h2><span class="num">5</span>Mesafe Hesabı</h2>
+<p>Yol = hız × zaman ve yol = 2·d olduğundan:</p>
+<div class="formula">d = (t · c) / 2 &nbsp;&nbsp;⟹&nbsp;&nbsp; d [cm] = t [µs] · 0,0343 / 2 ≈ t / 58</div>
+<p>Burada 0,0343 cm/µs, 20 °C'deki ses hızıdır (343 m/s = 34 300 cm/s = 0,0343 cm/µs). 1/(0,0343/2) ≈ 58,3 olduğundan tamsayı işlemlerde <b>d = t / 58</b> yaklaşık formülü sık kullanılır.</p>
+<div class="grid2"><div><h3>Çözümlü Örnek</h3><p>Echo pini <b>1166 µs</b> HIGH kalmıştır. Engel ne kadar uzaktadır?</p>
+<p>d = 1166 · 0,0343 / 2 = <b>20,0 cm</b> &nbsp; (yaklaşık formülle 1166/58 = 20 cm)</p>
+<p>Tersinden: 1 m uzaklıktaki bir engel için t = 2·100 / 0,0343 ≈ <b>5831 µs ≈ 5,8 ms</b>.</p></div>
+<table class="tbl"><tr><th>Mesafe d</th><th>Yankı süresi t</th></tr><tr><td>2 cm (min.)</td><td>≈ 117 µs</td></tr><tr><td>10 cm</td><td>≈ 583 µs</td></tr>
+<tr><td>50 cm</td><td>≈ 2915 µs</td></tr><tr><td>100 cm</td><td>≈ 5831 µs</td></tr><tr><td>400 cm (maks.)</td><td>≈ 23 324 µs</td></tr></table></div>
+<div class="warn">Sıcaklık değişince ses hızı değişir. Örneğin 0 °C'de c ≈ 331 m/s'dir; kodda yine 0,0343 kullanılırsa ölçülen mesafe gerçekte olduğundan yaklaşık <b>%3,5 fazla</b> çıkar. Hassas uygulamalarda 10. haftadaki sıcaklık sensörüyle <b>sıcaklık düzeltmesi</b> yapılabilir.</div>
+</section>
+<section class="card" id="fonk"><h2><span class="num">6</span>Bu Haftanın Yeni Fonksiyonları</h2>
+<table class="tbl"><tr><th>Fonksiyon</th><th>Görevi</th><th>Örnek</th></tr>
+<tr><td><code>pulseIn(pin, değer, zamanAşımı)</code></td><td>Pinin <i>değer</i> (HIGH/LOW) seviyesinde kaldığı süreyi <b>µs</b> olarak döndürür (<code>unsigned long</code>). Zaman aşımı (µs) içinde darbe gelmezse <b>0</b> döndürür; varsayılan zaman aşımı 1 saniyedir.</td><td><code>pulseIn(10, HIGH, 30000UL)</code></td></tr>
+<tr><td><code>delayMicroseconds(us)</code></td><td>Programı mikrosaniye düzeyinde bekletir (Trig darbesi için).</td><td><code>delayMicroseconds(10)</code></td></tr>
+<tr><td><code>unsigned long</code></td><td>0 – 4 294 967 295 aralığında işaretsiz 32 bit tamsayı; süre ölçümlerinde kullanılır.</td><td><code>unsigned long sure;</code></td></tr>
+<tr><td><code>tone(pin, frekans[, süre])</code></td><td>Pinden %50 doluluklu kare dalga üretir (pasif buzzer/hoparlör). Süre (ms) verilirse ses o kadar sürer, program beklemeden devam eder.</td><td><code>tone(8, 2000, 60)</code></td></tr>
+<tr><td><code>noTone(pin)</code></td><td><code>tone()</code> ile başlatılan sesi durdurur.</td><td><code>noTone(8)</code></td></tr>
+<tr><td><code>map(x, a1, a2, b1, b2)</code></td><td>x değerini [a1, a2] aralığından [b1, b2] aralığına doğrusal olarak taşır (tamsayı sonuç).</td><td><code>map(d, 5, 100, 50, 600)</code></td></tr>
+<tr><td><code>Serial.print(x, 1)</code></td><td>Ondalıklı sayıyı virgülden sonra 1 basamakla yazdırır.</td><td><code>Serial.print(20.04, 1)</code> → 20.0</td></tr></table>
+<div class="warn"><code>tone()</code> fonksiyonu UNO'da <b>Timer2</b>'yi kullanır; ses çalarken <b>D3 ve D11</b> pinlerinde <code>analogWrite()</code> (PWM) düzgün çalışmaz. Ayrıca aynı anda yalnızca tek pinde ton üretilebilir.</div>
+<div class="note">Aktif buzzer'lar kendi osilatörüne sahiptir; <code>digitalWrite(pin, HIGH)</code> ile sabit frekansta öter. Pasif buzzer ise <code>tone()</code> ile istenen frekansta sürülür. Aşağıdaki kod her ikisiyle de çalışır, ancak frekans ayarı yalnızca pasif buzzer'da etkilidir.</div>
+</section>
+<section class="card" id="devre"><h2><span class="num">7</span>Devre Şeması</h2>
+<p>Uygulama 1 için yalnızca HC-SR04'ün dört bağlantısı yeterlidir. Uygulama 2'de ayrıca üç LED (her biri 220 Ω ön dirençle) ve bir buzzer eklenir.</p>
+<div class="figure"><svg viewBox="0 0 900 490" width="900"><defs><pattern id="bb11" width="10" height="10" patternUnits="userSpaceOnUse"><rect x="3.5" y="3.5" width="3" height="3" fill="#c8c8bc"/></pattern></defs>
+<rect x="420" y="30" width="460" height="410" rx="6" fill="#f4f3ec" stroke="#cfcfc4"/>
+<rect x="428" y="64" width="444" height="342" fill="url(#bb11)"/>
+<rect x="428" y="232.0" width="444" height="6" fill="#e2e1d6"/>
+<line x1="430" y1="40" x2="870" y2="40" stroke="#2e6bd6" stroke-width="2"/>
+<line x1="430" y1="52" x2="870" y2="52" stroke="#d63031" stroke-width="2"/>
+<text x="874" y="43" font-size="9" fill="#2e6bd6" text-anchor="end">−</text>
+<text x="874" y="55" font-size="9" fill="#d63031" text-anchor="end">+</text>
+<line x1="430" y1="418" x2="870" y2="418" stroke="#d63031" stroke-width="2"/>
+<line x1="430" y1="430" x2="870" y2="430" stroke="#2e6bd6" stroke-width="2"/>
+<text x="874" y="421" font-size="9" fill="#d63031" text-anchor="end">+</text>
+<text x="874" y="433" font-size="9" fill="#2e6bd6" text-anchor="end">−</text>
+<g class="uno">
+<rect x="30" y="240" width="340" height="170" rx="10" fill="#0e7c86" stroke="#064d50" stroke-width="2.5"/>
+<rect x="16" y="258" width="46" height="36" rx="3" fill="#b8c2cc" stroke="#556"/>
+<text x="39" y="280" text-anchor="middle" font-size="9">USB</text>
+<rect x="20" y="348" width="38" height="32" rx="3" fill="#222"/>
+<text x="39" y="368" text-anchor="middle" font-size="7" fill="#fff">DC</text>
+<rect x="180" y="332" width="150" height="28" rx="3" fill="#1b1b1b"/>
+<text x="255" y="350" text-anchor="middle" font-size="10" fill="#ccc">ATmega328P</text>
+<text x="120" y="326" font-size="15" font-weight="700" fill="#fff">ARDUINO UNO</text>
+<rect x="118" y="245" width="224" height="14" fill="#111"/>
+<rect x="122" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="128" y="264" font-size="7.5" fill="#fff" transform="rotate(90 128 264)">GND</text>
+<rect x="136" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="142" y="264" font-size="7.5" fill="#fff" transform="rotate(90 142 264)">13</text>
+<rect x="150" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="156" y="264" font-size="7.5" fill="#fff" transform="rotate(90 156 264)">12</text>
+<rect x="164" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="170" y="264" font-size="7.5" fill="#fff" transform="rotate(90 170 264)">~11</text>
+<rect x="178" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="184" y="264" font-size="7.5" fill="#fff" transform="rotate(90 184 264)">~10</text>
+<rect x="192" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="198" y="264" font-size="7.5" fill="#fff" transform="rotate(90 198 264)">~9</text>
+<rect x="206" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="212" y="264" font-size="7.5" fill="#fff" transform="rotate(90 212 264)">8</text>
+<rect x="234" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="240" y="264" font-size="7.5" fill="#fff" transform="rotate(90 240 264)">7</text>
+<rect x="248" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="254" y="264" font-size="7.5" fill="#fff" transform="rotate(90 254 264)">~6</text>
+<rect x="262" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="268" y="264" font-size="7.5" fill="#fff" transform="rotate(90 268 264)">~5</text>
+<rect x="276" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="282" y="264" font-size="7.5" fill="#fff" transform="rotate(90 282 264)">4</text>
+<rect x="290" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="296" y="264" font-size="7.5" fill="#fff" transform="rotate(90 296 264)">~3</text>
+<rect x="304" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="310" y="264" font-size="7.5" fill="#fff" transform="rotate(90 310 264)">2</text>
+<rect x="318" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="324" y="264" font-size="7.5" fill="#fff" transform="rotate(90 324 264)">1</text>
+<rect x="332" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="338" y="264" font-size="7.5" fill="#fff" transform="rotate(90 338 264)">0</text>
+<rect x="133" y="391" width="196" height="14" fill="#111"/>
+<rect x="137" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="143" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 143 388)">IOREF</text>
+<rect x="151" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="157" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 157 388)">RES</text>
+<rect x="165" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="171" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 171 388)">3V3</text>
+<rect x="179" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="185" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 185 388)">5V</text>
+<rect x="193" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="199" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 199 388)">GND</text>
+<rect x="207" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="213" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 213 388)">GND</text>
+<rect x="221" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="227" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 227 388)">VIN</text>
+<rect x="249" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="255" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 255 388)">A0</text>
+<rect x="263" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="269" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 269 388)">A1</text>
+<rect x="277" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="283" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 283 388)">A2</text>
+<rect x="291" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="297" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 297 388)">A3</text>
+<rect x="305" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="311" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 311 388)">A4</text>
+<rect x="319" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="325" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 325 388)">A5</text>
+</g>
+<rect x="470" y="75" width="160" height="85" rx="6" fill="#1565c0"/><circle cx="510" cy="112" r="26" fill="#b0bec5" stroke="#78909c" stroke-width="3"/><circle cx="590" cy="112" r="26" fill="#b0bec5" stroke="#78909c" stroke-width="3"/><text x="550" y="92" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">HC-SR04</text>
+<rect x="498" y="160" width="4" height="8" fill="#c9a227"/><text x="500" y="155" font-size="6.5" fill="#fff" text-anchor="middle">VCC</text>
+<rect x="518" y="160" width="4" height="8" fill="#c9a227"/><text x="520" y="155" font-size="6.5" fill="#fff" text-anchor="middle">Trig</text>
+<rect x="538" y="160" width="4" height="8" fill="#c9a227"/><text x="540" y="155" font-size="6.5" fill="#fff" text-anchor="middle">Echo</text>
+<rect x="558" y="160" width="4" height="8" fill="#c9a227"/><text x="560" y="155" font-size="6.5" fill="#fff" text-anchor="middle">GND</text>
+<path d="M182 398 V455 H18 V52 H430" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M182 398 V455 H18 V52 H430" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<path d="M196 398 V463 H10 V40 H430" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M196 398 V463 H10 V40 H430" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<path d="M210 398 V430 H430" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M210 398 V430 H430" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<path d="M500 168 V174 H455 V52" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M500 168 V174 H455 V52" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<path d="M560 168 V174 H645 V40" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M560 168 V174 H645 V40" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<path d="M195 252 V194 H520 V168" fill="none" stroke="#e67e22" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M195 252 V194 H520 V168" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<path d="M540 168 V184 H181 V252" fill="none" stroke="#8e44ad" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M540 168 V184 H181 V252" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<path d="M279 252 V231 H680 V245" fill="none" stroke="#27ae60" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M279 252 V231 H680 V245" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<line x1="680" y1="245" x2="680" y2="292" stroke="#999" stroke-width="2"/><rect x="675" y="255.5" width="10" height="26" rx="4" fill="#e8cfa6" stroke="#a5835a"/><rect x="675" y="259.5" width="10" height="3" fill="#d00"/><rect x="675" y="264.5" width="10" height="3" fill="#d00"/><rect x="675" y="269.5" width="10" height="3" fill="#7b3f00"/><rect x="675" y="275.5" width="10" height="2" fill="#c9a227"/><text x="689" y="272.5" font-size="9" fill="#555">220 Ω</text>
+<line x1="680" y1="292" x2="680" y2="306" stroke="#999" stroke-width="2"/><line x1="680" y1="322" x2="680" y2="336" stroke="#999" stroke-width="2"/><path  class="" d="M672 322 V312 a8 8 0 0 1 16 0 V322 Z" fill="#27ae60" stroke="#333" stroke-width=".8"/><rect x="670" y="321" width="20" height="3" fill="#777"/>
+<path d="M680 336 V430" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="680" y="356" text-anchor="middle" font-size="10">D4 Yeşil</text>
+<path d="M265 252 V222 H740 V245" fill="none" stroke="#f1c40f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M265 252 V222 H740 V245" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<line x1="740" y1="245" x2="740" y2="292" stroke="#999" stroke-width="2"/><rect x="735" y="255.5" width="10" height="26" rx="4" fill="#e8cfa6" stroke="#a5835a"/><rect x="735" y="259.5" width="10" height="3" fill="#d00"/><rect x="735" y="264.5" width="10" height="3" fill="#d00"/><rect x="735" y="269.5" width="10" height="3" fill="#7b3f00"/><rect x="735" y="275.5" width="10" height="2" fill="#c9a227"/><text x="749" y="272.5" font-size="9" fill="#555">220 Ω</text>
+<line x1="740" y1="292" x2="740" y2="306" stroke="#999" stroke-width="2"/><line x1="740" y1="322" x2="740" y2="336" stroke="#999" stroke-width="2"/><path  class="" d="M732 322 V312 a8 8 0 0 1 16 0 V322 Z" fill="#f1c40f" stroke="#333" stroke-width=".8"/><rect x="730" y="321" width="20" height="3" fill="#777"/>
+<path d="M740 336 V430" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="740" y="356" text-anchor="middle" font-size="10">D5 Sarı</text>
+<path d="M251 252 V213 H800 V245" fill="none" stroke="#e74c3c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M251 252 V213 H800 V245" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<line x1="800" y1="245" x2="800" y2="292" stroke="#999" stroke-width="2"/><rect x="795" y="255.5" width="10" height="26" rx="4" fill="#e8cfa6" stroke="#a5835a"/><rect x="795" y="259.5" width="10" height="3" fill="#d00"/><rect x="795" y="264.5" width="10" height="3" fill="#d00"/><rect x="795" y="269.5" width="10" height="3" fill="#7b3f00"/><rect x="795" y="275.5" width="10" height="2" fill="#c9a227"/><text x="809" y="272.5" font-size="9" fill="#555">220 Ω</text>
+<line x1="800" y1="292" x2="800" y2="306" stroke="#999" stroke-width="2"/><line x1="800" y1="322" x2="800" y2="336" stroke="#999" stroke-width="2"/><path  class="pulse" d="M792 322 V312 a8 8 0 0 1 16 0 V322 Z" fill="#e74c3c" stroke="#333" stroke-width=".8"/><rect x="790" y="321" width="20" height="3" fill="#777"/>
+<path d="M800 336 V430" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="800" y="356" text-anchor="middle" font-size="10">D6 Kırmızı</text>
+<path d="M209 252 V204 H850 V282" fill="none" stroke="#2e86de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M209 252 V204 H850 V282" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<circle cx="850" cy="302" r="20" fill="#222"/><circle cx="850" cy="302" r="5" fill="#555"/><text x="836" y="290" font-size="10" fill="#fff">+</text><path d="M872 290 q8 12 0 24 M878 284 q13 18 0 36" stroke="#2e86de" fill="none" stroke-width="2" class="blink"/>
+<path d="M850 322 V430" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="850" y="345" text-anchor="middle" font-size="10">Buzzer D8</text>
+<g font-size="10" fill="#333"><text x="24" y="484">5V → üst + hattı, GND → üst ve alt − hatları</text></g></svg><div class="cap">Şekil 4. Park sensörü bağlantı şeması: HC-SR04 (Trig→D9, Echo→D10), LED'ler D4–D6 (220 Ω ile), aktif/pasif buzzer D8. Beyaz kesikli çizgiler sinyal/akım yönünü gösterir.</div></div>
+<table class="tbl"><tr><th>Eleman</th><th>Bağlantı</th></tr>
+<tr><td>HC-SR04 VCC / GND</td><td>Breadboard + / − hattı (Arduino 5V / GND)</td></tr>
+<tr><td>HC-SR04 Trig / Echo</td><td>D9 / D10</td></tr>
+<tr><td>Yeşil, sarı, kırmızı LED</td><td>D4, D5, D6 → 220 Ω → LED anot; katot → GND</td></tr>
+<tr><td>Buzzer</td><td>+ ucu D8, − ucu GND</td></tr></table>
+</section>
+<section class="card" id="uyg1"><h2><span class="num">8</span>Uygulama 1: Mesafeyi Seri Monitöre Yazdırma</h2>
+<div class="codebox"><span class="lbl">mesafe_olcer.ino</span><pre class="code">// Hafta 11 – Uygulama 1: HC-SR04 ile mesafe ölçümü
+const int trigPin = 9;    // Trig -&gt; D9
+const int echoPin = 10;   // Echo -&gt; D10
+
+void setup() {
+  Serial.begin(9600);         // Seri Monitör: 9600 baud
+  pinMode(trigPin, OUTPUT);   // Trig: Arduino'dan sensöre (çıkış)
+  pinMode(echoPin, INPUT);    // Echo: sensörden Arduino'ya (giriş)
+}
+
+void loop() {
+  // 1) Temiz bir başlangıç için Trig'i kısa süre LOW tut
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+
+  // 2) 10 µs'lik HIGH darbe -&gt; sensör 8 adet 40 kHz darbe yayar
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // 3) Echo pininin HIGH kaldığı süreyi µs cinsinden ölç
+  //    (30000 µs = 30 ms zaman aşımı: yankı gelmezse 0 döner)
+  unsigned long sure = pulseIn(echoPin, HIGH, 30000UL);
+
+  if (sure == 0) {
+    Serial.println("Menzil dışı / yankı yok");
+  } else {
+    // Ses hızı ≈ 0,0343 cm/µs; yol gidiş-dönüş olduğu için 2'ye böl
+    float mesafe = sure * 0.0343 / 2.0;
+    Serial.print("Süre: ");
+    Serial.print(sure);
+    Serial.print(" us  Mesafe: ");
+    Serial.print(mesafe, 1);      // virgülden sonra 1 basamak
+    Serial.println(" cm");
+  }
+  delay(500);   // yarım saniyede bir ölçüm
+}</pre></div>
+<div class="sim"><h4>🔬 Simülasyon: Engeli sürükleyin veya kaydırıcıyı kullanın</h4><div class="grid2"><div>
+<svg id="s1svg" viewBox="0 0 460 170" width="100%">
+<rect x="0" y="140" width="460" height="30" fill="#eceff1"/>
+<rect x="8" y="58" width="34" height="74" rx="4" fill="#1565c0"/><circle cx="32" cy="77" r="10" fill="#cfd8dc"/><circle cx="32" cy="113" r="10" fill="#cfd8dc"/>
+<path id="s1wave" d="" fill="none" stroke="#00979d" stroke-width="3"/>
+<g id="s1obj" class="drag"><rect id="s1box" x="0" y="40" width="22" height="100" fill="#a1887f" stroke="#6d4c41"/><text id="s1lbl" x="11" y="34" text-anchor="middle" font-size="11"></text></g>
+<text id="s1echo" x="60" y="20" font-size="12" font-family="Consolas">Echo: LOW</text>
+<rect x="250" y="8" width="200" height="16" rx="3" fill="#fff" stroke="#bbb"/><rect id="s1bar" x="250" y="8" width="0" height="16" rx="3" fill="#8e44ad" opacity=".7"/>
+<text x="350" y="20" text-anchor="middle" font-size="10">Echo HIGH süresi</text>
+</svg><div class="out" id="s1out"></div></div><div>
+<label>Gerçek mesafe d = <span id="s1dv">50</span> cm</label><input type="range" id="s1d" min="2" max="450" value="50">
+<label>Ortam sıcaklığı T = <span id="s1tv">20</span> °C</label><input type="range" id="s1t" min="-10" max="40" value="20">
+<div class="lbl" style="margin-top:10px;font-weight:600;font-size:.9em">Seri Monitör (9600 baud)</div><div class="serial" id="s1ser"></div></div></div></div>
+<p>Simülasyonda ses darbesi görülebilmesi için milyonlarca kat yavaşlatılmıştır (gerçekte gidiş-dönüş birkaç milisaniye sürer). Sıcaklığı değiştirerek, kodda sabit 0,0343 kullanmanın oluşturduğu ölçüm hatasını gözlemleyin. 400 cm'nin ötesinde sensör yankıyı algılayamaz.</p>
+</section>
+<section class="card" id="uyg2"><h2><span class="num">9</span>Uygulama 2: LED'li ve Sesli Park Sensörü</h2>
+<p>Araçların arka tamponundaki park sensörleri engel yaklaştıkça daha sık bip sesi çıkarır. Aşağıdaki programda mesafe <b>dört bölgeye</b> ayrılır ve bip aralığı <code>map()</code> ile mesafeye bağlanır.</p>
+<table class="tbl"><tr><th>Mesafe</th><th>LED'ler</th><th>Buzzer</th></tr>
+<tr><td>d ≥ 100 cm</td><td>hepsi sönük</td><td>sessiz</td></tr><tr><td>50 ≤ d &lt; 100</td><td><span class="zone" style="background:#27ae60">yeşil</span></td><td>yavaş bip (≈ 370–650 ms periyot)</td></tr>
+<tr><td>20 ≤ d &lt; 50</td><td>yeşil + <span class="zone" style="background:#e1b40c">sarı</span></td><td>orta hızda bip</td></tr><tr><td>5 ≤ d &lt; 20</td><td>yeşil + sarı + <span class="zone" style="background:#e74c3c">kırmızı</span></td><td>hızlı bip</td></tr>
+<tr><td>d &lt; 5 cm</td><td>hepsi yanık</td><td>sürekli ses</td></tr></table>
+<div class="codebox"><span class="lbl">park_sensoru.ino</span><pre class="code">// Hafta 11 – Uygulama 2: LED'li ve buzzer'lı park sensörü
+const int trigPin = 9;
+const int echoPin = 10;
+const int yesilLed = 4;     // d &lt; 100 cm
+const int sariLed = 5;      // d &lt; 50 cm
+const int kirmiziLed = 6;   // d &lt; 20 cm
+const int buzzerPin = 8;
+
+// Mesafeyi cm olarak ölçen yardımcı fonksiyon
+long mesafeOlc() {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  unsigned long sure = pulseIn(echoPin, HIGH, 30000UL);
+  if (sure == 0) return 999;   // yankı yok: engel çok uzakta kabul et
+  return sure / 58;            // 1 cm ≈ 58 µs (gidiş-dönüş)
+}
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(yesilLed, OUTPUT);
+  pinMode(sariLed, OUTPUT);
+  pinMode(kirmiziLed, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
+}
+
+void loop() {
+  long d = mesafeOlc();
+  Serial.println(d);
+
+  // LED göstergesi: engel yaklaştıkça daha fazla LED yanar
+  digitalWrite(yesilLed,   d &lt; 100 ? HIGH : LOW);
+  digitalWrite(sariLed,    d &lt; 50  ? HIGH : LOW);
+  digitalWrite(kirmiziLed, d &lt; 20  ? HIGH : LOW);
+
+  if (d &lt; 5) {
+    tone(buzzerPin, 2000);           // çok yakın: sürekli ses
+    delay(100);
+  } else if (d &lt; 100) {
+    // Mesafe küçüldükçe bip aralığı kısalır: 5 cm -&gt; 50 ms, 100 cm -&gt; 600 ms
+    int aralik = map(d, 5, 100, 50, 600);
+    tone(buzzerPin, 2000, 60);       // 60 ms'lik bip (arka planda çalar)
+    delay(60 + aralik);
+  } else {
+    noTone(buzzerPin);               // engel uzakta: sessiz
+    delay(100);
+  }
+}</pre></div>
+<div class="sim"><h4>🔬 Simülasyon: Aracı duvara yaklaştırın (aracı sürükleyebilirsiniz)</h4><div class="grid2"><div>
+<svg id="s2svg" viewBox="0 0 460 190" width="100%">
+<rect x="0" y="150" width="460" height="40" fill="#cfd8dc"/><rect x="430" y="20" width="30" height="130" fill="#a1887f" stroke="#6d4c41"/>
+<g id="s2car" class="drag"><rect x="0" y="95" width="150" height="40" rx="10" fill="#2e86de"/><path d="M25 95 L45 65 H110 L130 95 Z" fill="#5dade2"/>
+<circle cx="35" cy="138" r="13" fill="#333"/><circle cx="115" cy="138" r="13" fill="#333"/><rect x="146" y="108" width="8" height="12" fill="#1565c0"/>
+<path id="s2w" d="M160 104 q8 10 0 20 M168 98 q12 16 0 32" stroke="#00979d" stroke-width="2" fill="none" opacity="0"/></g>
+<g transform="translate(225,6)"><rect width="190" height="46" rx="8" fill="#263238"/>
+<circle id="s2g" cx="28" cy="23" r="11" fill="#1e3d27"/><circle id="s2y" cx="62" cy="23" r="11" fill="#3d3510"/><circle id="s2r" cx="96" cy="23" r="11" fill="#3d1512"/>
+<circle cx="150" cy="23" r="14" fill="#111"/><circle id="s2bz" cx="150" cy="23" r="6" fill="#444"/></g>
+<text id="s2dt" x="90" y="34" font-size="13" text-anchor="middle" font-family="Consolas"></text>
+</svg><div class="out" id="s2out"></div></div><div>
+<label>Duvara mesafe d = <span id="s2dv">120</span> cm</label><input type="range" id="s2d" min="0" max="150" value="120">
+<label><input type="checkbox" id="s2snd"> Sesi aç (bilgisayar hoparlöründen 2 kHz bip)</label>
+<div class="lbl" style="margin-top:10px;font-weight:600;font-size:.9em">Seri Monitör</div><div class="serial" id="s2ser" style="height:120px"></div></div></div></div>
+</section>
+<section class="card" id="hata"><h2><span class="num">10</span>Ölçüm Hataları ve İyi Uygulamalar</h2>
+<table class="tbl"><tr><th>Durum</th><th>Sonuç</th><th>Çözüm</th></tr>
+<tr><td>Yumuşak/gözenekli yüzey (kumaş, sünger)</td><td>Ses soğurulur, yankı zayıf ya da yok</td><td>Sert, düz yüzeyler tercih edilir</td></tr>
+<tr><td>Eğik yüzey (≥ 15°–20°)</td><td>Yankı sensöre dönmez, 0 veya hatalı değer</td><td>Sensörü yüzeye dik konumlandırın</td></tr>
+<tr><td>Çok yakın engel (&lt; 2 cm)</td><td>Verici sesi henüz bitmeden yankı gelir</td><td>Ölçüm aralığının altında kalmayın</td></tr>
+<tr><td>Birden fazla sensör</td><td>Bir sensörün sesi diğerine karışır (çapraz girişim)</td><td>Sensörleri sırayla, aralarında ≥ 60 ms ile tetikleyin</td></tr>
+<tr><td>Sıcaklık değişimi</td><td>Ses hızı değişir, sistematik hata</td><td>c = 331,3 + 0,606·T ile düzeltin</td></tr>
+<tr><td>Ani sıçrayan değerler</td><td>Gürültülü okuma</td><td>Birkaç ölçümün ortalaması ya da ortancası (medyan)</td></tr></table>
+<div class="codebox"><span class="lbl">ortanca_filtre.ino (parça)</span><pre class="code">// 5 ölçümün ortancasını (medyan) alarak ani sıçramaları bastırma
+long ortancaMesafe() {
+  long a[5];
+  for (int i = 0; i &lt; 5; i++) { a[i] = mesafeOlc(); delay(60); }
+  // basit sıralama (insertion sort)
+  for (int i = 1; i &lt; 5; i++) {
+    long k = a[i]; int j = i - 1;
+    while (j &gt;= 0 &amp;&amp; a[j] &gt; k) { a[j + 1] = a[j]; j--; }
+    a[j + 1] = k;
+  }
+  return a[2];   // ortadaki eleman
+}</pre></div>
+<div class="tip">Kütüphane Yöneticisi'nden (<i>Araçlar → Kütüphaneleri Yönet</i>) kurulabilen <b>NewPing</b> kütüphanesi, birden çok sensörü ve ortanca filtrelemeyi hazır fonksiyonlarla sunar. Bu derste ilkeyi kavramak için kütüphanesiz çalışıyoruz.</div>
+</section>
+<section class="card quiz" id="quiz"><h2><span class="num">11</span>Kendini Test Et</h2>
+<p>Doğru seçeneği bulduğunuzda kısa bir açıklama görüntülenir.</p><div class="q" data-answer="b"><p>1) Echo pini 2332 µs HIGH kalmıştır (20 °C). Engel yaklaşık ne kadar uzaktadır?</p><button class="opt" data-k="a">a) 80 cm</button><button class="opt" data-k="b">b) 40 cm</button><button class="opt" data-k="c">c) 20 cm</button><div class="fb">✓ d = 2332 · 0,0343 / 2 ≈ 40,0 cm (veya 2332/58 ≈ 40).</div></div>
+<div class="q" data-answer="a"><p>2) HC-SR04'te ölçümü başlatmak için Trig pinine ne uygulanır?</p><button class="opt" data-k="a">a) En az 10 µs süren HIGH darbe</button><button class="opt" data-k="b">b) Sürekli 40 kHz kare dalga</button><button class="opt" data-k="c">c) analogWrite(trigPin, 128)</button><div class="fb">✓ Arduino yalnızca ≥10 µs tetik darbesi verir; 40 kHz'lik 8 darbeyi modülün kendisi üretir.</div></div>
+<div class="q" data-answer="b"><p>3) Mesafe formülünde süre neden 2'ye bölünür?</p><button class="opt" data-k="a">a) Sensörde iki dönüştürücü olduğu için</button><button class="opt" data-k="b">b) Ses engele gidip geri döndüğü için</button><button class="opt" data-k="c">c) pulseIn sonucu iki katı verdiği için</button><div class="fb">✓ Ölçülen süre gidiş + dönüş süresidir; toplam yol 2·d'dir.</div></div>
+<div class="q" data-answer="b"><p>4) pulseIn(echoPin, HIGH, 30000UL) hangi durumda 0 döndürür?</p><button class="opt" data-k="a">a) Engel 2 cm'den yakınsa</button><button class="opt" data-k="b">b) 30 ms içinde HIGH darbe tamamlanmazsa</button><button class="opt" data-k="c">c) Echo pini LOW iken</button><div class="fb">✓ Zaman aşımı süresi içinde darbe başlayıp bitmezse pulseIn 0 döndürür; kodda bu durum 'menzil dışı' olarak ele alınır.</div></div>
+<div class="q" data-answer="a"><p>5) Ortam 0 °C iken kodda 0,0343 sabiti kullanılırsa ölçülen mesafe gerçeğe göre nasıl olur?</p><button class="opt" data-k="a">a) Biraz büyük çıkar</button><button class="opt" data-k="b">b) Biraz küçük çıkar</button><button class="opt" data-k="c">c) Değişmez</button><div class="fb">✓ 0 °C'de ses daha yavaştır (≈331 m/s), yankı daha geç gelir; 343 m/s varsayımıyla hesaplanan mesafe ≈ %3,5 büyük çıkar.</div></div>
+</section>
+<section class="card" id="odev"><h2><span class="num">12</span>Ödev ve Özet</h2>
+<h3>Ödev</h3><ol>
+<li>Uygulama 1'i, ölçülen mesafeyi hem cm hem inç (1 inç = 2,54 cm) olarak yazdıracak şekilde değiştirin. Ölçümü 5 farklı mesafede metreyle karşılaştırıp hata yüzdelerini bir tabloya yazın.</li>
+<li>Park sensörünü <code>delay()</code> kullanmadan, <code>millis()</code> ile bip zamanlaması yapacak biçimde yeniden yazın.</li>
+<li>Kırmızı LED'in (D6, PWM pini) parlaklığını <code>analogWrite()</code> ile mesafeyle ters orantılı olarak değiştirin: 100 cm'de sönük, 5 cm'de tam parlak.</li>
+<li>10. haftadaki sıcaklık sensörünü ekleyerek ses hızını <b>c = 331,3 + 0,606·T</b> ile hesaplayan, sıcaklık düzeltmeli bir mesafe ölçer tasarlayın.</li></ol>
+<details><summary>2. ödev için ipucu (tıklayın)</summary><div class="codebox"><span class="lbl">millis_bip_ipucu.ino</span><pre class="code">// İpucu: delay() yerine millis() ile bekleme yapan (bloklamayan) bip
+unsigned long sonBip = 0;
+
+void loop() {
+  long d = mesafeOlc();
+  // ... LED satırları aynı kalır ...
+  if (d &lt; 5) {
+    tone(buzzerPin, 2000);
+  } else if (d &lt; 100) {
+    unsigned long aralik = map(d, 5, 100, 50, 600) + 60;
+    if (millis() - sonBip &gt;= aralik) {   // bip zamanı geldi mi?
+      tone(buzzerPin, 2000, 60);
+      sonBip = millis();
+    }
+  } else {
+    noTone(buzzerPin);
+  }
+  delay(60);   // HC-SR04 için ölçüm döngüsü ≥ 60 ms önerilir
+}</pre></div></details>
+<h3>Özet</h3><ul>
+<li>HC-SR04, 40 kHz ultrasonik darbe gönderip yankısını dinleyerek 2–400 cm arası mesafe ölçer.</li>
+<li>Trig'e ≥10 µs HIGH darbe verilir; Echo'nun HIGH kalma süresi <code>pulseIn()</code> ile µs olarak ölçülür.</li>
+<li>d [cm] = t [µs] · 0,0343 / 2 ≈ t / 58; ses hızı sıcaklıkla değişir (c ≈ 331,3 + 0,606·T).</li>
+<li><code>tone()</code>/<code>noTone()</code> ile buzzer sürülür; <code>map()</code> ile mesafe bip aralığına dönüştürülür.</li>
+<li>Ölçümler arasında ≥ 60 ms beklenmeli; yumuşak/eğik yüzeyler ve çapraz girişim hataya yol açar.</li></ul>
+</section>
+
+</main>
+<footer>Arduino ile Programlama · Ders Notları · 11. Hafta<br>Kaynaklar: C. Taşdemir – <i>Arduino</i>; G. Döktaş – <i>Arduino Eğitim Kitabı</i>; E. Delebe – <i>Projeler ile Arduino</i></footer>
+<script>
+(function(){
+ const KW=['void','if','else','for','while','do','return','switch','case','break','default','const','true','false','#include','#define'];
+ const TY=['int','float','long','unsigned','byte','bool','boolean','char','double','String','word'];
+ const CST=['HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP','LED_BUILTIN','A0','A1','A2','A3','A4','A5'];
+ const FN=['pinMode','digitalWrite','digitalRead','analogRead','analogWrite','delay','delayMicroseconds','millis','micros','setup','loop','map','constrain','pulseIn','tone','noTone','Serial','begin','print','println','attach','write','read','available','random'];
+ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+ function hl(src){
+  let out='',i=0;
+  const re=/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(#?[A-Za-z_][A-Za-z0-9_]*)|(\b\d+(?:\.\d+)?\b)/g;let m,last=0;
+  while((m=re.exec(src))){out+=esc(src.slice(last,m.index));
+   if(m[1])out+='<span class="com">'+esc(m[1])+'</span>';
+   else if(m[2])out+='<span class="str">'+esc(m[2])+'</span>';
+   else if(m[3]){const w=m[3];let c=KW.includes(w)?'kw':TY.includes(w)?'ty':CST.includes(w)?'cst':FN.includes(w)?'fn':'';out+=c?'<span class="'+c+'">'+esc(w)+'</span>':esc(w)}
+   else if(m[4])out+='<span class="num">'+m[4]+'</span>';
+   last=re.lastIndex}
+  return out+esc(src.slice(last))}
+ document.querySelectorAll('pre.code').forEach(p=>{const raw=p.textContent;p.innerHTML=hl(raw);
+  const b=document.createElement('button');b.className='copybtn';b.textContent='Kopyala';
+  b.onclick=()=>{navigator.clipboard.writeText(raw).then(()=>{b.textContent='Kopyalandı ✓';setTimeout(()=>b.textContent='Kopyala',1500)})};
+  p.parentElement.appendChild(b)});
+ document.querySelectorAll('.quiz .q').forEach(q=>{const ans=q.dataset.answer;const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{q.querySelectorAll('.opt').forEach(x=>x.classList.remove('ok','no'));
+   if(o.dataset.k===ans){o.classList.add('ok');if(fb)fb.style.display='block'}else{o.classList.add('no')}})});
+ document.querySelectorAll('.quiz .fb').forEach(f=>f.style.display='none');
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+function svgX(svg,e){const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse()).x}
+// ---- Simülasyon 1: mesafe ölçer ----
+const X0=46,SC=0.88; // 1 cm = 0.88 px
+let d1=50,T1=20,ph=0,last=performance.now(),tms=0;
+function calc1(){const c=331.3+0.606*T1;const t=Math.round(2*d1/(c*1e-4));const m=t*0.0343/2;return {c,t,m}}
+function upd1(){$('s1dv').textContent=d1;$('s1tv').textContent=T1;
+ const x=X0+d1*SC;$('s1box').setAttribute('x',x);$('s1lbl').setAttribute('x',x+11);$('s1lbl').textContent=d1+' cm';
+ const r=calc1();
+ $('s1out').innerHTML=d1>400?'Gerçek mesafe 400 cm\'nin üzerinde: yankı algılanamaz → pulseIn() = 0':
+ `c(${T1} °C) = ${r.c.toFixed(1)} m/s · Echo süresi t = <b>${r.t} µs</b><br>Kodun hesabı: ${r.t} · 0,0343 / 2 = <b>${r.m.toFixed(1)} cm</b> (hata ${(r.m-d1>=0?'+':'')}${(r.m-d1).toFixed(1)} cm)`;
+ $('s1bar').setAttribute('width',d1>400?0:Math.min(200,r.t/23324*200))}
+$('s1d').oninput=e=>{d1=+e.target.value;upd1()};$('s1t').oninput=e=>{T1=+e.target.value;upd1()};
+let drag1=false;const sv1=$('s1svg');
+$('s1obj').addEventListener('pointerdown',e=>{drag1=true;e.preventDefault()});
+window.addEventListener('pointerup',()=>drag1=false);
+sv1.addEventListener('pointermove',e=>{if(!drag1)return;let d=Math.round((svgX(sv1,e)-11-X0)/SC);d=Math.max(2,Math.min(450,d));d1=d;$('s1d').value=d;upd1()});
+function anim(now){const dt=(now-last)/1000;last=now;
+ const dur=0.5+d1/450*1.8; ph+=dt/dur; if(ph>1.25)ph=0;
+ const xo=X0+d1*SC, xs=44; let path='',echo=false;
+ if(ph<0.5){const x=xs+(xo-xs)*ph*2;path=`M${x} 52 q12 25 0 50`;echo=true}
+ else if(ph<1){const x=xo-(xo-xs)*(ph-0.5)*2;path=`M${x} 88 q-12 25 0 50`;echo=true}
+ if(d1>400&&ph>=0.5)path='';
+ const w=$('s1wave');w.setAttribute('d',path);w.setAttribute('stroke',ph<0.5?'#00979d':'#e67e22');
+ $('s1echo').textContent='Echo: '+(echo&&d1<=400?'HIGH':'LOW');$('s1echo').setAttribute('fill',echo&&d1<=400?'#8e44ad':'#333');
+ requestAnimationFrame(anim)}
+requestAnimationFrame(anim);
+function ser1(){const s=$('s1ser');const r=calc1();tms+=500;
+ s.textContent+=(d1>400?'Menzil dışı / yankı yok':`Süre: ${r.t} us  Mesafe: ${r.m.toFixed(1)} cm`)+'\n';
+ const L=s.textContent.split('\n');if(L.length>60)s.textContent=L.slice(-60).join('\n');s.scrollTop=1e9}
+setInterval(ser1,500);upd1();
+
+// ---- Simülasyon 2: park sensörü ----
+const W=430,CS=1.8; // duvar x, 1 cm = 1.8 px
+let d2=120,ac=null,osc=null,gain=null,timer=null,beepOff=null;
+function amap(x,a1,a2,b1,b2){return Math.trunc((x-a1)*(b2-b1)/(a2-a1))+b1}
+function carPos(){const bumper=W-d2*CS;$('s2car').setAttribute('transform',`translate(${bumper-154},0)`)}
+function sound(on){if(!$('s2snd').checked){on=false}
+ if(on&&!ac){ac=new (window.AudioContext||window.webkitAudioContext)();osc=ac.createOscillator();gain=ac.createGain();osc.type='square';osc.frequency.value=2000;gain.gain.value=0;osc.connect(gain).connect(ac.destination);osc.start()}
+ if(gain)gain.gain.value=on?0.04:0}
+function buzz(on){$('s2bz').setAttribute('fill',on?'#ff5252':'#444');$('s2bz').style.filter=on?'drop-shadow(0 0 6px #ff5252)':'none';$('s2w').setAttribute('opacity',on?1:0);sound(on)}
+function setLeds(d){const on=(id,c,b,o)=>{$(id).setAttribute('fill',b?c:o);$(id).style.filter=b?`drop-shadow(0 0 6px ${c})`:'none'};
+ on('s2g','#2ecc71',d<100,'#1e3d27');on('s2y','#f1c40f',d<50,'#3d3510');on('s2r','#ff4d4d',d<20,'#3d1512')}
+function loop2(){const d=d2; // mesafeOlc() = sure/58 -> tamsayı cm
+ const s=$('s2ser');s.textContent+=d+'\n';const L=s.textContent.split('\n');if(L.length>40)s.textContent=L.slice(-40).join('\n');s.scrollTop=1e9;
+ setLeds(d);clearTimeout(beepOff);let wait,info,zone;
+ if(d<5){buzz(true);wait=100;info='tone(8, 2000) → sürekli ses';zone='ÇOK YAKIN'}
+ else if(d<100){const ar=amap(d,5,100,50,600);buzz(true);beepOff=setTimeout(()=>buzz(false),60);wait=60+ar;
+  info=`aralik = map(${d}, 5, 100, 50, 600) = <b>${ar} ms</b> → bip periyodu ${60+ar} ms`;zone=d<20?'kırmızı':d<50?'sarı':'yeşil'}
+ else {buzz(false);wait=100;info='noTone(8) → sessiz';zone='güvenli'}
+ $('s2out').innerHTML=`d = <b>${d} cm</b> · bölge: ${zone}<br>${info}`;$('s2dt').textContent=d+' cm';
+ timer=setTimeout(loop2,wait)}
+$('s2d').oninput=e=>{d2=+e.target.value;$('s2dv').textContent=d2;carPos()};
+$('s2snd').onchange=()=>{if(!$('s2snd').checked)sound(false)};
+let drag2=false,off=0;const sv2=$('s2svg');
+$('s2car').addEventListener('pointerdown',e=>{drag2=true;off=svgX(sv2,e)-(W-d2*CS);e.preventDefault()});
+window.addEventListener('pointerup',()=>drag2=false);
+sv2.addEventListener('pointermove',e=>{if(!drag2)return;let d=Math.round((W-(svgX(sv2,e)-off))/CS);d=Math.max(0,Math.min(150,d));d2=d;$('s2d').value=d;$('s2dv').textContent=d;carPos()});
+carPos();loop2();
+})();
+</script>
+</body></html>

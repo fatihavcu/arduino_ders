@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>10. Hafta – Sıcaklık Sensörü Uygulamaları: LM35, DHT11, TMP36 | Arduino ile Programlama</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#1d2733;--muted:#5b6b7d;--teal:#00979d;--teal2:#00b3b9;--accent:#e67e22;--red:#e74c3c;--green:#27ae60;--code:#0f1b26;--border:#dde5ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+header.top{background:linear-gradient(135deg,#006468,#00979d 60%,#00b3b9);color:#fff;padding:28px 20px 34px;position:relative;overflow:hidden}
+header.top::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px),repeating-linear-gradient(0deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px);pointer-events:none}
+.wrap{max-width:1050px;margin:0 auto;padding:0 18px}
+.badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:3px 12px;border-radius:20px;font-size:.85em;letter-spacing:.5px}
+header.top h1{margin:10px 0 6px;font-size:2em}
+header.top p{margin:0;opacity:.92}
+nav.weeknav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;position:relative;z-index:1}
+nav.weeknav a{color:#fff;text-decoration:none;background:rgba(0,0,0,.18);padding:6px 12px;border-radius:6px;font-size:.9em}
+nav.weeknav a:hover{background:rgba(0,0,0,.35)}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;margin:22px 0}
+.toc ol{margin:6px 0;columns:2}
+.toc a{color:var(--teal);text-decoration:none}
+section.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin:22px 0;box-shadow:0 2px 8px rgba(20,40,60,.05);animation:fadeUp .6s ease both}
+section.card h2{margin-top:0;color:#006468;border-bottom:2px solid #e3f3f3;padding-bottom:8px}
+section.card h2 .num{display:inline-block;background:var(--teal);color:#fff;border-radius:50%;width:32px;height:32px;text-align:center;line-height:32px;margin-right:8px;font-size:.8em}
+h3{color:#0b4f6c}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.goals li{margin:4px 0}
+.note,.warn,.tip{border-radius:8px;padding:12px 16px;margin:14px 0;border-left:5px solid}
+.note{background:#eaf6ff;border-color:#2e86de}.warn{background:#fff3e6;border-color:var(--accent)}.tip{background:#eafaf1;border-color:var(--green)}
+.note::before{content:"ℹ️ Not: ";font-weight:600}.warn::before{content:"⚠️ Dikkat: ";font-weight:600}.tip::before{content:"💡 İpucu: ";font-weight:600}
+.formula{font-family:Cambria,"Times New Roman",serif;font-size:1.5em;text-align:center;background:#f7fbfb;border:1px dashed var(--teal);border-radius:8px;padding:12px;margin:14px 0}
+table.tbl{border-collapse:collapse;width:100%;margin:12px 0;font-size:.95em}
+table.tbl th,table.tbl td{border:1px solid var(--border);padding:7px 10px;text-align:left}
+table.tbl th{background:#e9f6f6;color:#064d50}
+table.tbl tr:nth-child(even) td{background:#fafcfd}
+.codebox{position:relative;margin:14px 0}
+.codebox .lbl{background:#1f3344;color:#9fd7da;font-size:.8em;padding:4px 12px;border-radius:8px 8px 0 0;display:inline-block;font-family:Consolas,monospace}
+pre.code{background:var(--code);color:#d7e3ee;padding:16px 18px;border-radius:0 8px 8px 8px;overflow:auto;font-family:Consolas,"Courier New",monospace;font-size:.92em;line-height:1.5;margin:0}
+pre.code .kw{color:#c792ea}.code .ty{color:#82aaff}.code .fn{color:#f78c6c}.code .num{color:#f7c56c}.code .str{color:#c3e88d}.code .com{color:#6b8299;font-style:italic}.code .cst{color:#ff5370}
+.copybtn{position:absolute;top:30px;right:8px;background:#2b4459;color:#cfe;border:0;border-radius:5px;padding:4px 10px;cursor:pointer;font-size:.8em}
+.copybtn:hover{background:var(--teal)}
+.figure{text-align:center;margin:16px 0}
+.figure svg{max-width:100%;height:auto}
+.figure .cap{font-size:.88em;color:var(--muted);margin-top:6px}
+.sim{background:#f3fafa;border:1px solid #bfe3e4;border-radius:10px;padding:16px;margin:16px 0}
+.sim h4{margin:0 0 10px;color:#006468}
+.sim label{display:block;margin:8px 0 2px;font-weight:600;font-size:.92em}
+.sim input[type=range]{width:100%;accent-color:var(--teal)}
+.sim .out{font-family:Consolas,monospace;background:#fff;border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-top:10px}
+.serial{background:#0b1620;color:#7CFC9a;font-family:Consolas,monospace;border-radius:6px;padding:10px;height:140px;overflow:auto;font-size:.88em;white-space:pre}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:.92em;margin:4px 4px 4px 0}
+.btn:hover{background:#007a7f}.btn.alt{background:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.toc ol{columns:1}}
+/* animations */
+.flow{stroke-dasharray:6 10;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+.glow{filter:drop-shadow(0 0 6px #ff4d4d)}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.spin{transform-origin:center;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* quiz */
+.quiz .q{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0}
+.quiz .q p{margin:0 0 8px;font-weight:600}
+.quiz .opt{display:block;width:100%;text-align:left;background:#f7f9fb;border:1px solid var(--border);border-radius:6px;padding:7px 10px;margin:4px 0;cursor:pointer;font-size:.95em}
+.quiz .opt:hover{background:#eef6f6}
+.quiz .opt.ok{background:#d9f5e3;border-color:var(--green)}
+.quiz .opt.no{background:#fde2df;border-color:var(--red)}
+.quiz .fb{font-size:.9em;margin-top:6px;color:var(--muted)}
+details{background:#fbfcfd;border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin:10px 0}
+details summary{cursor:pointer;font-weight:600;color:#0b4f6c}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding:8px 0 8px 46px;margin:6px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:32px;height:32px;border-radius:50%;background:var(--teal);color:#fff;text-align:center;line-height:32px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:30px 10px 40px}
+.pill{display:inline-block;background:#e3f3f3;color:#064d50;border-radius:12px;padding:2px 10px;font-size:.85em;margin:2px}
+</style></head><body>
+<header class="top"><div class="wrap">
+<span class="badge">ARDUİNO İLE PROGRAMLAMA · 10. HAFTA</span>
+<h1>Sıcaklık Sensörü Uygulamaları: LM35, DHT11, TMP36</h1><p>Analog ve dijital sıcaklık sensörleri, ADC'den sıcaklık hesabı, eşik uyarısı ve histerezis, renkli gösterge, sıcaklık–nem ölçümü</p>
+<nav class="weeknav"><a href="index.html">☰ Tüm Haftalar</a><a href="hafta09.html">← 9. Hafta</a><a href="hafta11.html">11. Hafta →</a></nav>
+</div></header>
+<main class="wrap">
+<div class="toc"><strong>Bu haftanın içeriği</strong><ol><li><a href="#hedef">Haftanın Hedefleri</a></li><li><a href="#tur">Sıcaklık Sensörü Türleri</a></li><li><a href="#lm35">LM35 Sensörünü Tanıyalım</a></li><li><a href="#adc">Gerilimden Sıcaklığa: ADC Hesabı</a></li><li><a href="#devre">Uygulama Devresi</a></li><li><a href="#u1">Uygulama 1: Seri Monitörde Sıcaklık</a></li><li><a href="#u2">Uygulama 2: Eşik Uyarısı ve Histerezis</a></li><li><a href="#u3">Uygulama 3: Sıcaklığa Göre Renkli LED'ler</a></li><li><a href="#dht">DHT11: Sıcaklık ve Nem</a></li><li><a href="#tmp36">TMP36 ve Sensör Karşılaştırması</a></li><li><a href="#fn">Yeni Fonksiyonlar Tablosu</a></li><li><a href="#quiz">Kendini Test Et</a></li><li><a href="#odev">Ödev ve Özet</a></li></ol></div>
+<style>.grid2>*{min-width:0}.sim svg{max-width:100%;height:auto}.bits{font-family:Consolas,monospace;font-size:.85em;line-height:1.9}.bits span{display:inline-block;width:15px;text-align:center;border-radius:3px;margin:1px}.b1{background:#00979d;color:#fff}.b0{background:#e3eaf0;color:#456}.leds3 span{display:inline-block;width:26px;height:26px;border-radius:50%;margin:0 6px;vertical-align:middle;opacity:.2;transition:all .2s}</style>
+<section class="card" id="hedef"><h2><span class="num">1</span>Haftanın Hedefleri</h2>
+<ul class="goals">
+<li>Analog ve dijital çıkışlı sıcaklık sensörlerini (LM35, TMP36, DHT11) ayırt edebilmek</li>
+<li>LM35'in pin yapısını ve 10 mV/°C doğrusal çıkış ilkesini açıklayabilmek</li>
+<li>ADC değerinden gerilime ve sıcaklığa geçişi (T = analogRead · 5000 / 1024 / 10) hesaplayabilmek; çözünürlüğü yorumlayabilmek</li>
+<li>Sıcaklığı Seri Monitöre yazdırmak, eşik değerinde LED/buzzer ile uyarı vermek ve histerezisi kullanmak</li>
+<li>Sıcaklık aralığına göre farklı renkte LED yakan bir gösterge tasarlamak</li>
+<li>DHT11 sensörünü kütüphane kurarak kullanmak; sıcaklık ve nemi okumak</li>
+</ul>
+<div class="note">Bu hafta 6.–7. haftalarda öğrendiğimiz <code>analogRead()</code>, 3.–4. haftalardaki <code>if-else</code> ve <code>digitalWrite()</code> bilgilerini gerçek bir ölçüm problemine uyguluyoruz.</div>
+</section>
+<section class="card" id="tur"><h2><span class="num">2</span>Sıcaklık Sensörü Türleri</h2>
+<p>Sıcaklık sensörleri fiziksel bir büyüklüğü (direnç, gerilim, yarı iletken eklem gerilimi) sıcaklıkla değişen bir elektriksel işarete dönüştürür. Arduino açısından en önemli ayrım, sensörün çıkışının <b>analog</b> mı yoksa <b>dijital</b> mi olduğudur.</p>
+<table class="tbl"><tr><th>Sensör</th><th>Çıkış türü</th><th>Arduino'da okuma</th><th>Tipik aralık / doğruluk</th></tr>
+<tr><td><b>NTC termistör</b></td><td>Direnç (sıcaklık ↑ → R ↓, doğrusal değil)</td><td>Gerilim bölücü + <code>analogRead</code> + Steinhart-Hart denklemi</td><td>−40…125 °C, kalibrasyona bağlı</td></tr>
+<tr><td><b>LM35</b></td><td>Analog gerilim, 10 mV/°C</td><td><code>analogRead</code></td><td>−55…150 °C (temel bağlantıda 2…150 °C), ±0,5 °C (25 °C'de)</td></tr>
+<tr><td><b>TMP36</b></td><td>Analog gerilim, 10 mV/°C + 500 mV ofset</td><td><code>analogRead</code></td><td>−40…125 °C, ±2 °C</td></tr>
+<tr><td><b>DHT11</b></td><td>Dijital (tek hat protokolü), sıcaklık + nem</td><td>Kütüphane: <code>DHT.h</code></td><td>0…50 °C ±2 °C; %20…90 BN ±%5</td></tr>
+<tr><td><b>DS18B20</b></td><td>Dijital (1-Wire)</td><td>Kütüphane: OneWire + DallasTemperature</td><td>−55…125 °C, ±0,5 °C</td></tr></table>
+<div class="figure"><svg viewBox="0 0 560 150" width="560">
+<text x="135" y="18" text-anchor="middle" font-size="12" font-weight="700">Analog çıkış (LM35)</text>
+<line x1="20" y1="130" x2="250" y2="130" stroke="#999"/><line x1="20" y1="30" x2="20" y2="130" stroke="#999"/>
+<path d="M20 110 C60 105 80 80 120 78 S200 50 250 45" fill="none" stroke="#e67e22" stroke-width="3"/>
+<path d="M20 110 C60 105 80 80 120 78 S200 50 250 45" fill="none" stroke="#fff" stroke-width="1.5" class="flow"/>
+<text x="135" y="146" text-anchor="middle" font-size="10" fill="#5b6b7d">gerilim sürekli değişir → ADC ile sayıya çevrilir</text>
+<text x="425" y="18" text-anchor="middle" font-size="12" font-weight="700">Dijital çıkış (DHT11)</text>
+<line x1="310" y1="130" x2="540" y2="130" stroke="#999"/>
+<path d="M310 60 H330 V110 H345 V60 H360 V110 H385 V60 H400 V110 H415 V60 H440 V110 H455 V60 H480 V110 H495 V60 H540" fill="none" stroke="#2e86de" stroke-width="3"/>
+<path d="M310 60 H330 V110 H345 V60 H360 V110 H385 V60 H400 V110 H415 V60 H440 V110 H455 V60 H480 V110 H495 V60 H540" fill="none" stroke="#fff" stroke-width="1.5" class="flow"/>
+<text x="425" y="146" text-anchor="middle" font-size="10" fill="#5b6b7d">sıcaklık bilgisi bit dizisi olarak gönderilir</text>
+</svg><div class="cap">Şekil 1. Analog ve dijital çıkışlı sensörlerin işaret biçimleri</div></div>
+</section>
+<section class="card" id="lm35"><h2><span class="num">3</span>LM35 Sensörünü Tanıyalım</h2>
+<div class="grid2"><div class="figure"><svg viewBox="0 0 300 215" width="300">
+<path d="M90 20 h120 v80 a60 22 0 0 1 -120 0 z" fill="#222"/><text x="150" y="70" text-anchor="middle" fill="#eee" font-size="16" font-weight="700">LM35</text>
+<text x="150" y="90" text-anchor="middle" fill="#aaa" font-size="10">düz yüz önde</text>
+<line x1="115" y1="128" x2="115" y2="185" stroke="#999" stroke-width="5"/><line x1="150" y1="132" x2="150" y2="185" stroke="#999" stroke-width="5"/><line x1="185" y1="128" x2="185" y2="185" stroke="#999" stroke-width="5"/>
+<text x="110" y="200" text-anchor="end" font-size="11" fill="#c0392b" font-weight="700">1: +Vs</text><text x="150" y="203" text-anchor="middle" font-size="11" fill="#e67e22" font-weight="700">2: Vout</text><text x="190" y="200" font-size="11" font-weight="700">3: GND</text>
+<circle cx="150" cy="70" r="40" fill="none" stroke="#e74c3c" stroke-width="2" class="pulse" style="transform-box:fill-box;transform-origin:center" opacity=".6"/>
+</svg><div class="cap">Şekil 2. LM35 (TO-92 kılıf) bacak yapısı: düz yüz size bakarken soldan sağa +Vs, Vout, GND</div></div>
+<div><p><b>LM35</b>, Texas Instruments tarafından üretilen, çıkış gerilimi <b>santigrat derece ile doğru orantılı</b> olan hassas bir entegre sıcaklık sensörüdür. İçindeki yarı iletken devre, sıcaklıkla değişen transistör eklem gerilimini yükselterek doğrusal bir çıkış verir.</p>
+<ul><li>Çıkış eğimi: <b>10 mV/°C</b> (0 °C'de 0 V, 25 °C'de 250 mV, 100 °C'de 1 V)</li>
+<li>Besleme: <b>4–30 V</b> (Arduino'nun 5 V pini uygundur)</li>
+<li>Doğruluk: 25 °C'de ±0,5 °C (LM35A için ±0,25 °C)</li>
+<li>Akım tüketimi ≈ 60 µA → kendi kendini ısıtma ihmal edilebilir (≈ 0,1 °C)</li>
+<li>Kalibrasyon gerektirmez</li></ul></div></div>
+<div class="formula">V<sub>out</sub> = 10 mV/°C × T &nbsp;&nbsp;⟹&nbsp;&nbsp; T(°C) = V<sub>out</sub>(mV) / 10</div>
+<div class="warn">LM35'i <b>ters</b> takarsanız (+Vs ile GND yer değiştirirse) birkaç saniye içinde elle tutulamayacak kadar ısınır ve bozulur. Bağlantıyı enerji vermeden önce mutlaka kontrol edin. Düz yüz size bakarken <b>sol = +5 V</b>, <b>sağ = GND</b>.</div>
+<div class="note">Temel bağlantıda (yalnızca 3 bacak) LM35 negatif gerilim üretemez; bu nedenle 0 °C'nin altındaki sıcaklıklar okunamaz. Negatif sıcaklık ölçümü için çıkışa GND'ye değil negatif beslemeye bağlı bir direnç eklenir veya TMP36 kullanılır.</div>
+</section>
+<section class="card" id="adc"><h2><span class="num">4</span>Gerilimden Sıcaklığa: ADC Hesabı</h2>
+<p>Arduino UNO'nun ADC'si 0–5 V aralığını <b>1024 basamağa</b> (10 bit) böler. Bir basamak 5000 mV / 1024 ≈ <b>4,88 mV</b>'dir. Okunan sayıdan önce gerilime, sonra sıcaklığa geçilir:</p>
+<div class="formula">V(mV) = analogRead · 5000 / 1024 &nbsp;&nbsp;⟹&nbsp;&nbsp; T(°C) = analogRead · 5000 / 1024 / 10</div>
+<div class="grid2"><div>
+<p><b>Çözümlü örnek 1:</b> analogRead = 51 → V = 51 · 5000 / 1024 = 249,0 mV → <b>T = 24,9 °C</b></p>
+<p><b>Çözümlü örnek 2:</b> Ortam 37 °C ise LM35 çıkışı 370 mV olur; ADC = ⌊370 · 1024 / 5000⌋ = <b>75</b>. Arduino bunu 75 · 5000/1024/10 = 36,6 °C olarak hesaplar (basamaklama hatası).</p>
+<p><b>Çözünürlük:</b> Bir ADC basamağı 4,88 mV = <b>≈ 0,49 °C</b>'ye karşılık gelir. Yani 5 V referansta sıcaklık yaklaşık yarım derecelik adımlarla değişir.</p></div>
+<div><table class="tbl"><tr><th>Sıcaklık</th><th>V<sub>out</sub></th><th>ADC (5 V ref.)</th><th>ADC (1,1 V ref.)</th></tr>
+<tr><td>0 °C</td><td>0 mV</td><td>0</td><td>0</td></tr><tr><td>20 °C</td><td>200 mV</td><td>40</td><td>186</td></tr>
+<tr><td>25 °C</td><td>250 mV</td><td>51</td><td>232</td></tr><tr><td>50 °C</td><td>500 mV</td><td>102</td><td>465</td></tr>
+<tr><td>100 °C</td><td>1000 mV</td><td>204</td><td>930</td></tr></table></div></div>
+<div class="tip">LM35 en fazla 1,5 V üretir; 5 V referansta ADC'nin yalnızca ≈ %30'u kullanılır. <code>analogReference(INTERNAL);</code> komutu ile UNO'nun dahili <b>1,1 V</b> referansı seçilirse basamak 1100/1024 ≈ 1,07 mV = <b>≈ 0,11 °C</b> olur (ölçüm üst sınırı 110 °C). Bu durumda formül <code>T = okunan · 1100.0 / 1024.0 / 10.0</code> olur. Referans değiştikten sonraki ilk birkaç okuma atılmalıdır.</div>
+<div class="sim"><h4>🔬 Simülasyon 1: Ortam sıcaklığını değiştirin — termometre, sensör gerilimi, ADC ve Seri Monitör</h4>
+<div class="grid2"><div>
+<label>Gerçek ortam sıcaklığı T = <span id="thTT">25.0</span> °C</label><input type="range" id="thT" min="0" max="100" step="0.1" value="25">
+<label>ADC referansı</label><select id="thRef"><option value="5000">DEFAULT (5 V) – 4,88 mV/basamak</option><option value="1100">INTERNAL (1,1 V) – 1,07 mV/basamak</option></select>
+<label><input type="checkbox" id="thNoise"> Ölçüm gürültüsü ekle (±1 basamak)</label>
+<div class="out" id="thOut"></div>
+<label>Seri Monitör (9600 baud) — Uygulama 1 çıktısı</label><div class="serial" id="thSer"></div></div>
+<div class="figure" style="margin:0"><svg id="thSvg" viewBox="0 0 440 300" width="440">
+<rect x="0" y="0" width="440" height="300" rx="10" fill="#f7fbfb"/>
+<rect x="45" y="20" width="30" height="230" rx="15" fill="#fff" stroke="#9fb3c8" stroke-width="2"/>
+<rect id="thMerc" x="52" y="185" width="16" height="70" rx="6" fill="#e74c3c" style="transition:all .4s"/>
+<circle id="thBulb" cx="60" cy="262" r="22" fill="#e74c3c" stroke="#9fb3c8" stroke-width="2" style="transition:fill .4s"/>
+<line x1="75" y1="235" x2="84" y2="235" stroke="#5b6b7d"/><text x="88" y="239" font-size="9" fill="#5b6b7d">0</text><line x1="75" y1="215" x2="80" y2="215" stroke="#5b6b7d"/><line x1="75" y1="195" x2="84" y2="195" stroke="#5b6b7d"/><text x="88" y="199" font-size="9" fill="#5b6b7d">20</text><line x1="75" y1="175" x2="80" y2="175" stroke="#5b6b7d"/><line x1="75" y1="155" x2="84" y2="155" stroke="#5b6b7d"/><text x="88" y="159" font-size="9" fill="#5b6b7d">40</text><line x1="75" y1="135" x2="80" y2="135" stroke="#5b6b7d"/><line x1="75" y1="115" x2="84" y2="115" stroke="#5b6b7d"/><text x="88" y="119" font-size="9" fill="#5b6b7d">60</text><line x1="75" y1="95" x2="80" y2="95" stroke="#5b6b7d"/><line x1="75" y1="75" x2="84" y2="75" stroke="#5b6b7d"/><text x="88" y="79" font-size="9" fill="#5b6b7d">80</text><line x1="75" y1="55" x2="80" y2="55" stroke="#5b6b7d"/><line x1="75" y1="35" x2="84" y2="35" stroke="#5b6b7d"/><text x="88" y="39" font-size="9" fill="#5b6b7d">100</text>
+<text x="60" y="296" text-anchor="middle" font-size="10" fill="#5b6b7d">°C</text>
+<path d="M150 120 h36 v28 a18 7 0 0 1 -36 0 z" fill="#222"/><text x="168" y="138" text-anchor="middle" font-size="9" fill="#eee">LM35</text>
+<line x1="159" y1="154" x2="159" y2="185" stroke="#888" stroke-width="2.5"/><line x1="168" y1="155" x2="168" y2="185" stroke="#888" stroke-width="2.5"/><line x1="177" y1="154" x2="177" y2="185" stroke="#888" stroke-width="2.5"/>
+<text x="159" y="198" font-size="8" text-anchor="middle">+Vs</text><text x="168" y="208" font-size="8" text-anchor="middle">Vout</text><text x="177" y="198" font-size="8" text-anchor="middle">GND</text>
+<path d="M168 214 V240 H300 V200" fill="none" stroke="#f39c12" stroke-width="3"/><path id="thFlow" class="flow" d="M168 214 V240 H300 V200" fill="none" stroke="#fff" stroke-width="1.5"/>
+<rect x="240" y="40" width="120" height="58" rx="8" fill="#ffd54f" stroke="#b08900"/><rect x="250" y="48" width="100" height="30" rx="4" fill="#cfe8c8"/>
+<text id="thVm" x="300" y="70" text-anchor="middle" font-size="16" font-family="Consolas">250.0 mV</text><text x="300" y="92" text-anchor="middle" font-size="9">Voltmetre (Vout)</text>
+<rect x="250" y="130" width="160" height="70" rx="8" fill="#0e7c86"/><text x="330" y="148" text-anchor="middle" font-size="10" fill="#cfe">A0 → 10 bit ADC</text>
+<text id="thAdc" x="330" y="174" text-anchor="middle" font-size="20" fill="#fff" font-family="Consolas">51</text>
+<text id="thBin" x="330" y="192" text-anchor="middle" font-size="9" fill="#ffe28a" font-family="Consolas">0000110011</text>
+<text id="thBig" x="330" y="270" text-anchor="middle" font-size="22" font-weight="700" fill="#c0392b">24,9 °C</text>
+<text x="330" y="288" text-anchor="middle" font-size="9" fill="#5b6b7d">Arduino'nun hesapladığı sıcaklık</text>
+</svg></div></div></div>
+</section>
+<section class="card" id="devre"><h2><span class="num">5</span>Uygulama Devresi</h2>
+<p>Bu haftanın tüm LM35 uygulamaları aynı devre üzerinde çalışır. Bağlantılar:</p>
+<div class="grid2"><table class="tbl"><tr><th>Eleman</th><th>Bağlantı</th></tr>
+<tr><td>LM35 +Vs (sol)</td><td>5 V</td></tr><tr><td>LM35 Vout (orta)</td><td>A0</td></tr><tr><td>LM35 GND (sağ)</td><td>GND</td></tr>
+<tr><td>Mavi LED</td><td>D4 → LED → 220 Ω → GND</td></tr><tr><td>Yeşil LED</td><td>D5 → LED → 220 Ω → GND</td></tr>
+<tr><td>Kırmızı LED</td><td>D6 → LED → 220 Ω → GND</td></tr><tr><td>Buzzer</td><td>D8 → buzzer (+) ; buzzer (–) → GND</td></tr></table>
+<div><div class="tip">Kablo uzunsa veya ölçüm "zıplıyorsa" LM35'in Vout–GND bacakları arasına 0,1 µF seramik kondansatör takmak gürültüyü azaltır.</div>
+<div class="note">Aktif buzzer, içindeki osilatör sayesinde DC gerilimle (<code>digitalWrite</code>) öter. Pasif buzzer ise bir frekans ister: <code>tone(pin, frekans, süre)</code>. Uygulama 2 aktif, Uygulama 3 pasif buzzer varsayar; ikisi de bu devrede D8'e bağlanır.</div></div></div>
+<div class="figure"><svg id="tDevre" viewBox="0 0 760 400" width="760"><defs><pattern id="delik" width="12" height="12" patternUnits="userSpaceOnUse"><rect x="4" y="4" width="4" height="4" fill="#cfc8b8"/></pattern></defs>
+<rect x="15" y="50" width="300" height="270" rx="12" fill="#0e7c86" stroke="#064d50" stroke-width="3"/><rect x="40" y="62" width="262" height="18" fill="#111"/><rect x="40" y="291" width="250" height="17" fill="#111"/><rect x="47" y="66" width="10" height="11" fill="#c9a227"/><text x="52" y="92" text-anchor="middle" font-size="8.5" fill="#fff">13</text><rect x="68" y="66" width="10" height="11" fill="#c9a227"/><text x="73" y="92" text-anchor="middle" font-size="8.5" fill="#fff">12</text><rect x="89" y="66" width="10" height="11" fill="#c9a227"/><text x="94" y="92" text-anchor="middle" font-size="8.5" fill="#fff">~11</text><rect x="110" y="66" width="10" height="11" fill="#c9a227"/><text x="115" y="92" text-anchor="middle" font-size="8.5" fill="#fff">~10</text><rect x="131" y="66" width="10" height="11" fill="#c9a227"/><text x="136" y="92" text-anchor="middle" font-size="8.5" fill="#fff">~9</text><rect x="152" y="66" width="10" height="11" fill="#f1c40f"/><text x="157" y="92" text-anchor="middle" font-size="8.5" fill="#fff">8</text><rect x="173" y="66" width="10" height="11" fill="#c9a227"/><text x="178" y="92" text-anchor="middle" font-size="8.5" fill="#fff">7</text><rect x="194" y="66" width="10" height="11" fill="#f1c40f"/><text x="199" y="92" text-anchor="middle" font-size="8.5" fill="#fff">~6</text><rect x="215" y="66" width="10" height="11" fill="#f1c40f"/><text x="220" y="92" text-anchor="middle" font-size="8.5" fill="#fff">~5</text><rect x="236" y="66" width="10" height="11" fill="#f1c40f"/><text x="241" y="92" text-anchor="middle" font-size="8.5" fill="#fff">4</text><rect x="257" y="66" width="10" height="11" fill="#c9a227"/><text x="262" y="92" text-anchor="middle" font-size="8.5" fill="#fff">~3</text><rect x="278" y="66" width="10" height="11" fill="#c9a227"/><text x="283" y="92" text-anchor="middle" font-size="8.5" fill="#fff">2</text><rect x="47" y="294" width="10" height="11" fill="#c9a227"/><text x="52" y="287" text-anchor="middle" font-size="8.5" fill="#fff">3.3V</text><rect x="71" y="294" width="10" height="11" fill="#c9a227"/><text x="76" y="287" text-anchor="middle" font-size="8.5" fill="#fff">5V</text><rect x="95" y="294" width="10" height="11" fill="#c9a227"/><text x="100" y="287" text-anchor="middle" font-size="8.5" fill="#fff">GND</text><rect x="119" y="294" width="10" height="11" fill="#c9a227"/><text x="124" y="287" text-anchor="middle" font-size="8.5" fill="#fff">GND</text><rect x="143" y="294" width="10" height="11" fill="#c9a227"/><text x="148" y="287" text-anchor="middle" font-size="8.5" fill="#fff">Vin</text><rect x="185" y="294" width="10" height="11" fill="#f1c40f"/><text x="190" y="287" text-anchor="middle" font-size="8.5" fill="#fff">A0</text><rect x="206" y="294" width="10" height="11" fill="#c9a227"/><text x="211" y="287" text-anchor="middle" font-size="8.5" fill="#fff">A1</text><rect x="227" y="294" width="10" height="11" fill="#c9a227"/><text x="232" y="287" text-anchor="middle" font-size="8.5" fill="#fff">A2</text><rect x="248" y="294" width="10" height="11" fill="#c9a227"/><text x="253" y="287" text-anchor="middle" font-size="8.5" fill="#fff">A3</text><rect x="269" y="294" width="10" height="11" fill="#c9a227"/><text x="274" y="287" text-anchor="middle" font-size="8.5" fill="#fff">A4</text><rect x="290" y="294" width="10" height="11" fill="#c9a227"/><text x="295" y="287" text-anchor="middle" font-size="8.5" fill="#fff">A5</text><rect x="110" y="170" width="140" height="40" rx="4" fill="#1b1b1b"/><text x="180" y="195" text-anchor="middle" font-size="12" fill="#ddd">ATmega328P</text><text x="40" y="130" font-size="15" fill="#fff" font-weight="700">ARDUINO UNO</text>
+<rect x="380" y="52" width="365" height="280" rx="8" fill="#f4f1ea" stroke="#c9bfa8"/>
+<rect x="392" y="60" width="341" height="190" fill="url(#delik)"/>
+<line x1="392" y1="268" x2="733" y2="268" stroke="#2e86de" stroke-width="2"/><text x="386" y="272" font-size="10" text-anchor="end" fill="#2e86de">–</text>
+<line x1="392" y1="300" x2="733" y2="300" stroke="#e74c3c" stroke-width="2"/><text x="386" y="304" font-size="10" text-anchor="end" fill="#e74c3c">+</text>
+<rect x="392" y="274" width="341" height="20" fill="url(#delik)"/>
+<path d="M76 305 V375 H742 V300" fill="none" stroke="#e74c3c" stroke-width="3"/>
+<path d="M100 305 V360 H728 V268" fill="none" stroke="#222" stroke-width="3"/>
+<path id="fwG" class="flow" d="M728 268 V360 H100 V305" fill="none" stroke="#ffe066" stroke-width="2"/>
+<path d="M157 66 V14 H690 V170 H703" fill="none" stroke="#8e44ad" stroke-width="3"/><path id="fwD8" class="flow" d="M157 66 V14 H690 V170 H703" fill="none" stroke="#ffe066" stroke-width="2" style="opacity:0"/><path d="M199 66 V24 H630 V170 H643" fill="none" stroke="#e74c3c" stroke-width="3"/><path id="fwD6" class="flow" d="M199 66 V24 H630 V170 H643" fill="none" stroke="#ffe066" stroke-width="2" style="opacity:0"/><path d="M220 66 V34 H570 V170 H583" fill="none" stroke="#27ae60" stroke-width="3"/><path id="fwD5" class="flow" d="M220 66 V34 H570 V170 H583" fill="none" stroke="#ffe066" stroke-width="2" style="opacity:0"/><path d="M241 66 V44 H510 V170 H523" fill="none" stroke="#2e86de" stroke-width="3"/><path id="fwD4" class="flow" d="M241 66 V44 H510 V170 H523" fill="none" stroke="#ffe066" stroke-width="2" style="opacity:0"/>
+<!-- LM35 -->
+<path d="M420 150 h40 v30 a20 8 0 0 1 -40 0 z" fill="#222"/><text x="440" y="168" text-anchor="middle" font-size="9" fill="#eee">LM35</text>
+<path d="M430 186 V200 L414 214 V300" fill="none" stroke="#e74c3c" stroke-width="3"/>
+<path d="M450 186 V200 L466 214 V268" fill="none" stroke="#222" stroke-width="3"/>
+<path d="M440 188 V322 H190 V305" fill="none" stroke="#f39c12" stroke-width="3"/>
+<path id="fwA" class="flow" d="M440 188 V322 H190 V305" fill="none" stroke="#fff" stroke-width="1.5"/>
+<text x="402" y="232" font-size="9" text-anchor="end">+Vs</text><text x="444" y="258" font-size="9">Vout→A0</text><text x="472" y="232" font-size="9">GND</text>
+<text id="tDevT" x="440" y="140" text-anchor="middle" font-size="11" font-weight="700" fill="#c0392b">25,0 °C</text>
+<circle id="dBH" cx="530" cy="132" r="26" fill="#2e86de" opacity="0"/><path id="dB" d="M518 150 V130 a12 12 0 0 1 24 0 V150 Z" fill="#2e86de" stroke="#333" stroke-width="0.8" opacity="0.3"/><line x1="523" y1="150" x2="523" y2="170" stroke="#888" stroke-width="2.5"/><line x1="537" y1="150" x2="537" y2="185" stroke="#888" stroke-width="2.5"/><rect x="531" y="185" width="12" height="40" rx="5" fill="#d9b38c" stroke="#7a5230"/><rect x="531" y="192" width="12" height="3" fill="#d00"/><rect x="531" y="199" width="12" height="3" fill="#d00"/><rect x="531" y="206" width="12" height="3" fill="#7b3f00"/><line x1="537" y1="225" x2="537" y2="268" stroke="#888" stroke-width="2.5"/><circle id="dYH" cx="590" cy="132" r="26" fill="#27ae60" opacity="0"/><path id="dY" d="M578 150 V130 a12 12 0 0 1 24 0 V150 Z" fill="#27ae60" stroke="#333" stroke-width="0.8" opacity="0.3"/><line x1="583" y1="150" x2="583" y2="170" stroke="#888" stroke-width="2.5"/><line x1="597" y1="150" x2="597" y2="185" stroke="#888" stroke-width="2.5"/><rect x="591" y="185" width="12" height="40" rx="5" fill="#d9b38c" stroke="#7a5230"/><rect x="591" y="192" width="12" height="3" fill="#d00"/><rect x="591" y="199" width="12" height="3" fill="#d00"/><rect x="591" y="206" width="12" height="3" fill="#7b3f00"/><line x1="597" y1="225" x2="597" y2="268" stroke="#888" stroke-width="2.5"/><circle id="dKH" cx="650" cy="132" r="26" fill="#e74c3c" opacity="0"/><path id="dK" d="M638 150 V130 a12 12 0 0 1 24 0 V150 Z" fill="#e74c3c" stroke="#333" stroke-width="0.8" opacity="0.3"/><line x1="643" y1="150" x2="643" y2="170" stroke="#888" stroke-width="2.5"/><line x1="657" y1="150" x2="657" y2="185" stroke="#888" stroke-width="2.5"/><rect x="651" y="185" width="12" height="40" rx="5" fill="#d9b38c" stroke="#7a5230"/><rect x="651" y="192" width="12" height="3" fill="#d00"/><rect x="651" y="199" width="12" height="3" fill="#d00"/><rect x="651" y="206" width="12" height="3" fill="#7b3f00"/><line x1="657" y1="225" x2="657" y2="268" stroke="#888" stroke-width="2.5"/>
+<text x="528" y="245" text-anchor="end" font-size="9">mavi D4</text><text x="588" y="245" text-anchor="end" font-size="9">yeşil D5</text><text x="648" y="245" text-anchor="end" font-size="9">kırmızı D6</text>
+<!-- Buzzer -->
+<g id="bz"><circle cx="710" cy="140" r="17" fill="#222"/><circle cx="710" cy="140" r="4" fill="#555"/></g>
+<g id="bzW" opacity="0" fill="none" stroke="#8e44ad" stroke-width="2"><path d="M730 128 a16 16 0 0 1 0 24"/><path d="M736 122 a24 24 0 0 1 0 36"/></g>
+<text x="713" y="245" text-anchor="end" font-size="9">buzzer D8</text>
+<line x1="703" y1="157" x2="703" y2="170" stroke="#888" stroke-width="2.5"/><line x1="717" y1="157" x2="717" y2="268" stroke="#888" stroke-width="2.5"/>
+<text x="560" y="394" text-anchor="middle" font-size="10" fill="#5b6b7d">Sarı kesikli çizgiler: o anda akım taşıyan çıkış hatları · beyaz: LM35 sinyali (Vout → A0)</text>
+</svg><br><label style="font-weight:600">Devreyi çalıştır (Uygulama 3 mantığı) — ortam sıcaklığı: <span id="dvTT">25.0</span> °C</label><br><input type="range" id="dvT" min="5" max="45" step="0.1" value="25" style="width:60%;accent-color:#00979d">
+<div class="cap">Şekil 3. LM35, üç LED ve buzzer içeren uygulama devresi. Kaydırıcı ile sıcaklığı değiştirin: hangi çıkış hattının akım taşıdığı animasyonla gösterilir.</div></div>
+</section>
+<section class="card" id="u1"><h2><span class="num">6</span>Uygulama 1: Seri Monitörde Sıcaklık</h2>
+<p>İlk programımız LM35'i saniyede bir okur ve ADC değerini, gerilimi ve sıcaklığı Seri Monitöre yazar. Çıktısını Simülasyon 1'deki Seri Monitörde görebilirsiniz.</p>
+<div class="grid2"><div><div class="codebox"><span class="lbl">LM35_Seri.ino</span><pre class="code">// LM35 ile sıcaklık ölçümü ve Seri Monitöre yazdırma
+const int sensorPin = A0;   // LM35 orta bacak (Vout) -&gt; A0
+
+void setup() {
+  Serial.begin(9600);       // Seri Monitör: 9600 baud
+}
+
+void loop() {
+  int okunan = analogRead(sensorPin);             // 0–1023
+  float gerilim_mV = okunan * 5000.0 / 1024.0;    // ADC -&gt; milivolt
+  float sicaklik = gerilim_mV / 10.0;             // LM35: 10 mV/°C
+
+  Serial.print("ADC: ");
+  Serial.print(okunan);
+  Serial.print("  Gerilim: ");
+  Serial.print(gerilim_mV, 1);
+  Serial.print(" mV  Sicaklik: ");
+  Serial.print(sicaklik, 1);                      // 1 ondalık basamak
+  Serial.println(" C");
+  delay(1000);                                    // saniyede bir ölçüm
+}</pre></div></div>
+<div><h3>Programın çözümlemesi</h3><ol class="steps">
+<li><code>analogRead(A0)</code> 0–1023 arası tam sayı döndürür.</li>
+<li><code>okunan * 5000.0 / 1024.0</code>: sabitlerin <b>.0</b> ile yazılması işlemin <b>float</b> yapılmasını sağlar.</li>
+<li>Gerilim 10'a bölünerek °C bulunur (10 mV/°C).</li>
+<li><code>Serial.print(sicaklik, 1)</code> sayıyı 1 ondalık basamakla yazdırır.</li></ol>
+<div class="warn"><code>int t = analogRead(A0) * 5000 / 1024 / 10;</code> yazmak <b>hatalıdır</b>: UNO'da <code>int</code> 16 bittir (en fazla 32 767). 100 · 5000 = 500 000 olduğundan çarpım taşar ve anlamsız (hatta negatif) sonuç çıkar. Ondalık sabit (5000.0) veya <code>float</code> kullanın.</div></div></div>
+<h3>Gürültü azaltma: ortalama alma</h3>
+<div class="grid2"><div><div class="codebox"><span class="lbl">LM35_Ortalama.ino</span><pre class="code">// Gürültüyü azaltmak için 10 ölçümün ortalamasını alma
+const int sensorPin = A0;
+const int ORNEK = 10;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+float sicaklikOku() {
+  long toplam = 0;                     // 10 x 1023 int'e sığar ama long güvenlidir
+  for (int i = 0; i &lt; ORNEK; i++) {
+    toplam += analogRead(sensorPin);
+    delay(10);
+  }
+  float ortalama = toplam / (float)ORNEK;  // float bölme!
+  return ortalama * 5000.0 / 1024.0 / 10.0;
+}
+
+void loop() {
+  float t = sicaklikOku();
+  Serial.print("Ortalama sicaklik: ");
+  Serial.print(t, 2);
+  Serial.println(" C");
+  delay(1000);
+}</pre></div></div>
+<div><p>Tek bir ADC okuması ±1 basamak (≈ ±0,5 °C) oynayabilir. Birkaç okumanın ortalaması alınarak hem gürültü azaltılır hem de basamaklar arası değerler (örn. 24,65 °C) elde edilebilir. Simülasyon 1'de "gürültü" kutusunu işaretleyerek tek okumanın nasıl zıpladığını görün.</p>
+<div class="tip">Seri Monitörde "°" ve Türkçe karakterler bazı terminallerde bozuk görünebildiği için çıktıda <code>" C"</code> ve "Sicaklik" gibi ASCII yazımlar tercih edilmiştir.</div></div></div>
+</section>
+<section class="card" id="u2"><h2><span class="num">7</span>Uygulama 2: Eşik Uyarısı ve Histerezis</h2>
+<p>Sıcaklık belirlenen bir eşiği aştığında kırmızı LED ve buzzer ile uyarı verelim. Tek bir eşik kullanılırsa, sıcaklık tam eşik civarında dalgalandığında alarm sürekli açılıp kapanır (<b>titreşim/chattering</b>). Bunu önlemek için iki eşik kullanılır: alarm <b>30 °C</b>'de açılır, ancak sıcaklık <b>28 °C</b>'nin altına inince kapanır. Aradaki 2 °C'lik banda <b>histerezis</b> denir (evlerdeki termostatlar da böyle çalışır).</p>
+<div class="grid2"><div><div class="codebox"><span class="lbl">Sicaklik_Alarm.ino</span><pre class="code">// Sıcaklık eşik uyarısı: kırmızı LED + aktif buzzer, histerezisli
+const int sensorPin = A0;
+const int ledPin    = 6;      // kırmızı uyarı LED'i (220 Ω ile)
+const int buzzerPin = 8;      // aktif buzzer (+ ucu D8, – ucu GND)
+
+const float ESIK_UST = 30.0;  // bu değere ulaşınca alarm AÇILIR
+const float ESIK_ALT = 28.0;  // bu değerin altına inince alarm KAPANIR
+bool alarm = false;           // alarmın o anki durumu
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+float sicaklikOku() {
+  int okunan = analogRead(sensorPin);
+  return okunan * 5000.0 / 1024.0 / 10.0;
+}
+
+void loop() {
+  float t = sicaklikOku();
+  Serial.print("Sicaklik: ");
+  Serial.print(t, 1);
+  Serial.println(" C");
+
+  // Histerezis: açma ve kapama için iki ayrı eşik
+  if (!alarm &amp;&amp; t &gt;= ESIK_UST) {
+    alarm = true;
+    Serial.println("&gt;&gt;&gt; ALARM: Sicaklik yuksek!");
+  } else if (alarm &amp;&amp; t &lt;= ESIK_ALT) {
+    alarm = false;
+    Serial.println("&gt;&gt;&gt; Normal seviyeye dondu.");
+  }
+
+  if (alarm) {                      // alarm varken LED ve buzzer kesikli çalışır
+    digitalWrite(ledPin, HIGH);
+    digitalWrite(buzzerPin, HIGH);
+    delay(200);
+    digitalWrite(ledPin, LOW);
+    digitalWrite(buzzerPin, LOW);
+    delay(200);
+  } else {
+    digitalWrite(ledPin, LOW);
+    digitalWrite(buzzerPin, LOW);
+    delay(400);
+  }
+}</pre></div></div>
+<div class="sim"><h4>🔬 Simülasyon 2: Histerezisli alarm</h4>
+<label>Sıcaklık = <span id="aTT">26.0</span> °C</label><input type="range" id="aT" min="20" max="40" step="0.1" value="26">
+<label><input type="checkbox" id="aAuto"> Otomatik dalgalanma (ısıt–soğut)</label>
+<label>ESIK_UST = <span id="aUT">30</span> °C</label><input type="range" id="aU" min="22" max="38" step="0.5" value="30">
+<label>ESIK_ALT = <span id="aLT">28</span> °C</label><input type="range" id="aL" min="20" max="38" step="0.5" value="28">
+<svg viewBox="0 0 330 150" width="100%"><rect width="330" height="150" rx="8" fill="#0b1620"/>
+<rect x="10" y="10" width="240" height="130" fill="#0f2230"/>
+<rect id="aBand" x="10" y="0" width="240" height="0" fill="#e67e22" opacity=".18"/>
+<line id="aUl" x1="10" x2="250" stroke="#e74c3c" stroke-dasharray="5 3"/><line id="aLl" x1="10" x2="250" stroke="#2e86de" stroke-dasharray="5 3"/>
+<polyline id="aPlot" fill="none" stroke="#7CFC9a" stroke-width="1.6" points=""/>
+<text x="14" y="22" font-size="8" fill="#9fb3c8">40 °C</text><text x="14" y="136" font-size="8" fill="#9fb3c8">20 °C</text>
+<circle id="aLedH" cx="290" cy="45" r="24" fill="#ff3b3b" opacity="0"/><path id="aLed" d="M278 62 V42 a12 12 0 0 1 24 0 V62 Z" fill="#ff3b3b" opacity=".25"/>
+<text x="290" y="78" text-anchor="middle" font-size="9" fill="#9fb3c8">LED D6</text>
+<circle cx="290" cy="108" r="14" fill="#222" stroke="#555"/><g id="aBzW" opacity="0" fill="none" stroke="#c39bd3" stroke-width="2"><path d="M308 98 a14 14 0 0 1 0 20"/><path d="M314 93 a21 21 0 0 1 0 30"/></g>
+<text x="290" y="138" text-anchor="middle" font-size="9" fill="#9fb3c8">buzzer D8</text></svg>
+<div class="out" id="aOut"></div><div class="serial" id="aSer" style="height:110px"></div></div></div>
+<div class="note">Simülasyonda ESIK_ALT'ı ESIK_UST'e eşitleyip "otomatik dalgalanma"yı açın: alarm eşik etrafında sık sık açılıp kapanır. Histerezis bandını genişlettikçe durum değişikliklerinin azaldığını gözleyin.</div>
+</section>
+<section class="card" id="u3"><h2><span class="num">8</span>Uygulama 3: Sıcaklığa Göre Renkli LED'ler</h2>
+<p>Üç LED ile basit bir sıcaklık göstergesi yapalım: <span class="pill" style="background:#d6eaf8">&lt; 20 °C mavi (soğuk)</span> <span class="pill" style="background:#d5f5e3">20–28 °C yeşil (normal)</span> <span class="pill" style="background:#fadbd8">≥ 28 °C kırmızı + bip (sıcak)</span>. <code>if – else if – else</code> yapısı, aralıkların sırayla denetlenmesini ve yalnızca bir koşulun çalışmasını sağlar.</p>
+<div class="grid2"><div><div class="codebox"><span class="lbl">Sicaklik_Renk.ino</span><pre class="code">// Sıcaklık aralığına göre renkli LED gösterge
+// &lt; 20 °C: mavi · 20–28 °C: yeşil · ≥ 28 °C: kırmızı + bip
+const int sensorPin  = A0;
+const int maviLed    = 4;
+const int yesilLed   = 5;
+const int kirmiziLed = 6;
+const int buzzerPin  = 8;     // pasif buzzer (tone ile ses)
+
+void setup() {
+  pinMode(maviLed, OUTPUT);
+  pinMode(yesilLed, OUTPUT);
+  pinMode(kirmiziLed, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int okunan = analogRead(sensorPin);
+  float sicaklik = okunan * 5000.0 / 1024.0 / 10.0;
+
+  // Önce tüm göstergeleri kapat
+  digitalWrite(maviLed, LOW);
+  digitalWrite(yesilLed, LOW);
+  digitalWrite(kirmiziLed, LOW);
+
+  if (sicaklik &lt; 20.0) {
+    digitalWrite(maviLed, HIGH);
+    Serial.print("SOGUK   ");
+  } else if (sicaklik &lt; 28.0) {
+    digitalWrite(yesilLed, HIGH);
+    Serial.print("NORMAL  ");
+  } else {
+    digitalWrite(kirmiziLed, HIGH);
+    tone(buzzerPin, 2000, 100);     // 2 kHz, 100 ms bip
+    Serial.print("SICAK   ");
+  }
+  Serial.print(sicaklik, 1);
+  Serial.println(" C");
+  delay(500);
+}</pre></div></div>
+<div class="sim"><h4>🔬 Simülasyon 3: Renkli sıcaklık göstergesi</h4>
+<label>Ortam sıcaklığı = <span id="rTT">25.0</span> °C &nbsp;<small>(Şekil 3'teki devre de bu değerle çalışır)</small></label><input type="range" id="rT" min="5" max="45" step="0.1" value="25">
+<div style="text-align:center;margin:12px 0" class="leds3"><span id="rB" style="background:#2e86de"></span><span id="rY" style="background:#27ae60"></span><span id="rK" style="background:#e74c3c"></span> <b id="rBz" style="opacity:.2;font-size:1.4em">🔊</b></div>
+<div class="out" id="rOut"></div><div class="serial" id="rSer" style="height:120px"></div></div></div>
+<div class="figure"><svg viewBox="0 0 560 70" width="560"><defs><linearGradient id="tg" x1="0" x2="1"><stop offset="0" stop-color="#2e86de"/><stop offset=".375" stop-color="#2e86de"/><stop offset=".375" stop-color="#27ae60"/><stop offset=".575" stop-color="#27ae60"/><stop offset=".575" stop-color="#e74c3c"/><stop offset="1" stop-color="#e74c3c"/></linearGradient></defs>
+<rect x="30" y="20" width="500" height="18" rx="9" fill="url(#tg)"/>
+<text x="30" y="56" font-size="10" text-anchor="middle">5 °C</text><text x="217" y="56" font-size="10" text-anchor="middle">20 °C</text><text x="317" y="56" font-size="10" text-anchor="middle">28 °C</text><text x="530" y="56" font-size="10" text-anchor="middle">45 °C</text>
+<path id="rMark" d="M0 14 l-6 -10 h12 z" fill="#1d2733" transform="translate(280 18)" style="transition:transform .2s"/></svg>
+<div class="cap">Şekil 4. Sıcaklık aralıkları ve göstergenin o anki konumu (▼)</div></div>
+</section>
+<section class="card" id="dht"><h2><span class="num">9</span>DHT11: Sıcaklık ve Nem Sensörü</h2>
+<p><b>DHT11</b>, içinde kapasitif bir nem algılayıcı ve bir NTC termistör ile bunları okuyan küçük bir mikrodenetleyici barındırır. Ölçümü kendisi yapar ve sonucu Arduino'ya <b>tek bir veri hattı</b> üzerinden dijital olarak gönderir; bu yüzden <code>analogRead</code> değil, bir <b>kütüphane</b> ile okunur.</p>
+<div class="grid2"><div class="figure"><svg viewBox="0 0 560 250" width="560">
+<rect x="10" y="20" width="120" height="190" rx="10" fill="#0e7c86"/><text x="70" y="45" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">UNO</text>
+<text x="120" y="83" text-anchor="end" fill="#fff" font-size="11">5V</text><text x="120" y="123" text-anchor="end" fill="#ffe28a" font-size="11">D2</text><text x="120" y="173" text-anchor="end" fill="#fff" font-size="11">GND</text>
+<rect x="360" y="30" width="80" height="110" rx="6" fill="#4aa3df" stroke="#1f6f9f"/>
+<rect x="370" y="40" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="382" y="40" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="394" y="40" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="406" y="40" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="418" y="40" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="370" y="52" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="382" y="52" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="394" y="52" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="406" y="52" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="418" y="52" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="370" y="64" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="382" y="64" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="394" y="64" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="406" y="64" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="418" y="64" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="370" y="76" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="382" y="76" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="394" y="76" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="406" y="76" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="418" y="76" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="370" y="88" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="382" y="88" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="394" y="88" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="406" y="88" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="418" y="88" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="370" y="100" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="382" y="100" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="394" y="100" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="406" y="100" width="8" height="8" rx="1" fill="#2c7fb8"/><rect x="418" y="100" width="8" height="8" rx="1" fill="#2c7fb8"/>
+<text x="373" y="136" text-anchor="middle" font-size="9" fill="#fff">1</text><text x="391" y="136" text-anchor="middle" font-size="9" fill="#fff">2</text><text x="409" y="136" text-anchor="middle" font-size="9" fill="#fff">3</text><text x="427" y="136" text-anchor="middle" font-size="9" fill="#fff">4</text>
+<text x="400" y="22" text-anchor="middle" font-size="11" font-weight="700">DHT11</text>
+<line x1="373" y1="140" x2="373" y2="200" stroke="#999" stroke-width="3"/><line x1="391" y1="140" x2="391" y2="200" stroke="#999" stroke-width="3"/><line x1="409" y1="140" x2="409" y2="200" stroke="#999" stroke-width="3"/><line x1="427" y1="140" x2="427" y2="200" stroke="#999" stroke-width="3"/>
+<path d="M130 80 H340 V210 H373 V200" fill="none" stroke="#e74c3c" stroke-width="3"/>
+<path d="M130 120 H325 V222 H391 V200" fill="none" stroke="#f39c12" stroke-width="3"/><path id="dhtData" class="flow" d="M391 200 V222 H325 V120 H130" fill="none" stroke="#fff" stroke-width="2"/>
+<path d="M130 170 H300 V236 H427 V200" fill="none" stroke="#222" stroke-width="3"/>
+<line x1="250" y1="80" x2="250" y2="92" stroke="#888" stroke-width="2"/><rect x="243" y="92" width="14" height="18" rx="4" fill="#d9b38c" stroke="#7a5230"/><line x1="250" y1="110" x2="250" y2="120" stroke="#888" stroke-width="2"/>
+<text x="262" y="105" font-size="10">10 kΩ pull-up</text>
+<text x="455" y="150" font-size="10">1 VCC (5 V)</text><text x="455" y="164" font-size="10">2 DATA (D2)</text><text x="455" y="178" font-size="10">3 NC (boş)</text><text x="455" y="192" font-size="10">4 GND</text>
+<text x="470" y="50" font-size="10" fill="#5b6b7d">Beyaz kesikli</text><text x="470" y="64" font-size="10" fill="#5b6b7d">çizgi: sensörden</text><text x="470" y="78" font-size="10" fill="#5b6b7d">Arduino'ya giden</text><text x="470" y="92" font-size="10" fill="#5b6b7d">40 bitlik veri</text>
+</svg><div class="cap">Şekil 5. DHT11 (4 bacaklı çıplak sensör) bağlantısı. 3 bacaklı modüllerde pull-up direnci kart üzerindedir.</div></div>
+<div><table class="tbl"><tr><th>Özellik</th><th>DHT11</th><th>DHT22 (AM2302)</th></tr>
+<tr><td>Besleme</td><td>3,3–5,5 V</td><td>3,3–6 V</td></tr><tr><td>Sıcaklık</td><td>0…50 °C, ±2 °C, 1 °C çözünürlük</td><td>−40…80 °C, ±0,5 °C</td></tr>
+<tr><td>Bağıl nem</td><td>%20…90, ±%5</td><td>%0…100, ±%2–5</td></tr><tr><td>Örnekleme</td><td>en fazla 1 Hz (1 s)</td><td>en fazla 0,5 Hz (2 s)</td></tr></table>
+<p><b>Veri çerçevesi:</b> Sensör her okumada <b>40 bit</b> gönderir: nem tam kısmı (8 bit) + nem ondalık (8) + sıcaklık tam (8) + sıcaklık ondalık (8) + <b>sağlama toplamı</b> (8). Sağlama, ilk dört baytın toplamının son 8 bitidir; kütüphane hatalı veride <code>NaN</code> döndürür.</p></div></div>
+<h3>Kütüphane kurulumu</h3><ol class="steps">
+<li>Arduino IDE'de <b>Araçlar → Kütüphaneleri Yönet…</b> (veya sol menüde kitap simgesi) açın.</li>
+<li>Arama kutusuna <b>DHT sensor library</b> yazın; <b>Adafruit</b> tarafından yayımlanan kütüphaneyi <b>Yükle</b>'yin.</li>
+<li>Bağımlılık olarak <b>Adafruit Unified Sensor</b> kütüphanesi de istenir: <b>Tümünü yükle</b>'yi seçin.</li>
+<li>Programın başına <code>#include &lt;DHT.h&gt;</code> ekleyin. Örnekler: <b>Dosya → Örnekler → DHT sensor library → DHTtester</b>.</li></ol>
+<div class="grid2"><div><div class="codebox"><span class="lbl">DHT11_Olcum.ino</span><pre class="code">// DHT11 ile sıcaklık ve bağıl nem ölçümü
+// Gerekli kütüphaneler (Araçlar -&gt; Kütüphaneleri Yönet):
+//   "DHT sensor library" (Adafruit) + "Adafruit Unified Sensor"
+#include &lt;DHT.h&gt;
+
+#define DHTPIN  2          // DATA ucu -&gt; D2 (10 kΩ pull-up ile)
+#define DHTTYPE DHT11      // DHT22 kullanıyorsanız: DHT22
+
+DHT dht(DHTPIN, DHTTYPE);  // sensör nesnesi
+
+void setup() {
+  Serial.begin(9600);
+  Serial.println("DHT11 olcum basliyor...");
+  dht.begin();
+}
+
+void loop() {
+  delay(2000);                              // DHT11 en fazla 1 Hz; 2 s güvenli aralık
+
+  float nem = dht.readHumidity();           // % bağıl nem
+  float sicaklik = dht.readTemperature();   // °C (true verilirse °F)
+
+  if (isnan(nem) || isnan(sicaklik)) {      // okuma başarısızsa NaN döner
+    Serial.println("Sensor okunamadi!");
+    return;                                 // loop()'un başına dön
+  }
+
+  float hissedilen = dht.computeHeatIndex(sicaklik, nem, false); // false = Celsius
+
+  Serial.print("Nem: ");
+  Serial.print(nem, 0);
+  Serial.print(" %  Sicaklik: ");
+  Serial.print(sicaklik, 1);
+  Serial.print(" C  Hissedilen: ");
+  Serial.print(hissedilen, 1);
+  Serial.println(" C");
+}</pre></div></div>
+<div class="sim"><h4>🔬 Simülasyon 4: DHT11 okuması ve 40 bitlik veri çerçevesi</h4>
+<label>Ortam sıcaklığı = <span id="hTT">24</span> °C</label><input type="range" id="hT" min="0" max="50" step="1" value="24">
+<label>Bağıl nem = %<span id="hHT">55</span></label><input type="range" id="hH" min="20" max="90" step="1" value="55">
+<label><input type="checkbox" id="hErr"> Bağlantı hatası (DATA kopuk)</label>
+<svg viewBox="0 0 330 70" width="100%"><rect width="330" height="70" rx="8" fill="#f7fbfb" stroke="#bfe3e4"/>
+<text x="12" y="20" font-size="10" fill="#5b6b7d">Nem</text><rect x="12" y="28" width="140" height="14" rx="7" fill="#e3eaf0"/><rect id="hBarH" x="12" y="28" width="70" height="14" rx="7" fill="#4aa3df" style="transition:width .3s"/>
+<text x="175" y="20" font-size="10" fill="#5b6b7d">Sıcaklık</text><rect x="175" y="28" width="140" height="14" rx="7" fill="#e3eaf0"/><rect id="hBarT" x="175" y="28" width="70" height="14" rx="7" fill="#e67e22" style="transition:width .3s"/>
+<text id="hHi" x="165" y="62" text-anchor="middle" font-size="11" fill="#1d2733"></text></svg>
+<div class="bits" id="hBits"></div>
+<div class="out" id="hOut"></div><div class="serial" id="hSer" style="height:100px"></div></div></div>
+<div class="note"><b>Hissedilen sıcaklık</b> (heat index), yüksek nemde terlemenin zorlaşmasıyla vücudun algıladığı sıcaklıktır. <code>computeHeatIndex()</code> ABD Ulusal Hava Servisi'nin (Rothfusz) regresyon formülünü kullanır ve özellikle 27 °C üzerinde anlamlıdır.</div>
+</section>
+<section class="card" id="tmp36"><h2><span class="num">10</span>TMP36 ve Sensör Karşılaştırması</h2>
+<p><b>TMP36</b> (Analog Devices) LM35 ile aynı kılıf ve aynı bacak sırasına (+Vs, Vout, GND) sahiptir; eğimi yine <b>10 mV/°C</b>'dir. Farkı, çıkışa <b>500 mV ofset</b> eklenmiş olmasıdır. Böylece tek beslemeyle <b>negatif sıcaklıklar</b> da ölçülebilir (−40 °C'de 100 mV).</p>
+<div class="formula">T(°C) = (V<sub>out</sub>(mV) − 500) / 10 &nbsp;&nbsp;·&nbsp;&nbsp; 25 °C → 750 mV</div>
+<div class="codebox"><span class="lbl">TMP36_parca.ino</span><pre class="code">int okunan = analogRead(A0);
+float mV = okunan * 5000.0 / 1024.0;
+float sicaklik = (mV - 500.0) / 10.0;   // TMP36: 500 mV ofset</pre></div>
+<table class="tbl"><tr><th></th><th>LM35</th><th>TMP36</th><th>DHT11</th></tr>
+<tr><td>Çıkış</td><td>Analog, 10 mV/°C</td><td>Analog, 10 mV/°C + 0,5 V</td><td>Dijital (tek hat)</td></tr>
+<tr><td>Formül</td><td>T = mV / 10</td><td>T = (mV − 500) / 10</td><td>Kütüphane hesaplar</td></tr>
+<tr><td>Negatif sıcaklık</td><td>Ek devre gerekir</td><td>Doğrudan</td><td>Hayır (0–50 °C)</td></tr>
+<tr><td>Nem ölçümü</td><td>Yok</td><td>Yok</td><td>Var</td></tr>
+<tr><td>Okuma hızı</td><td>Çok hızlı (≈ 100 µs)</td><td>Çok hızlı</td><td>En fazla 1 kez/s</td></tr>
+<tr><td>Arduino pini</td><td>A0–A5</td><td>A0–A5</td><td>Herhangi bir dijital pin</td></tr></table>
+<div class="warn">LM35 ile yazılmış bir programı TMP36 ile çalıştırırsanız oda sıcaklığını ≈ 75 °C okursunuz (750 mV / 10). Sensörün üzerindeki yazıyı mutlaka kontrol edin.</div>
+</section>
+<section class="card" id="fn"><h2><span class="num">11</span>Yeni Fonksiyonlar Tablosu</h2>
+<table class="tbl"><tr><th>Fonksiyon / yapı</th><th>Görevi</th><th>Örnek</th></tr>
+<tr><td><code>analogReference(tip)</code></td><td>ADC referans gerilimini seçer: <code>DEFAULT</code> (5 V), <code>INTERNAL</code> (1,1 V), <code>EXTERNAL</code> (AREF pini)</td><td><code>analogReference(INTERNAL);</code></td></tr>
+<tr><td><code>Serial.print(x, n)</code></td><td>float sayıyı n ondalık basamakla yazar</td><td><code>Serial.print(t, 1);</code></td></tr>
+<tr><td><code>tone(pin, frekans, süre)</code></td><td>Pasif buzzer'da kare dalga ile ses üretir (süre isteğe bağlı, ms)</td><td><code>tone(8, 2000, 100);</code></td></tr>
+<tr><td><code>noTone(pin)</code></td><td><code>tone()</code> ile başlatılan sesi durdurur</td><td><code>noTone(8);</code></td></tr>
+<tr><td><code>bool</code> değişken</td><td>true/false durum saklar (alarm durumu)</td><td><code>bool alarm = false;</code></td></tr>
+<tr><td><code>#include &lt;DHT.h&gt;</code></td><td>Adafruit DHT kütüphanesini programa ekler</td><td>—</td></tr>
+<tr><td><code>DHT dht(pin, tip);</code> / <code>dht.begin()</code></td><td>Sensör nesnesini oluşturur / başlatır</td><td><code>DHT dht(2, DHT11);</code></td></tr>
+<tr><td><code>dht.readTemperature()</code></td><td>Sıcaklığı °C döndürür (<code>true</code> parametresiyle °F)</td><td><code>float t = dht.readTemperature();</code></td></tr>
+<tr><td><code>dht.readHumidity()</code></td><td>Bağıl nemi % olarak döndürür</td><td><code>float h = dht.readHumidity();</code></td></tr>
+<tr><td><code>dht.computeHeatIndex(t, h, false)</code></td><td>Hissedilen sıcaklığı hesaplar</td><td>—</td></tr>
+<tr><td><code>isnan(x)</code></td><td>Değer "sayı değil" (NaN) ise true döner; başarısız okumayı yakalar</td><td><code>if (isnan(t)) {...}</code></td></tr></table>
+</section>
+<section class="card quiz" id="quiz"><h2><span class="num">12</span>Kendini Test Et</h2><div class="q" data-answer="b"><p>1) Ortam sıcaklığı 25 °C iken LM35'in çıkış gerilimi ne olur?</p><button class="opt" data-k="a">a) 25 mV</button><button class="opt" data-k="b">b) 250 mV</button><button class="opt" data-k="c">c) 2,5 V</button><div class="fb">✓ LM35 eğimi 10 mV/°C'dir: 25 × 10 mV = 250 mV.</div></div><div class="q" data-answer="a"><p>2) 5 V referansla <code>analogRead(A0)</code> = 61 okunuyorsa LM35'in ölçtüğü sıcaklık yaklaşık kaçtır?</p><button class="opt" data-k="a">a) 29,8 °C</button><button class="opt" data-k="b">b) 61 °C</button><button class="opt" data-k="c">c) 6,1 °C</button><div class="fb">✓ 61 · 5000 / 1024 = 297,9 mV → 297,9 / 10 ≈ 29,8 °C.</div></div><div class="q" data-answer="c"><p>3) <code>int t = analogRead(A0) * 5000 / 1024 / 10;</code> satırının temel sorunu nedir?</p><button class="opt" data-k="a">a) analogRead A0 ile kullanılamaz</button><button class="opt" data-k="b">b) 1024 yerine 1023 yazılmalıdır</button><button class="opt" data-k="c">c) 16 bitlik int çarpımda taşar; 5000.0 / float kullanılmalıdır</button><div class="fb">✓ UNO'da int en fazla 32 767'dir. Örneğin 61 × 5000 = 305 000 taşar ve sonuç anlamsızdır. Ayrıca tam sayı bölme ondalığı atar.</div></div><div class="q" data-answer="b"><p>4) DHT11 ile ilgili hangisi doğrudur?</p><button class="opt" data-k="a">a) analogRead ile okunur ve saniyede 100 kez ölçüm yapılabilir</button><button class="opt" data-k="b">b) Dijital veri gönderir, kütüphane ile okunur; en fazla saniyede bir okunmalıdır</button><button class="opt" data-k="c">c) Yalnızca nem ölçer</button><div class="fb">✓ DHT11 tek hat dijital protokolle 40 bit gönderir; örnekleme hızı en fazla 1 Hz'dir. Hem sıcaklık hem nem ölçer.</div></div><div class="q" data-answer="a"><p>5) Histerezisli bir alarmda ESIK_UST = 30 °C, ESIK_ALT = 28 °C'dir. Alarm açıkken sıcaklık 29 °C'ye düşerse ne olur?</p><button class="opt" data-k="a">a) Alarm açık kalır</button><button class="opt" data-k="b">b) Alarm kapanır</button><button class="opt" data-k="c">c) Alarm bir kapanıp bir açılır</button><div class="fb">✓ Alarm yalnızca sıcaklık 28 °C'ye (ESIK_ALT) veya altına inince kapanır. 28–30 °C bandında önceki durum korunur.</div></div></section>
+<section class="card" id="odev"><h2><span class="num">13</span>Ödev ve Özet</h2>
+<h3>Ödev</h3><ol>
+<li><b>°F dönüşümü:</b> Uygulama 1'i, sıcaklığı hem °C hem °F (F = C × 1,8 + 32) olarak yazdıracak şekilde genişletin.</li>
+<li><b>Min–maks kaydı:</b> Program çalıştığı süre içinde ölçülen en düşük ve en yüksek sıcaklığı tutan ve her ölçümde bunları da yazdıran bir program yazın.</li>
+<li><b>Yüksek çözünürlük:</b> <code>analogReference(INTERNAL)</code> kullanarak LM35'i 1,1 V referansla okuyun; 5 V referanslı sonuçlarla karşılaştırıp farkı yorumlayın.</li>
+<li><b>Konfor göstergesi:</b> DHT11 ile nem %40'ın altındaysa mavi, %40–60 ise yeşil, %60'ın üzerindeyse kırmızı LED yakan programı yazın.</li></ol>
+<details><summary>2. ödev için ipucu (tıklayın)</summary><div class="codebox"><span class="lbl">minmaks_ipucu.ino</span><pre class="code">float enDusuk = 1000.0;     // ilk ölçüm mutlaka bundan küçük olur
+float enYuksek = -1000.0;   // ilk ölçüm mutlaka bundan büyük olur
+
+void setup() { Serial.begin(9600); }
+
+void loop() {
+  float t = analogRead(A0) * 5000.0 / 1024.0 / 10.0;
+  if (t &lt; enDusuk)  enDusuk = t;
+  if (t &gt; enYuksek) enYuksek = t;
+  Serial.print(t, 1);
+  Serial.print("  min: ");  Serial.print(enDusuk, 1);
+  Serial.print("  maks: "); Serial.println(enYuksek, 1);
+  delay(1000);
+}</pre></div></details>
+<h3>Özet</h3><ul>
+<li>LM35 analog çıkışlıdır: 10 mV/°C; bacak sırası (düz yüz önde) +Vs – Vout – GND.</li>
+<li>T = analogRead · 5000 / 1024 / 10; 5 V referansta çözünürlük ≈ 0,49 °C, 1,1 V referansta ≈ 0,11 °C.</li>
+<li>Hesaplarda <code>float</code> ve ondalıklı sabitler kullanılmalı; 16 bitlik <code>int</code> taşmasına dikkat edilmelidir.</li>
+<li>Eşik uyarılarında <b>histerezis</b> (iki eşik) titreşimi önler; aralık göstergelerinde <code>if – else if – else</code> kullanılır.</li>
+<li>DHT11 dijitaldir; Adafruit <b>DHT sensor library</b> Kütüphane Yöneticisi'nden kurulur, en fazla 1 Hz okunur, hatalı okuma <code>isnan()</code> ile yakalanır.</li>
+<li>TMP36: T = (mV − 500)/10; negatif sıcaklık ölçebilir.</li></ul>
+</section>
+</main>
+<footer>Arduino ile Programlama · Ders Notları · 10. Hafta<br>Kaynaklar: C. Taşdemir – <i>Arduino</i>; G. Döktaş – <i>Arduino Eğitim Kitabı</i>; E. Delebe – <i>Projeler ile Arduino</i></footer>
+<script>
+(function(){
+ const KW=['void','if','else','for','while','do','return','switch','case','break','default','const','true','false','#include','#define'];
+ const TY=['int','float','long','unsigned','byte','bool','boolean','char','double','String','word'];
+ const CST=['HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP','LED_BUILTIN','A0','A1','A2','A3','A4','A5'];
+ const FN=['pinMode','digitalWrite','digitalRead','analogRead','analogWrite','delay','delayMicroseconds','millis','micros','setup','loop','map','constrain','pulseIn','tone','noTone','Serial','begin','print','println','attach','write','read','available','random'];
+ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+ function hl(src){
+  let out='',i=0;
+  const re=/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(#?[A-Za-z_][A-Za-z0-9_]*)|(\b\d+(?:\.\d+)?\b)/g;let m,last=0;
+  while((m=re.exec(src))){out+=esc(src.slice(last,m.index));
+   if(m[1])out+='<span class="com">'+esc(m[1])+'</span>';
+   else if(m[2])out+='<span class="str">'+esc(m[2])+'</span>';
+   else if(m[3]){const w=m[3];let c=KW.includes(w)?'kw':TY.includes(w)?'ty':CST.includes(w)?'cst':FN.includes(w)?'fn':'';out+=c?'<span class="'+c+'">'+esc(w)+'</span>':esc(w)}
+   else if(m[4])out+='<span class="num">'+m[4]+'</span>';
+   last=re.lastIndex}
+  return out+esc(src.slice(last))}
+ document.querySelectorAll('pre.code').forEach(p=>{const raw=p.textContent;p.innerHTML=hl(raw);
+  const b=document.createElement('button');b.className='copybtn';b.textContent='Kopyala';
+  b.onclick=()=>{navigator.clipboard.writeText(raw).then(()=>{b.textContent='Kopyalandı ✓';setTimeout(()=>b.textContent='Kopyala',1500)})};
+  p.parentElement.appendChild(b)});
+ document.querySelectorAll('.quiz .q').forEach(q=>{const ans=q.dataset.answer;const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{q.querySelectorAll('.opt').forEach(x=>x.classList.remove('ok','no'));
+   if(o.dataset.k===ans){o.classList.add('ok');if(fb)fb.style.display='block'}else{o.classList.add('no')}})});
+ document.querySelectorAll('.quiz .fb').forEach(f=>f.style.display='none');
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+function ser(id,line,max){const s=$(id);s.textContent+=line+'\n';if(s.textContent.length>(max||4000))s.textContent=s.textContent.slice(-(max||4000)/2);s.scrollTop=1e9}
+// LM35 modeli: Vout = 10 mV/°C · T ; ADC = floor(V·1024/Vref), en fazla 1023
+function adcOf(T,ref,noise){let v=Math.floor(T*10*1024/ref);if(noise)v+=Math.round(Math.random()*2-1);return Math.max(0,Math.min(1023,v))}
+const f1=x=>x.toFixed(1);
+// ---- Sim 1: termometre ----
+let th={adc:0,mv:0,t:0};
+function thCalc(noisy){const T=+$('thT').value,ref=+$('thRef').value,nz=$('thNoise').checked&&noisy;
+ $('thTT').textContent=T.toFixed(1);
+ const adc=adcOf(T,ref,nz);const mv=adc*ref/1024;const t=mv/10;th={adc,mv,t};
+ const h=2*Math.min(T,105);$('thMerc').setAttribute('y',235-h);$('thMerc').setAttribute('height',h+22);
+ const c=`hsl(${Math.round(220-220*Math.min(T,100)/100)},75%,50%)`;$('thMerc').setAttribute('fill',c);$('thBulb').setAttribute('fill',c);
+ $('thVm').textContent=(T*10).toFixed(1)+' mV';$('thAdc').textContent=adc;$('thBin').textContent=adc.toString(2).padStart(10,'0');
+ $('thBig').textContent=t.toFixed(1).replace('.',',')+' °C';
+ $('thFlow').style.animationDuration=(1.8-1.4*Math.min(T,100)/100).toFixed(2)+'s';
+ const sat=(ref==1100&&T>110)?'<br><b style="color:#c0392b">Uyarı: 1,1 V referansta 110 °C üstü ölçülemez (ADC 1023 değerinde doyar).</b>':'';
+ $('thOut').innerHTML=`V<sub>out</sub> = 10 mV/°C × ${T.toFixed(1)} = ${(T*10).toFixed(1)} mV<br>ADC = ⌊${(T*10).toFixed(1)} × 1024 / ${ref}⌋ = <b>${adc}</b><br>T = ${adc} × ${ref} / 1024 / 10 = <b>${t.toFixed(2)} °C</b> (hata ${(t-T).toFixed(2)} °C)<br>1 basamak = ${(ref/1024).toFixed(2)} mV = ${(ref/10240).toFixed(3)} °C`+sat}
+['thT','thRef','thNoise'].forEach(i=>$(i).addEventListener('input',()=>thCalc(false)));$('thRef').onchange=()=>thCalc(false);
+thCalc(false);
+function thSer(){thCalc(true);const ref=+$('thRef').value;ser('thSer',`ADC: ${th.adc}  Gerilim: ${f1(th.mv)} mV  Sicaklik: ${f1(th.t)} C`)}
+thSer();setInterval(thSer,1000);
+// ---- Uygulama 3 mantığı (Sim 3 + devre şeması) ----
+let rT=25;
+function u3(T){const adc=adcOf(T,5000,false);const t=adc*5000/1024/10;
+ const st=t<20?0:(t<28?1:2);return {adc,t,st}}
+function setLed(id,on){const e=$(id),h=$(id+'H');e.setAttribute('opacity',on?1:.3);h.setAttribute('opacity',on?.45:0)}
+function rDraw(){const {adc,t,st}=u3(rT);
+ $('rTT').textContent=rT.toFixed(1);$('dvTT').textContent=rT.toFixed(1);$('rT').value=rT;$('dvT').value=rT;
+ ['rB','rY','rK'].forEach((id,i)=>{const e=$(id);e.style.opacity=i==st?1:.2;e.style.boxShadow=i==st?`0 0 14px ${getComputedStyle(e).backgroundColor}`:'none'});
+ $('rBz').style.opacity=st==2?1:.2;$('rBz').className=st==2?'blink':'';
+ const nm=['SOGUK   ','NORMAL  ','SICAK   '][st];
+ $('rOut').innerHTML=`analogRead = ${adc} → sıcaklik = ${t.toFixed(2)} °C<br>`+(st==0?'sicaklik &lt; 20.0 → <b style="color:#2e86de">mavi LED (D4)</b>':st==1?'20.0 ≤ sicaklik &lt; 28.0 → <b style="color:#27ae60">yeşil LED (D5)</b>':'sicaklik ≥ 28.0 → <b style="color:#e74c3c">kırmızı LED (D6) + tone(8, 2000, 100)</b>');
+ const x=30+500*(rT-5)/40;$('rMark').setAttribute('transform',`translate(${x.toFixed(1)} 18)`);
+ // devre şeması
+ setLed('dB',st==0);setLed('dY',st==1);setLed('dK',st==2);
+ $('fwD4').style.opacity=st==0?1:0;$('fwD5').style.opacity=st==1?1:0;$('fwD6').style.opacity=st==2?1:0;$('fwD8').style.opacity=st==2?1:0;
+ $('bzW').setAttribute('opacity',st==2?1:0);$('bzW').setAttribute('class',st==2?'blink':'');
+ $('tDevT').textContent=rT.toFixed(1).replace('.',',')+' °C';
+ return nm+f1(t)+' C'}
+$('rT').oninput=()=>{rT=+$('rT').value;rDraw()};$('dvT').oninput=()=>{rT=+$('dvT').value;rDraw()};
+rDraw();setInterval(()=>ser('rSer',rDraw()),500);
+// ---- Sim 2: histerezisli alarm ----
+let alarm=false,aPh=0,aHist=[],blinkOn=false;
+const yOf=T=>140-130*(Math.min(40,Math.max(20,T))-20)/20;
+function aLines(){let U=+$('aU').value,L=+$('aL').value;if(L>U){L=U;$('aL').value=L}
+ $('aUT').textContent=U;$('aLT').textContent=L;
+ $('aUl').setAttribute('y1',yOf(U));$('aUl').setAttribute('y2',yOf(U));$('aLl').setAttribute('y1',yOf(L));$('aLl').setAttribute('y2',yOf(L));
+ $('aBand').setAttribute('y',yOf(U));$('aBand').setAttribute('height',Math.max(0,yOf(L)-yOf(U)))}
+['aU','aL'].forEach(i=>$(i).oninput=aLines);aLines();
+$('aT').oninput=()=>$('aTT').textContent=(+$('aT').value).toFixed(1);
+function aTick(){
+ if($('aAuto').checked){aPh+=0.12;const v=29+3.2*Math.sin(aPh)+0.4*Math.sin(aPh*7.3);$('aT').value=v.toFixed(1);$('aTT').textContent=v.toFixed(1)}
+ const T=+$('aT').value,U=+$('aU').value,L=+$('aL').value;
+ const adc=adcOf(T,5000,false);const t=adc*5000/1024/10;
+ ser('aSer','Sicaklik: '+f1(t)+' C');
+ if(!alarm&&t>=U){alarm=true;ser('aSer','>>> ALARM: Sicaklik yuksek!')}
+ else if(alarm&&t<=L){alarm=false;ser('aSer','>>> Normal seviyeye dondu.')}
+ aHist.push(t);if(aHist.length>60)aHist.shift();
+ $('aPlot').setAttribute('points',aHist.map((v,i)=>`${10+i*4},${yOf(v).toFixed(1)}`).join(' '));
+ $('aOut').innerHTML=`analogRead = ${adc} → t = ${t.toFixed(2)} °C · alarm = <b style="color:${alarm?'#c0392b':'#27ae60'}">${alarm}</b>`;
+ // alarmda 200 ms yanık + 200 ms sönük; değilse 400 ms sönük
+ const on=v=>{$('aLed').setAttribute('opacity',v?1:.25);$('aLedH').setAttribute('opacity',v?.5:0);$('aBzW').setAttribute('opacity',v?1:0)};
+ if(alarm){on(true);setTimeout(()=>on(false),200)}else on(false);
+ setTimeout(aTick,400)}
+aTick();
+// ---- Sim 4: DHT11 ----
+function heatIndex(tc,h){const T=tc*1.8+32;let hi=0.5*(T+61.0+((T-68.0)*1.2)+(h*0.094));
+ if(hi>79){hi=-42.379+2.04901523*T+10.14333127*h-0.22475541*T*h-0.00683783*T*T-0.05481717*h*h+0.00122874*T*T*h+0.00085282*T*h*h-0.00000199*T*T*h*h;
+  if(h<13&&T>=80&&T<=112)hi-=((13-h)*0.25)*Math.sqrt((17-Math.abs(T-95))*0.05882);
+  else if(h>85&&T>=80&&T<=87)hi+=((h-85)*0.1)*((87-T)*0.2)}
+ return (hi-32)/1.8}
+function hDraw(){const T=+$('hT').value,H=+$('hH').value,err=$('hErr').checked;
+ $('hTT').textContent=T;$('hHT').textContent=H;
+ $('hBarH').setAttribute('width',(140*H/100).toFixed(1));$('hBarT').setAttribute('width',(140*T/50).toFixed(1));
+ const by=[H,0,T,0];const cs=(H+T)&255;by.push(cs);
+ const nm=['Nem tam','Nem ondalık','Sıcaklık tam','Sıcaklık ondalık','Sağlama'];
+ $('hBits').innerHTML=err?'<i style="color:#c0392b">Veri hattında sinyal yok – 40 bit alınamadı.</i>':by.map((b,i)=>`<div><span style="width:120px;text-align:left">${nm[i]}</span>`+b.toString(2).padStart(8,'0').split('').map(c=>`<span class="b${c}">${c}</span>`).join('')+` = ${b}</div>`).join('');
+ const hi=heatIndex(T,H);
+ $('hHi').textContent=err?'—':`Hissedilen: ${hi.toFixed(1)} °C`;
+ $('hOut').innerHTML=err?'dht.readTemperature() → NaN · isnan() true → "Sensor okunamadi!"':`Sağlama: ${H} + 0 + ${T} + 0 = ${H+T} → son 8 bit = <b>${cs}</b> ✓<br>computeHeatIndex(${T}.0, ${H}.0, false) = <b>${hi.toFixed(2)} °C</b>`;
+ $('dhtData').style.opacity=err?0:1;
+ return err?'Sensor okunamadi!':`Nem: ${H} %  Sicaklik: ${T}.0 C  Hissedilen: ${hi.toFixed(1)} C`}
+['hT','hH','hErr'].forEach(i=>$(i).addEventListener('input',hDraw));$('hErr').onchange=hDraw;
+hDraw();ser('hSer','DHT11 olcum basliyor...');setTimeout(function t(){ser('hSer',hDraw());setTimeout(t,2000)},2000);
+})();
+</script>
+</body></html>

@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>14. Hafta – Kızılötesi (IR) Sensör Uygulamaları | Arduino ile Programlama</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#1d2733;--muted:#5b6b7d;--teal:#00979d;--teal2:#00b3b9;--accent:#e67e22;--red:#e74c3c;--green:#27ae60;--code:#0f1b26;--border:#dde5ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+header.top{background:linear-gradient(135deg,#006468,#00979d 60%,#00b3b9);color:#fff;padding:28px 20px 34px;position:relative;overflow:hidden}
+header.top::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px),repeating-linear-gradient(0deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px);pointer-events:none}
+.wrap{max-width:1050px;margin:0 auto;padding:0 18px}
+.badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:3px 12px;border-radius:20px;font-size:.85em;letter-spacing:.5px}
+header.top h1{margin:10px 0 6px;font-size:2em}
+header.top p{margin:0;opacity:.92}
+nav.weeknav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;position:relative;z-index:1}
+nav.weeknav a{color:#fff;text-decoration:none;background:rgba(0,0,0,.18);padding:6px 12px;border-radius:6px;font-size:.9em}
+nav.weeknav a:hover{background:rgba(0,0,0,.35)}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;margin:22px 0}
+.toc ol{margin:6px 0;columns:2}
+.toc a{color:var(--teal);text-decoration:none}
+section.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin:22px 0;box-shadow:0 2px 8px rgba(20,40,60,.05);animation:fadeUp .6s ease both}
+section.card h2{margin-top:0;color:#006468;border-bottom:2px solid #e3f3f3;padding-bottom:8px}
+section.card h2 .num{display:inline-block;background:var(--teal);color:#fff;border-radius:50%;width:32px;height:32px;text-align:center;line-height:32px;margin-right:8px;font-size:.8em}
+h3{color:#0b4f6c}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.goals li{margin:4px 0}
+.note,.warn,.tip{border-radius:8px;padding:12px 16px;margin:14px 0;border-left:5px solid}
+.note{background:#eaf6ff;border-color:#2e86de}.warn{background:#fff3e6;border-color:var(--accent)}.tip{background:#eafaf1;border-color:var(--green)}
+.note::before{content:"ℹ️ Not: ";font-weight:600}.warn::before{content:"⚠️ Dikkat: ";font-weight:600}.tip::before{content:"💡 İpucu: ";font-weight:600}
+.formula{font-family:Cambria,"Times New Roman",serif;font-size:1.5em;text-align:center;background:#f7fbfb;border:1px dashed var(--teal);border-radius:8px;padding:12px;margin:14px 0}
+table.tbl{border-collapse:collapse;width:100%;margin:12px 0;font-size:.95em}
+table.tbl th,table.tbl td{border:1px solid var(--border);padding:7px 10px;text-align:left}
+table.tbl th{background:#e9f6f6;color:#064d50}
+table.tbl tr:nth-child(even) td{background:#fafcfd}
+.codebox{position:relative;margin:14px 0}
+.codebox .lbl{background:#1f3344;color:#9fd7da;font-size:.8em;padding:4px 12px;border-radius:8px 8px 0 0;display:inline-block;font-family:Consolas,monospace}
+pre.code{background:var(--code);color:#d7e3ee;padding:16px 18px;border-radius:0 8px 8px 8px;overflow:auto;font-family:Consolas,"Courier New",monospace;font-size:.92em;line-height:1.5;margin:0}
+pre.code .kw{color:#c792ea}.code .ty{color:#82aaff}.code .fn{color:#f78c6c}.code .num{color:#f7c56c}.code .str{color:#c3e88d}.code .com{color:#6b8299;font-style:italic}.code .cst{color:#ff5370}
+.copybtn{position:absolute;top:30px;right:8px;background:#2b4459;color:#cfe;border:0;border-radius:5px;padding:4px 10px;cursor:pointer;font-size:.8em}
+.copybtn:hover{background:var(--teal)}
+.figure{text-align:center;margin:16px 0}
+.figure svg{max-width:100%;height:auto}
+.figure .cap{font-size:.88em;color:var(--muted);margin-top:6px}
+.sim{background:#f3fafa;border:1px solid #bfe3e4;border-radius:10px;padding:16px;margin:16px 0}
+.sim h4{margin:0 0 10px;color:#006468}
+.sim label{display:block;margin:8px 0 2px;font-weight:600;font-size:.92em}
+.sim input[type=range]{width:100%;accent-color:var(--teal)}
+.sim .out{font-family:Consolas,monospace;background:#fff;border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-top:10px}
+.serial{background:#0b1620;color:#7CFC9a;font-family:Consolas,monospace;border-radius:6px;padding:10px;height:140px;overflow:auto;font-size:.88em;white-space:pre}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:.92em;margin:4px 4px 4px 0}
+.btn:hover{background:#007a7f}.btn.alt{background:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.toc ol{columns:1}}
+/* animations */
+.flow{stroke-dasharray:6 10;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+.glow{filter:drop-shadow(0 0 6px #ff4d4d)}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.spin{transform-origin:center;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* quiz */
+.quiz .q{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0}
+.quiz .q p{margin:0 0 8px;font-weight:600}
+.quiz .opt{display:block;width:100%;text-align:left;background:#f7f9fb;border:1px solid var(--border);border-radius:6px;padding:7px 10px;margin:4px 0;cursor:pointer;font-size:.95em}
+.quiz .opt:hover{background:#eef6f6}
+.quiz .opt.ok{background:#d9f5e3;border-color:var(--green)}
+.quiz .opt.no{background:#fde2df;border-color:var(--red)}
+.quiz .fb{font-size:.9em;margin-top:6px;color:var(--muted)}
+details{background:#fbfcfd;border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin:10px 0}
+details summary{cursor:pointer;font-weight:600;color:#0b4f6c}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding:8px 0 8px 46px;margin:6px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:32px;height:32px;border-radius:50%;background:var(--teal);color:#fff;text-align:center;line-height:32px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:30px 10px 40px}
+.pill{display:inline-block;background:#e3f3f3;color:#064d50;border-radius:12px;padding:2px 10px;font-size:.85em;margin:2px}
+</style></head><body>
+<header class="top"><div class="wrap">
+<span class="badge">ARDUİNO İLE PROGRAMLAMA · 14. HAFTA</span>
+<h1>Kızılötesi (IR) Sensör Uygulamaları</h1><p>IR spektrumu, IR alıcı ve kumanda (NEC, IRremote v4), IR engel sensörü, PIR hareket sensörü ve dönem sonu değerlendirmesi</p>
+<nav class="weeknav"><a href="index.html">☰ Tüm Haftalar</a><a href="hafta13.html">← 13. Hafta</a></nav>
+</div></header>
+<main class="wrap">
+<div class="toc"><strong>Bu haftanın içeriği</strong><ol><li><a href="#hedef">Haftanın Hedefleri</a></li><li><a href="#spektrum">Kızılötesi Işık ve Spektrum</a></li><li><a href="#alici">IR Alıcı ve 38 kHz Taşıyıcı</a></li><li><a href="#nec">NEC Protokolü</a></li><li><a href="#kutuphane">IRremote Kütüphanesi (v4)</a></li><li><a href="#devre">Devre: IR Kumanda ile LED</a></li><li><a href="#uyg12">Uygulama 1–2: Kod Okuma, LED Kontrolü</a></li><li><a href="#engel">IR Engel Sensörü</a></li><li><a href="#pir">PIR Hareket Sensörü</a></li><li><a href="#devre2">Devre: Engel ve PIR</a></li><li><a href="#donem">Dönem Sonu ve Proje Fikirleri</a></li><li><a href="#quiz">Kendini Test Et</a></li><li><a href="#odev">Ödev ve Özet</a></li></ol></div>
+<style>
+.grid2>*{min-width:0}
+.dot{fill:#111}
+.key{cursor:pointer}.key rect{transition:fill .1s}.key:hover rect{fill:#4a5866}.key.down rect{fill:#00979d}
+.beam{stroke-dasharray:5 7;animation:flow .5s linear infinite}
+.reflect{stroke-dasharray:4 6;animation:flow .7s linear infinite}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.cards .pc{border:1px solid var(--border);border-radius:10px;padding:12px 14px;background:#fbfdfe}
+.cards .pc h4{margin:0 0 6px;color:#006468}
+.cards .pc p{margin:4px 0;font-size:.92em}
+.pirwave{fill:none;stroke:#e67e22;stroke-width:2;animation:pw 2s ease-out infinite;opacity:0}
+@keyframes pw{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:scale(1.2)}}
+</style><section class="card" id="hedef"><h2><span class="num">1</span>Haftanın Hedefleri</h2>
+<ul class="goals">
+<li>Kızılötesi (IR) ışığın elektromanyetik spektrumdaki yerini ve farklı IR sensörlerinin çalışma ilkesini açıklayabilmek</li>
+<li>IR alıcı (VS1838B/TSOP) ile 38 kHz taşıyıcılı sinyalleri ve NEC protokolünü yorumlayabilmek</li>
+<li><b>IRremote</b> kütüphanesinin güncel (v4) API'siyle kumanda kodlarını okuyup LED'leri kontrol edebilmek</li>
+<li>IR engel sensörü (aktif IR) ve PIR hareket sensörü (pasif IR) ile dijital giriş uygulamaları yapabilmek</li>
+<li>Dönem boyunca öğrenilenleri birleştiren bir dönem sonu projesi tasarlayabilmek</li>
+</ul>
+</section>
+<section class="card" id="spektrum"><h2><span class="num">2</span>Kızılötesi Işık ve Spektrum</h2>
+<p><b>Kızılötesi</b> (infrared, IR) ışık, dalga boyu görünür kırmızı ışıktan (≈ 700 nm) uzun, mikrodalgalardan kısa olan elektromanyetik ışınımdır. İnsan gözü IR'yi göremez; ancak sıcak olan her cisim IR yayar. Bu hafta iki farklı yaklaşım göreceğiz:</p>
+<ul><li><b>Aktif IR:</b> Sistem kendi IR ışığını üretir (IR LED) ve ya karşıdaki alıcıya gönderir (<i>kumanda</i>) ya da yansımasını ölçer (<i>engel sensörü</i>). Genellikle ≈ 850–940 nm yakın IR kullanılır.</li>
+<li><b>Pasif IR (PIR):</b> Sensör ışık yaymaz; insan ve hayvan vücudunun yaydığı ≈ 8–14 µm termal IR'deki değişimi algılar.</li></ul>
+<div class="figure"><svg viewBox="0 0 700 210" width="720"><defs><linearGradient id="vis14" x1="0" x2="1"><stop offset="0" stop-color="#7f00ff"/><stop offset=".2" stop-color="#0040ff"/><stop offset=".4" stop-color="#00c853"/><stop offset=".6" stop-color="#ffeb3b"/><stop offset=".8" stop-color="#ff9800"/><stop offset="1" stop-color="#e53935"/></linearGradient><linearGradient id="ir14" x1="0" x2="1"><stop offset="0" stop-color="#8e2424"/><stop offset="1" stop-color="#3a1f1f"/></linearGradient></defs><rect x="20" y="60" width="90" height="40" fill="#b388ff"/><text x="65" y="85" text-anchor="middle" font-size="11">Morötesi (UV)</text><rect x="110" y="60" width="160" height="40" fill="url(#vis14)"/><text x="190" y="85" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">Görünür ışık</text><rect x="270" y="60" width="140" height="40" fill="#a63a3a"/><text x="340" y="85" text-anchor="middle" font-size="11" fill="#fff">Yakın IR</text><rect x="410" y="60" width="120" height="40" fill="#6d2b2b"/><text x="470" y="85" text-anchor="middle" font-size="11" fill="#fff">Orta IR</text><rect x="530" y="60" width="150" height="40" fill="url(#ir14)"/><text x="605" y="85" text-anchor="middle" font-size="11" fill="#fff">Uzak (termal) IR</text><g font-size="10" text-anchor="middle" fill="#333"><text x="110" y="116">380 nm</text><text x="270" y="116">700 nm</text><text x="410" y="116">1,4 µm</text><text x="530" y="116">3 µm</text><text x="680" y="116">1 mm</text></g><line x1="330" y1="56" x2="330" y2="30" stroke="#e74c3c" stroke-width="2"/><circle cx="330" cy="56" r="5" fill="#e74c3c" class="pulse" style="transform-origin:330px 56px"/><text x="330" y="22" text-anchor="middle" font-size="11" fill="#c0392b" font-weight="700">≈ 940 nm: kumanda, IR LED, engel sensörü</text><line x1="600" y1="104" x2="600" y2="140" stroke="#e67e22" stroke-width="2"/><circle cx="600" cy="104" r="5" fill="#e67e22" class="pulse" style="transform-origin:600px 104px"/><text x="600" y="156" text-anchor="middle" font-size="11" fill="#d35400" font-weight="700">≈ 8–14 µm: insan vücudu ısısı → PIR</text><text x="350" y="196" text-anchor="middle" font-size="11" fill="#5b6b7d">dalga boyu artar →  ·  ← frekans ve foton enerjisi artar</text></svg><div class="cap">Şekil 1. Elektromanyetik spektrumda kızılötesi (IR) bölge ve bu hafta kullanacağımız sensörlerin çalıştığı dalga boyları (ölçeksiz)</div></div>
+<div class="tip">Kumandanın çalışıp çalışmadığını görmek için tuşa basarken IR LED'ine telefon kamerasıyla bakın: birçok kamera sensörü yakın IR'yi mor-beyaz bir parlama olarak gösterir.</div>
+</section>
+<section class="card" id="alici"><h2><span class="num">3</span>IR Alıcı Modül ve 38 kHz Taşıyıcı</h2>
+<p>Güneş ışığı, akkor lambalar ve hatta ısınmış cisimler de IR yayar. Kumanda sinyalinin bu "IR gürültüsünden" ayırt edilebilmesi için IR LED sabit yanmaz; saniyede <b>38 000 kez</b> yanıp sönerek (38 kHz <b>taşıyıcı</b>) veri paketleri gönderir. <b>VS1838B</b> veya <b>TSOP38238</b> gibi IR alıcı modüller yalnızca bu frekansta titreşen IR'ye tepki verir, taşıyıcıyı ayıklar ve Arduino'ya temiz bir dijital sinyal verir.</p>
+<div class="figure"><svg viewBox="0 0 660 220" width="680"><rect x="30" y="40" width="70" height="80" rx="6" fill="#222"/><circle cx="65" cy="72" r="24" fill="#333" stroke="#111" stroke-width="2"/><ellipse cx="58" cy="64" rx="8" ry="5" fill="#555"/><line x1="45" y1="120" x2="45" y2="170" stroke="#aaa" stroke-width="3"/><line x1="65" y1="120" x2="65" y2="170" stroke="#aaa" stroke-width="3"/><line x1="85" y1="120" x2="85" y2="170" stroke="#aaa" stroke-width="3"/><g font-size="11" text-anchor="middle"><text x="45" y="186">OUT</text><text x="65" y="200">GND</text><text x="85" y="186">VCC</text></g><text x="65" y="30" text-anchor="middle" font-size="11" font-weight="700">VS1838B</text><defs><marker id="ar14" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8z" fill="#333"/></marker></defs><rect x="140" y="60" width="90" height="40" rx="6" fill="#c0392b"/><text x="185.0" y="84" text-anchor="middle" font-size="10" fill="#fff">Fotodiyot</text><rect x="250" y="60" width="90" height="40" rx="6" fill="#8e44ad"/><text x="295.0" y="84" text-anchor="middle" font-size="10" fill="#fff">Yükselteç + AGC</text><rect x="360" y="60" width="100" height="40" rx="6" fill="#2e86de"/><text x="410.0" y="84" text-anchor="middle" font-size="10" fill="#fff">38 kHz bant geçiren</text><rect x="480" y="60" width="90" height="40" rx="6" fill="#16a085"/><text x="525.0" y="84" text-anchor="middle" font-size="10" fill="#fff">Demodülatör</text><rect x="590" y="60" width="50" height="40" rx="6" fill="#555"/><text x="615.0" y="84" text-anchor="middle" font-size="10" fill="#fff">OUT</text><path d="M230 80 H248 M340 80 H358 M460 80 H478 M570 80 H588" stroke="#333" stroke-width="2" marker-end="url(#ar14)"/><path d="M110 80 H138" stroke="#e74c3c" stroke-width="3" class="beam" marker-end="url(#ar14)"/><g transform="translate(140,130)"><text x="0" y="10" font-size="10">IR ışığı (38 kHz ile anahtarlanmış):</text><rect x="200" y="0" width="2" height="14" fill="#e74c3c"/><rect x="204" y="0" width="2" height="14" fill="#e74c3c"/><rect x="208" y="0" width="2" height="14" fill="#e74c3c"/><rect x="212" y="0" width="2" height="14" fill="#e74c3c"/><rect x="216" y="0" width="2" height="14" fill="#e74c3c"/><rect x="220" y="0" width="2" height="14" fill="#e74c3c"/><rect x="224" y="0" width="2" height="14" fill="#e74c3c"/><rect x="228" y="0" width="2" height="14" fill="#e74c3c"/><rect x="232" y="0" width="2" height="14" fill="#e74c3c"/><rect x="236" y="0" width="2" height="14" fill="#e74c3c"/><rect x="240" y="0" width="2" height="14" fill="#e74c3c"/><rect x="244" y="0" width="2" height="14" fill="#e74c3c"/><rect x="248" y="0" width="2" height="14" fill="#e74c3c"/><rect x="252" y="0" width="2" height="14" fill="#e74c3c"/><line x1="256" y1="14" x2="300" y2="14" stroke="#e74c3c"/><rect x="300" y="0" width="2" height="14" fill="#e74c3c"/><rect x="304" y="0" width="2" height="14" fill="#e74c3c"/><rect x="308" y="0" width="2" height="14" fill="#e74c3c"/><rect x="312" y="0" width="2" height="14" fill="#e74c3c"/><rect x="316" y="0" width="2" height="14" fill="#e74c3c"/><rect x="320" y="0" width="2" height="14" fill="#e74c3c"/><rect x="324" y="0" width="2" height="14" fill="#e74c3c"/><rect x="328" y="0" width="2" height="14" fill="#e74c3c"/><rect x="332" y="0" width="2" height="14" fill="#e74c3c"/><rect x="336" y="0" width="2" height="14" fill="#e74c3c"/><text x="0" y="44" font-size="10">OUT pini (aktif-düşük):</text><path d="M180 30 H200 V46 H256 V30 H300 V46 H340 V30 H400" fill="none" stroke="#16a085" stroke-width="2"/><text x="410" y="44" font-size="10" fill="#5b6b7d">taşıyıcı varken LOW</text></g></svg><div class="cap">Şekil 2. IR alıcı modül (VS1838B / TSOP38238): yalnızca 38 kHz ile titreşen IR ışığına tepki verir, taşıyıcıyı ayıklar ve çıkışı aktif-düşük dijital sinyal olarak verir.</div></div>
+<table class="tbl"><tr><th>Pin (kubbe size bakarken soldan)</th><th>VS1838B</th><th>TSOP38238</th><th>UNO</th></tr>
+<tr><td>1</td><td>OUT</td><td>OUT</td><td>D2</td></tr><tr><td>2</td><td>GND</td><td>GND</td><td>GND</td></tr><tr><td>3</td><td>VCC (2,7–5,5 V)</td><td>VS (2,5–5,5 V)</td><td>5V</td></tr></table>
+<div class="warn">Hazır modül kartlarında (kırmızı/siyah küçük PCB) pin sırası farklı olabilir (ör. G – R – Y veya − / + / S); kart üzerindeki yazıları kontrol edin. Ters bağlanan IR alıcı birkaç saniyede ısınıp bozulabilir.</div>
+</section>
+<section class="card" id="nec"><h2><span class="num">4</span>NEC Protokolü: Bir Tuşa Basınca Ne Gönderilir?</h2>
+<p>Ucuz Arduino kumandalarının çoğu <b>NEC</b> protokolünü kullanır. Her tuşa basışta yaklaşık 67,5 ms süren bir çerçeve gönderilir: 9 ms başlangıç darbesi, 4,5 ms boşluk, ardından <b>8 bit adres</b>, adresin tersi, <b>8 bit komut</b> ve komutun tersi (toplam 32 bit). Ters baytlar hata denetimi içindir.</p>
+<div class="figure"><svg viewBox="0 0 660 160" width="680"><rect x="40.0" y="40" width="63.0" height="26" fill="#e74c3c" opacity=".85"/><rect x="134.5" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="142.4" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="150.2" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="158.1" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="166.0" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="173.8" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="181.7" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="189.6" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="197.4" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="213.2" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="228.9" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="244.7" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="260.4" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="276.2" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="291.9" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="307.6" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="323.4" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="339.1" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="347.0" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="362.7" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="370.6" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="378.5" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="386.3" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="402.1" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="410.0" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="417.8" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="433.6" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="441.4" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="457.2" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="472.9" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="488.7" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="496.5" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><rect x="512.3" y="40" width="3.9" height="26" fill="#e74c3c" opacity=".85"/><text x="72" y="32" text-anchor="middle" font-size="10">9 ms</text><text x="127" y="32" text-anchor="middle" font-size="10">4,5 ms</text><g font-size="10" text-anchor="middle"><text x="166" y="84">adres 0x00</text><text x="260" y="84">~adres 0xFF</text><text x="367" y="84">komut 0x45</text><text x="461" y="84">~komut 0xBA</text></g><g transform="translate(40,110)"><text x="0" y="0" font-size="10" font-weight="700">Bit kodlaması:</text><rect x="90" y="-12" width="10" height="16" fill="#e74c3c"/><text x="122" y="0" font-size="10">"0" = 0,56 ms darbe + 0,56 ms boşluk (1,125 ms)</text><rect x="90" y="12" width="10" height="16" fill="#e74c3c"/><text x="122" y="24" font-size="10">"1" = 0,56 ms darbe + 1,69 ms boşluk (2,25 ms)</text><text x="420" y="12" font-size="10" fill="#5b6b7d">Tuş basılı tutulursa her 108 ms'de</text><text x="420" y="26" font-size="10" fill="#5b6b7d">kısa bir "tekrar" çerçevesi gönderilir.</text></g></svg><div class="cap">Şekil 3. NEC protokolünde bir çerçeve (örnek: adres 0x00, komut 0x45 – tuş "1"). Kırmızı bloklar 38 kHz'lik IR darbe paketleridir; bitler en düşük anlamlı bit (LSB) önce gönderilir.</div></div>
+<table class="tbl"><tr><th>Tuş</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>*</th><th>0</th><th>#</th></tr>
+<tr><td>Komut</td><td>0x45</td><td>0x46</td><td>0x47</td><td>0x44</td><td>0x40</td><td>0x43</td><td>0x07</td><td>0x15</td><td>0x09</td><td>0x16</td><td>0x19</td><td>0x0D</td></tr></table>
+<table class="tbl"><tr><th>Tuş</th><th>▲</th><th>◀</th><th>OK</th><th>▶</th><th>▼</th></tr><tr><td>Komut</td><td>0x18</td><td>0x08</td><td>0x1C</td><td>0x5A</td><td>0x52</td></tr></table>
+<div class="note">Tablo, Arduino setleriyle gelen 17 tuşlu yaygın NEC kumandaya (adres 0x00) aittir. Farklı kumandalarda kodlar değişir; kendi kumandanızın kodlarını <b>Uygulama 1</b> ile öğrenin.</div>
+</section>
+<section class="card" id="kutuphane"><h2><span class="num">5</span>IRremote Kütüphanesi (Sürüm 4)</h2>
+<ol class="steps"><li><b>Araçlar → Kütüphaneleri Yönet…</b> menüsünde <b>IRremote</b> aratın; yazarı <i>shirriff, z3t0, ArminJo</i> olan kütüphanenin <b>4.x</b> sürümünü kurun.</li>
+<li>Programın başına <code>#include &lt;IRremote.hpp&gt;</code> yazın (sürüm 4'te <code>.hpp</code> uzantısı kullanılır).</li></ol>
+<table class="tbl"><tr><th>Kullanım</th><th>Görevi</th></tr>
+<tr><td><code>IrReceiver.begin(pin, ENABLE_LED_FEEDBACK)</code></td><td>Alıcıyı başlatır; ikinci parametre her alımda D13 LED'ini yakar (<code>DISABLE_LED_FEEDBACK</code> ile kapatılır).</td></tr>
+<tr><td><code>IrReceiver.decode()</code></td><td>Yeni bir çerçeve çözüldüyse <code>true</code> döndürür.</td></tr>
+<tr><td><code>IrReceiver.decodedIRData.command</code></td><td>8 bitlik komut (tuş) kodu, ör. 0x45.</td></tr>
+<tr><td><code>IrReceiver.decodedIRData.address</code></td><td>Cihaz adresi (kumanda türü).</td></tr>
+<tr><td><code>IrReceiver.decodedIRData.protocol</code> / <code>getProtocolString(...)</code></td><td>Protokol (NEC, SONY, RC5, SAMSUNG …) ve adı.</td></tr>
+<tr><td><code>decodedIRData.flags &amp; IRDATA_FLAGS_IS_REPEAT</code></td><td>Tuş basılı tutulduğunda gelen tekrar çerçevesini belirtir.</td></tr>
+<tr><td><code>IrReceiver.printIRResultShort(&amp;Serial)</code></td><td>Alınan çerçevenin özetini Seri Monitöre yazar (hata ayıklama için).</td></tr>
+<tr><td><code>IrReceiver.resume()</code></td><td>Alıcıyı bir sonraki çerçeve için hazırlar; <b>her decode() sonrası çağrılmalıdır</b>.</td></tr></table>
+<div class="warn">İnternetteki eski örneklerde görülen <code>IRrecv irrecv(pin); decode_results results; irrecv.enableIRIn(); results.value</code> yazımı <b>sürüm 2.x</b>'e aittir ve sürüm 4'te kullanılmamalıdır. Ayrıca IRremote UNO'da <b>Timer2</b>'yi kullanır: aynı programda <code>tone()</code> çalışmaz ve D3/D11 pinlerinde <code>analogWrite()</code> bozulur. Bu yüzden LED'leri D5, D6, D9'a bağladık.</div>
+</section>
+<section class="card" id="devre"><h2><span class="num">6</span>Devre Şeması: IR Kumanda ile LED Kontrolü</h2>
+<div class="figure"><svg viewBox="0 0 900 490" width="900"><defs><pattern id="bb14" width="10" height="10" patternUnits="userSpaceOnUse"><rect x="3.5" y="3.5" width="3" height="3" fill="#c8c8bc"/></pattern></defs>
+<rect x="420" y="30" width="460" height="410" rx="6" fill="#f4f3ec" stroke="#cfcfc4"/>
+<rect x="428" y="64" width="444" height="342" fill="url(#bb14)"/>
+<rect x="428" y="232.0" width="444" height="6" fill="#e2e1d6"/>
+<line x1="430" y1="40" x2="870" y2="40" stroke="#2e6bd6" stroke-width="2"/>
+<line x1="430" y1="52" x2="870" y2="52" stroke="#d63031" stroke-width="2"/>
+<text x="874" y="43" font-size="9" fill="#2e6bd6" text-anchor="end">−</text>
+<text x="874" y="55" font-size="9" fill="#d63031" text-anchor="end">+</text>
+<line x1="430" y1="418" x2="870" y2="418" stroke="#d63031" stroke-width="2"/>
+<line x1="430" y1="430" x2="870" y2="430" stroke="#2e6bd6" stroke-width="2"/>
+<text x="874" y="421" font-size="9" fill="#d63031" text-anchor="end">+</text>
+<text x="874" y="433" font-size="9" fill="#2e6bd6" text-anchor="end">−</text>
+<g class="uno">
+<rect x="60" y="240" width="340" height="170" rx="10" fill="#0e7c86" stroke="#064d50" stroke-width="2.5"/>
+<rect x="46" y="258" width="46" height="36" rx="3" fill="#b8c2cc" stroke="#556"/>
+<text x="69" y="280" text-anchor="middle" font-size="9">USB</text>
+<rect x="50" y="348" width="38" height="32" rx="3" fill="#222"/>
+<text x="69" y="368" text-anchor="middle" font-size="7" fill="#fff">DC</text>
+<rect x="210" y="332" width="150" height="28" rx="3" fill="#1b1b1b"/>
+<text x="285" y="350" text-anchor="middle" font-size="10" fill="#ccc">ATmega328P</text>
+<text x="150" y="326" font-size="15" font-weight="700" fill="#fff">ARDUINO UNO</text>
+<rect x="148" y="245" width="224" height="14" fill="#111"/>
+<rect x="152" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="158" y="264" font-size="7.5" fill="#fff" transform="rotate(90 158 264)">GND</text>
+<rect x="166" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="172" y="264" font-size="7.5" fill="#fff" transform="rotate(90 172 264)">13</text>
+<rect x="180" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="186" y="264" font-size="7.5" fill="#fff" transform="rotate(90 186 264)">12</text>
+<rect x="194" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="200" y="264" font-size="7.5" fill="#fff" transform="rotate(90 200 264)">~11</text>
+<rect x="208" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="214" y="264" font-size="7.5" fill="#fff" transform="rotate(90 214 264)">~10</text>
+<rect x="222" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="228" y="264" font-size="7.5" fill="#fff" transform="rotate(90 228 264)">~9</text>
+<rect x="236" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="242" y="264" font-size="7.5" fill="#fff" transform="rotate(90 242 264)">8</text>
+<rect x="264" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="270" y="264" font-size="7.5" fill="#fff" transform="rotate(90 270 264)">7</text>
+<rect x="278" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="284" y="264" font-size="7.5" fill="#fff" transform="rotate(90 284 264)">~6</text>
+<rect x="292" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="298" y="264" font-size="7.5" fill="#fff" transform="rotate(90 298 264)">~5</text>
+<rect x="306" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="312" y="264" font-size="7.5" fill="#fff" transform="rotate(90 312 264)">4</text>
+<rect x="320" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="326" y="264" font-size="7.5" fill="#fff" transform="rotate(90 326 264)">~3</text>
+<rect x="334" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="340" y="264" font-size="7.5" fill="#fff" transform="rotate(90 340 264)">2</text>
+<rect x="348" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="354" y="264" font-size="7.5" fill="#fff" transform="rotate(90 354 264)">1</text>
+<rect x="362" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="368" y="264" font-size="7.5" fill="#fff" transform="rotate(90 368 264)">0</text>
+<rect x="163" y="391" width="196" height="14" fill="#111"/>
+<rect x="167" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="173" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 173 388)">IOREF</text>
+<rect x="181" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="187" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 187 388)">RES</text>
+<rect x="195" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="201" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 201 388)">3V3</text>
+<rect x="209" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="215" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 215 388)">5V</text>
+<rect x="223" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="229" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 229 388)">GND</text>
+<rect x="237" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="243" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 243 388)">GND</text>
+<rect x="251" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="257" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 257 388)">VIN</text>
+<rect x="279" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="285" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 285 388)">A0</text>
+<rect x="293" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="299" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 299 388)">A1</text>
+<rect x="307" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="313" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 313 388)">A2</text>
+<rect x="321" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="327" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 327 388)">A3</text>
+<rect x="335" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="341" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 341 388)">A4</text>
+<rect x="349" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="355" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 355 388)">A5</text>
+</g>
+<path d="M212 398 V455 H18 V52 H430" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M212 398 V455 H18 V52 H430" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<path d="M226 398 V463 H10 V40 H430" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M226 398 V463 H10 V40 H430" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<path d="M240 398 V430 H430" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M240 398 V430 H430" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<path d="M870 52 V418" fill="none" stroke="#d63031" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="870" cy="52" r="3.2" class="dot"/><circle cx="870" cy="418" r="3.2" class="dot"/>
+<path d="M225 252 V200 H800 V236" fill="none" stroke="#27ae60" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M225 252 V200 H800 V236" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<line x1="800" y1="236" x2="800" y2="284" stroke="#999" stroke-width="2"/><rect x="795" y="247.0" width="10" height="26" rx="4" fill="#e8cfa6" stroke="#a5835a"/><rect x="795" y="251.0" width="10" height="3" fill="#d00"/><rect x="795" y="256.0" width="10" height="3" fill="#d00"/><rect x="795" y="261.0" width="10" height="3" fill="#7b3f00"/><rect x="795" y="267.0" width="10" height="2" fill="#c9a227"/><text x="809" y="264.0" font-size="9" fill="#555">220 Ω</text>
+<line x1="800" y1="284" x2="800" y2="298" stroke="#999" stroke-width="2"/><line x1="800" y1="314" x2="800" y2="328" stroke="#999" stroke-width="2"/><path  class="" d="M792 314 V304 a8 8 0 0 1 16 0 V314 Z" fill="#27ae60" stroke="#333" stroke-width=".8"/><rect x="790" y="313" width="20" height="3" fill="#777"/>
+<path d="M800 328 V430" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="800" cy="430" r="3.2" class="dot"/>
+<text x="800" y="350" text-anchor="middle" font-size="10">D9 yeşil</text>
+<path d="M281 252 V210 H740 V236" fill="none" stroke="#f1c40f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M281 252 V210 H740 V236" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<line x1="740" y1="236" x2="740" y2="284" stroke="#999" stroke-width="2"/><rect x="735" y="247.0" width="10" height="26" rx="4" fill="#e8cfa6" stroke="#a5835a"/><rect x="735" y="251.0" width="10" height="3" fill="#d00"/><rect x="735" y="256.0" width="10" height="3" fill="#d00"/><rect x="735" y="261.0" width="10" height="3" fill="#7b3f00"/><rect x="735" y="267.0" width="10" height="2" fill="#c9a227"/><text x="749" y="264.0" font-size="9" fill="#555">220 Ω</text>
+<line x1="740" y1="284" x2="740" y2="298" stroke="#999" stroke-width="2"/><line x1="740" y1="314" x2="740" y2="328" stroke="#999" stroke-width="2"/><path  class="" d="M732 314 V304 a8 8 0 0 1 16 0 V314 Z" fill="#f1c40f" stroke="#333" stroke-width=".8"/><rect x="730" y="313" width="20" height="3" fill="#777"/>
+<path d="M740 328 V430" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="740" cy="430" r="3.2" class="dot"/>
+<text x="740" y="350" text-anchor="middle" font-size="10">D6 sarı</text>
+<path d="M295 252 V220 H680 V236" fill="none" stroke="#e74c3c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M295 252 V220 H680 V236" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<line x1="680" y1="236" x2="680" y2="284" stroke="#999" stroke-width="2"/><rect x="675" y="247.0" width="10" height="26" rx="4" fill="#e8cfa6" stroke="#a5835a"/><rect x="675" y="251.0" width="10" height="3" fill="#d00"/><rect x="675" y="256.0" width="10" height="3" fill="#d00"/><rect x="675" y="261.0" width="10" height="3" fill="#7b3f00"/><rect x="675" y="267.0" width="10" height="2" fill="#c9a227"/><text x="689" y="264.0" font-size="9" fill="#555">220 Ω</text>
+<line x1="680" y1="284" x2="680" y2="298" stroke="#999" stroke-width="2"/><line x1="680" y1="314" x2="680" y2="328" stroke="#999" stroke-width="2"/><path  class="" d="M672 314 V304 a8 8 0 0 1 16 0 V314 Z" fill="#e74c3c" stroke="#333" stroke-width=".8"/><rect x="670" y="313" width="20" height="3" fill="#777"/>
+<path d="M680 328 V430" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="680" cy="430" r="3.2" class="dot"/>
+<text x="680" y="350" text-anchor="middle" font-size="10">D5 kırmızı</text>
+<line x1="500" y1="290" x2="500" y2="300" stroke="#aaa" stroke-width="2"/><line x1="514" y1="290" x2="514" y2="300" stroke="#aaa" stroke-width="2"/><line x1="528" y1="290" x2="528" y2="300" stroke="#aaa" stroke-width="2"/><rect x="492" y="300" width="44" height="36" rx="4" fill="#222"/><circle cx="514" cy="320" r="12" fill="#333" stroke="#111"/><g font-size="5" fill="#fff" text-anchor="middle"><text x="500" y="308">OUT</text><text x="514" y="308">GND</text><text x="528" y="308">VCC</text></g>
+<path d="M337 252 V230 H500 V290" fill="none" stroke="#8e44ad" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M337 252 V230 H500 V290" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" style="animation-direction:reverse"/>
+<path d="M514 290 V282 H560 V430" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="560" cy="430" r="3.2" class="dot"/>
+<path d="M528 290 V286 H550 V418" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="550" cy="418" r="3.2" class="dot"/>
+<text x="514" y="350" text-anchor="middle" font-size="10">IR alıcı (VS1838B)</text>
+<g transform="translate(600,360) rotate(-60)"><rect x="-14" y="-40" width="28" height="70" rx="8" fill="#333"/><circle cx="0" cy="-30" r="4" fill="#e74c3c" class="blink"/><rect x="-8" y="-18" width="6" height="5" fill="#777"/><rect x="2" y="-18" width="6" height="5" fill="#777"/><rect x="-8" y="-8" width="6" height="5" fill="#777"/><rect x="2" y="-8" width="6" height="5" fill="#777"/></g>
+<path d="M570 342 L530 326" stroke="#e74c3c" stroke-width="3" class="beam"/>
+<text x="24" y="485" font-size="10">5V → üst + hattı (sağ uçtan alt + hattına köprü), GND → üst ve alt − hatları</text></svg><div class="cap">Şekil 4. IR kumanda ile LED kontrolü: VS1838B OUT → D2, VCC → 5V, GND → GND; LED'ler D5, D6, D9 (PWM) pinlerine 220 Ω ile bağlıdır. Kesikli beyaz çizgiler sinyal yönünü gösterir.</div></div>
+<div class="tip">IR alıcının besleme hattına 100 Ω seri direnç ve VCC–GND arasına 4,7–10 µF kondansatör eklemek, uzun kablolarda ve gürültülü beslemede hatalı okumaları azaltır.</div>
+</section>
+<section class="card" id="uyg12"><h2><span class="num">7</span>Uygulama 1–2: Kodları Okuma ve LED Kontrolü</h2>
+<div class="grid2"><div><div class="codebox"><span class="lbl">ir_kod_oku.ino</span><pre class="code">// Hafta 14 – Uygulama 1: Kumanda tuş kodlarını okuma
+// Kütüphane Yöneticisi: "IRremote" (shirriff, z3t0, ArminJo) – sürüm 4.x
+#include &lt;IRremote.hpp&gt;
+
+const int IR_PIN = 2;     // VS1838B OUT -&gt; D2
+
+void setup() {
+  Serial.begin(9600);
+  IrReceiver.begin(IR_PIN, ENABLE_LED_FEEDBACK);  // alımda D13 LED'i yanıp söner
+  Serial.println("Kumandanın bir tuşuna basın...");
+}
+
+void loop() {
+  if (IrReceiver.decode()) {                       // yeni bir çerçeve çözüldü mü?
+    Serial.print("Protokol: ");
+    Serial.print(getProtocolString(IrReceiver.decodedIRData.protocol));
+    Serial.print("  Adres: 0x");
+    Serial.print(IrReceiver.decodedIRData.address, HEX);
+    Serial.print("  Komut: 0x");
+    Serial.print(IrReceiver.decodedIRData.command, HEX);
+    if (IrReceiver.decodedIRData.flags &amp; IRDATA_FLAGS_IS_REPEAT) {
+      Serial.print("  (tekrar)");                  // tuş basılı tutuluyor
+    }
+    Serial.println();
+    IrReceiver.resume();                           // bir sonraki kodu almaya hazırlan
+  }
+}</pre></div></div><div><div class="codebox"><span class="lbl">ir_led_kontrol.ino</span><pre class="code">// Hafta 14 – Uygulama 2: Kumanda ile LED kontrolü
+#include &lt;IRremote.hpp&gt;
+
+const int IR_PIN = 2;
+const int ledPin[3] = {5, 6, 9};          // kırmızı, sarı, yeşil (PWM pinleri)
+bool durum[3] = {false, false, false};    // LED'ler açık mı?
+int parlaklik = 255;                      // ortak parlaklık (0–255)
+
+void ledleriGuncelle() {
+  for (int i = 0; i &lt; 3; i++) {
+    analogWrite(ledPin[i], durum[i] ? parlaklik : 0);
+  }
+}
+
+void setup() {
+  Serial.begin(9600);
+  for (int i = 0; i &lt; 3; i++) pinMode(ledPin[i], OUTPUT);
+  IrReceiver.begin(IR_PIN, ENABLE_LED_FEEDBACK);
+}
+
+void loop() {
+  if (IrReceiver.decode()) {
+    uint8_t komut = IrReceiver.decodedIRData.command;
+    bool tekrar = IrReceiver.decodedIRData.flags &amp; IRDATA_FLAGS_IS_REPEAT;
+    IrReceiver.resume();
+
+    if (!tekrar) {                         // aç/kapa tuşları tekrar çerçevelerini yok sayar
+      switch (komut) {
+        case 0x45: durum[0] = !durum[0]; break;                    // tuş 1
+        case 0x46: durum[1] = !durum[1]; break;                    // tuş 2
+        case 0x47: durum[2] = !durum[2]; break;                    // tuş 3
+        case 0x19: durum[0] = durum[1] = durum[2] = false; break;  // tuş 0
+        case 0x0D: durum[0] = durum[1] = durum[2] = true; break;   // tuş #
+      }
+    }
+    if (komut == 0x18) parlaklik = min(255, parlaklik + 15);   // YUKARI (basılı tutulabilir)
+    if (komut == 0x52) parlaklik = max(15, parlaklik - 15);    // AŞAĞI
+
+    ledleriGuncelle();
+    Serial.print("Komut: 0x");
+    Serial.print(komut, HEX);
+    Serial.print(tekrar ? " (tekrar)" : "");
+    Serial.print("  LED: ");
+    for (int i = 0; i &lt; 3; i++) Serial.print(durum[i] ? "1" : "0");
+    Serial.print("  Parlaklık: ");
+    Serial.println(parlaklik);
+  }
+}</pre></div></div></div>
+<div class="sim"><h4>🔬 Simülasyon: Sanal kumanda (tuşlara tıklayın; ▲/▼ tuşlarını basılı tutun)</h4>
+<div class="grid2"><div>
+<svg id="irSvg" viewBox="0 0 420 330" width="100%">
+<rect x="20" y="10" width="130" height="310" rx="22" fill="#2c3e50" stroke="#1a252f" stroke-width="2"/>
+<circle id="rLed" cx="85" cy="30" r="6" fill="#5a1d1d"/>
+<g id="keys"></g>
+<path id="irBeam" d="M95 26 L250 60" stroke="#e74c3c" stroke-width="4" class="beam" opacity="0"/>
+<rect x="246" y="44" width="40" height="34" rx="4" fill="#222"/><circle cx="266" cy="61" r="10" fill="#333"/><text x="266" y="94" text-anchor="middle" font-size="9">VS1838B</text>
+<rect x="190" y="110" width="220" height="80" rx="8" fill="#0e7c86"/><text x="300" y="128" text-anchor="middle" font-size="10" fill="#fff">Arduino UNO</text>
+<g id="irLeds"></g>
+<path id="necWave" d="" fill="none" stroke="#8e44ad" stroke-width="1.5"/>
+<text x="190" y="218" font-size="9" fill="#5b6b7d">D2 (OUT) sinyali – son çerçeve</text>
+<text id="necTxt" x="190" y="262" font-size="9" font-family="Consolas"></text>
+</svg></div><div>
+<div class="out" id="irOut">Bir tuşa basın…</div>
+<div class="serial" id="irSer" style="height:210px"></div></div></div></div>
+</section>
+<section class="card" id="engel"><h2><span class="num">8</span>IR Engel Sensörü (Aktif IR)</h2>
+<p>IR engel (yansıma) sensörü modülünde yan yana bir <b>IR LED</b> ve bir <b>fotodiyot</b> bulunur. LED'in yaydığı IR ışık önündeki bir cisimden yansıyıp fotodiyota ulaşırsa fotodiyottaki gerilim değişir. <b>LM393</b> karşılaştırıcısı bu gerilimi potansiyometreyle ayarlanan eşikle karşılaştırır ve <b>OUT</b> pinini <b>LOW</b> yapar (aktif-düşük). Kart üzerindeki ikinci LED de bu sırada yanar.</p>
+<div class="figure"><svg viewBox="0 0 520 200" width="540"><rect x="40" y="58" width="80" height="62" rx="4" fill="#1565c0" stroke="#0d47a1"/><rect x="58" y="50" width="4" height="10" fill="#c9a227"/><rect x="78" y="50" width="4" height="10" fill="#c9a227"/><rect x="98" y="50" width="4" height="10" fill="#c9a227"/><g font-size="6.5" fill="#fff" text-anchor="middle"><text x="60" y="68">OUT</text><text x="80" y="68">GND</text><text x="100" y="68">VCC</text></g><circle cx="80" cy="86" r="7" fill="#1e88e5" stroke="#fff"/><path d="M76 86 h8 M80 82 v8" stroke="#fff"/><rect x="48" y="78" width="14" height="10" fill="#111"/><text x="55" y="98" font-size="5" fill="#fff" text-anchor="middle">LM393</text><circle cx="106" cy="80" r="3" fill="#2ecc71"/><circle  cx="106" cy="92" r="3" fill="#2ecc71" class="blink"/><rect x="62" y="120" width="12" height="22" rx="5" fill="#ecf0f1" stroke="#999"/><rect x="86" y="120" width="12" height="22" rx="5" fill="#222"/><text x="68" y="152" font-size="7" text-anchor="middle">IR LED</text><text x="92" y="160" font-size="7" text-anchor="middle">fotodiyot</text><path d="M68 142 L330 120" stroke="#e74c3c" stroke-width="2.5" class="beam"/><path d="M330 120 L92 150" stroke="#e67e22" stroke-width="2.5" class="reflect"/><rect x="330" y="60" width="30" height="120" fill="#ecf0f1" stroke="#95a5a6"/><text x="345" y="196" text-anchor="middle" font-size="10">açık renkli engel</text><rect x="420" y="60" width="30" height="120" fill="#222"/><text x="435" y="196" text-anchor="middle" font-size="10">siyah yüzey</text><text x="400" y="40" text-anchor="middle" font-size="10" fill="#5b6b7d">siyah yüzey IR'yi soğurur → algılama mesafesi çok kısalır</text><text x="190" y="30" text-anchor="middle" font-size="10">LM393 karşılaştırıcı + eşik potansiyometresi</text></svg><div class="cap">Şekil 5. IR engel sensörü: IR LED'in ışığı engelden yansıyıp fotodiyota ulaşırsa OUT pini LOW olur.</div></div>
+<div class="grid2"><table class="tbl"><tr><th>Özellik</th><th>Değer (FC-51 tipi)</th></tr><tr><td>Besleme</td><td>3,3–5 V</td></tr><tr><td>Algılama mesafesi</td><td>≈ 2–30 cm (pot ile ayarlı, yüzeye bağlı)</td></tr>
+<tr><td>Çıkış</td><td>Dijital: engel varken <b>LOW</b>, yokken <b>HIGH</b></td></tr><tr><td>Açı</td><td>≈ 35°</td></tr></table>
+<div><p><b>Nerelerde kullanılır?</b> Engelden kaçan robotlar, çizgi izleyen robotlar (TCRT5000 ile siyah/beyaz zemin ayrımı), ürün sayma, dokunmasız butonlar.</p>
+<p>Mesafe <b>ölçmez</b>, yalnızca eşik altında engel olup olmadığını söyler. Mesafe için 11. haftadaki ultrasonik sensörü kullanın.</p></div></div>
+<div class="warn">Güneş ışığı güçlü IR içerdiğinden açık havada veya pencere önünde modül sürekli "engel var" verebilir. Siyah ve mat yüzeyler IR'yi soğurduğundan çok yakından bile algılanmayabilir.</div>
+<div class="codebox"><span class="lbl">ir_engel.ino</span><pre class="code">// Hafta 14 – Uygulama 3: IR engel sensörü ile uyarı
+const int engelPin = 8;     // modül OUT
+const int ledPin = 13;      // kart üzerindeki L LED'i
+const int buzzerPin = 12;
+bool oncekiEngel = false;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(engelPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
+}
+
+void loop() {
+  bool engel = (digitalRead(engelPin) == LOW);   // LOW = engel VAR (aktif-düşük)
+  digitalWrite(ledPin, engel ? HIGH : LOW);
+  if (engel) tone(buzzerPin, 1500);
+  else noTone(buzzerPin);
+
+  if (engel != oncekiEngel) {                    // yalnızca durum değişince yaz
+    Serial.println(engel ? "Engel VAR" : "Engel YOK");
+    oncekiEngel = engel;
+  }
+  delay(20);
+}</pre></div>
+<div class="sim"><h4>🔬 Simülasyon: Engeli sürükleyin, eşiği ve yüzey rengini değiştirin</h4>
+<div class="grid2"><div>
+<svg id="obSvg" viewBox="0 0 420 200" width="100%">
+<rect x="0" y="170" width="420" height="30" fill="#eceff1"/>
+<rect x="10" y="60" width="60" height="70" rx="4" fill="#1565c0"/><rect x="70" y="72" width="16" height="14" rx="4" fill="#ecf0f1" stroke="#999"/><rect x="70" y="102" width="16" height="14" rx="4" fill="#222"/>
+<circle id="obPwr" cx="26" cy="72" r="4" fill="#2ecc71"/><circle id="obLed" cx="26" cy="86" r="4" fill="#1e3d27"/><text x="40" y="146" text-anchor="middle" font-size="9">IR engel modülü</text>
+<path id="obEmit" d="M86 79 L300 79" stroke="#e74c3c" stroke-width="2" class="beam"/>
+<path id="obRefl" d="" stroke="#e67e22" stroke-width="2" class="reflect" fill="none"/>
+<line id="obThr" x1="0" y1="40" x2="0" y2="168" stroke="#16a085" stroke-dasharray="4 4"/><text id="obThrT" x="0" y="34" font-size="9" fill="#16a085" text-anchor="middle">eşik</text>
+<g id="obObj" style="cursor:ew-resize"><rect id="obBox" x="200" y="50" width="26" height="120" fill="#ecf0f1" stroke="#7f8c8d"/></g>
+<g transform="translate(300,10)"><rect width="110" height="26" rx="5" fill="#263238"/><circle id="obL13" cx="16" cy="13" r="7" fill="#5a4a00"/><text x="28" y="17" font-size="9" fill="#fff">D13</text>
+<circle cx="70" cy="13" r="8" fill="#111"/><circle id="obBz" cx="70" cy="13" r="4" fill="#444"/><text x="82" y="17" font-size="9" fill="#fff">D12</text></g>
+</svg></div><div>
+<label>Engel mesafesi = <span id="obDv">20</span> cm</label><input type="range" id="obD" min="1" max="40" value="20">
+<label>Eşik potansiyometresi (beyaz yüzey için) = <span id="obTv">15</span> cm</label><input type="range" id="obT" min="2" max="30" value="15">
+<label>Yüzey</label><select id="obS"><option value="1">Beyaz / parlak</option><option value="0.6">Gri / ahşap</option><option value="0.15">Siyah / mat</option></select>
+<div class="out" id="obOut"></div><div class="serial" id="obSer" style="height:90px"></div></div></div></div>
+</section>
+<section class="card" id="pir"><h2><span class="num">9</span>PIR Hareket Sensörü HC-SR501 (Pasif IR)</h2>
+<p><b>PIR</b> (Passive Infrared) sensörün kalbinde iki parçalı bir <b>piroelektrik</b> eleman vardır: üzerine düşen IR ışınımı değiştiğinde küçük bir gerilim üretir. Önündeki beyaz kubbe bir <b>Fresnel lensidir</b>; algılama alanını birçok bölgeye böler ve IR'yi elemana odaklar. Sıcak bir cisim (insan) bir bölgeden diğerine geçtiğinde iki yarının çıkışı farklılaşır ve modül <b>OUT</b> pinini belirli bir süre <b>HIGH</b> (≈ 3,3 V) yapar. Sabit duran bir kişi veya sabit sıcaklıktaki bir cisim algılanmaz: PIR <b>değişimi</b> algılar.</p>
+<div class="figure"><svg viewBox="0 0 520 220" width="540"><rect x="30" y="48" width="80" height="70" rx="4" fill="#2e7d32" stroke="#1b5e20"/><rect x="48" y="40" width="4" height="10" fill="#c9a227"/><rect x="68" y="40" width="4" height="10" fill="#c9a227"/><rect x="88" y="40" width="4" height="10" fill="#c9a227"/><g font-size="6.5" fill="#fff" text-anchor="middle"><text x="50" y="58">VCC</text><text x="70" y="58">OUT</text><text x="90" y="58">GND</text></g><path d="M40 118 a30 30 0 0 1 60 0z" fill="#f5f5f5" stroke="#bbb"/><path d="M46 118 q24 -26 48 0" fill="none" stroke="#ddd"/><path d="M54 118 q16 -21 32 0" fill="none" stroke="#ddd"/><path d="M62 118 q8 -16 16 0" fill="none" stroke="#ddd"/><text x="70" y="136" font-size="9" text-anchor="middle">HC-SR501</text><path d="M150 100 L470 20 M150 100 L470 180" stroke="#e67e22" stroke-dasharray="5 5" fill="none"/><path d="M150 100 L470 60 M150 100 L470 100 M150 100 L470 140" stroke="#f0c27b" stroke-dasharray="2 6" fill="none"/><g style="transform-origin:150px 100px"><path class="pirwave" d="M190 70 q20 30 0 60" style="transform-origin:150px 100px"/><path class="pirwave" d="M190 70 q20 30 0 60" style="transform-origin:150px 100px;animation-delay:1s"/></g><g transform="translate(380,70)" class="pulse" style="transform-origin:380px 110px"><circle cx="0" cy="0" r="10" fill="#e67e22"/><rect x="-9" y="12" width="18" height="34" rx="6" fill="#e67e22"/><rect x="-8" y="46" width="6" height="26" fill="#e67e22"/><rect x="2" y="46" width="6" height="26" fill="#e67e22"/></g><text x="380" y="168" text-anchor="middle" font-size="10">≈ 36 °C insan vücudu (≈ 9–10 µm IR yayar)</text><text x="300" y="206" text-anchor="middle" font-size="10" fill="#5b6b7d">Fresnel lensi algılama alanını bölgelere ayırır; kişi bölgeler arasında hareket ettikçe sinyal değişir</text></svg><div class="cap">Şekil 6. PIR sensörü kendisi ışık yaymaz (pasif); ortamdaki IR ışınımının <b>değişimini</b> algılar.</div></div>
+<table class="tbl"><tr><th>Özellik / Ayar</th><th>HC-SR501</th></tr>
+<tr><td>Besleme</td><td>4,5–20 V (UNO'da 5V); çıkış HIGH ≈ 3,3 V (Arduino için yeterli)</td></tr>
+<tr><td>Algılama</td><td>≈ 3–7 m, ≈ 110° koni</td></tr>
+<tr><td>Sx (zaman) potansiyometresi</td><td>OUT'un HIGH kalma süresi ≈ 3 s – 5 dk</td></tr>
+<tr><td>Sx (hassasiyet) potansiyometresi</td><td>algılama mesafesi</td></tr>
+<tr><td>Jumper <b>H</b> (tekrar tetikleme)</td><td>hareket sürdükçe süre yeniden başlar, OUT HIGH kalır</td></tr>
+<tr><td>Jumper <b>L</b> (tek tetikleme)</td><td>süre dolunca OUT LOW olur, ≈ 2,5 s kilitli kalır, sonra yeniden tetiklenir</td></tr>
+<tr><td>Isınma süresi</td><td>enerji verildikten sonra ≈ 30–60 s kararsız çıkış</td></tr></table>
+<div class="codebox"><span class="lbl">pir_hareket.ino</span><pre class="code">// Hafta 14 – Uygulama 4: PIR ile hareket algılama
+const int pirPin = 7;       // HC-SR501 OUT
+const int ledPin = 13;
+int oncekiDurum = LOW;
+unsigned long sayac = 0;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(pirPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  Serial.println("PIR ısınıyor (30 s)...");
+  delay(30000);              // sensörün ortama alışması için bekle
+  Serial.println("Hazır.");
+}
+
+void loop() {
+  int durum = digitalRead(pirPin);
+  digitalWrite(ledPin, durum);
+
+  if (durum == HIGH &amp;&amp; oncekiDurum == LOW) {        // yükselen kenar: hareket başladı
+    sayac++;
+    Serial.print("Hareket algılandı! #");
+    Serial.println(sayac);
+  } else if (durum == LOW &amp;&amp; oncekiDurum == HIGH) { // düşen kenar
+    Serial.println("Hareket bitti.");
+  }
+  oncekiDurum = durum;
+  delay(50);
+}</pre></div>
+<div class="sim"><h4>🔬 Simülasyon: Kişiyi odada sürükleyin veya "Odadan geç" ile yürütün</h4>
+<div class="grid2"><div>
+<svg id="prSvg" viewBox="0 0 420 220" width="100%">
+<rect x="0" y="0" width="420" height="220" fill="#fdf8ef"/><rect x="0" y="190" width="420" height="30" fill="#d7ccc8"/>
+<rect x="196" y="4" width="28" height="16" rx="3" fill="#2e7d32"/><path d="M200 20 a10 10 0 0 0 20 0z" fill="#f5f5f5" stroke="#bbb"/>
+<path id="prCone" d="M210 24 L40 190 L380 190 Z" fill="#e67e22" opacity=".10"/>
+<g id="prZones"></g>
+<g id="prMan" style="cursor:ew-resize"><circle cx="0" cy="118" r="10" fill="#5d4037"/><rect x="-10" y="130" width="20" height="36" rx="6" fill="#1e88e5"/><rect x="-9" y="166" width="7" height="24" fill="#37474f"/><rect x="2" y="166" width="7" height="24" fill="#37474f"/></g>
+<g transform="translate(8,8)"><rect width="128" height="26" rx="5" fill="#263238"/><circle id="prL13" cx="16" cy="13" r="7" fill="#5a4a00"/><text x="28" y="17" font-size="9" fill="#fff">D13</text><text id="prOutT" x="62" y="17" font-size="10" fill="#7CFC9a" font-family="Consolas">OUT=LOW</text></g>
+<rect x="290" y="30" width="120" height="10" rx="4" fill="#fff" stroke="#bbb"/><rect id="prBar" x="290" y="30" width="0" height="10" rx="4" fill="#e67e22"/><text x="350" y="54" text-anchor="middle" font-size="9" id="prBarT"></text>
+</svg></div><div>
+<label>Sx zaman ayarı (simülasyonda) = <span id="prHv">4</span> s</label><input type="range" id="prH" min="2" max="10" value="4">
+<label>Jumper</label><select id="prM"><option value="H">H – tekrar tetiklemeli</option><option value="L">L – tek tetiklemeli</option></select>
+<button class="btn" id="prWalk">🚶 Odadan geç</button><button class="btn alt" id="prStop">Kişiyi durdur</button>
+<div class="out" id="prOut"></div><div class="serial" id="prSer" style="height:100px"></div></div></div>
+<p style="font-size:.88em;color:#5b6b7d">Simülasyonda 30 s'lik ısınma süresi atlanmıştır. Kişi koninin içinde dursa bile hareket etmediğinde yeni tetikleme olmadığına dikkat edin.</p></div>
+</section>
+<section class="card" id="devre2"><h2><span class="num">10</span>Devre Şeması: Engel ve PIR Sensörleri</h2>
+<div class="figure"><svg viewBox="0 0 780 430" width="780"><rect x="150" y="10" width="610" height="30" rx="4" fill="#f4f3ec" stroke="#cfcfc4"/><line x1="156" y1="18" x2="754" y2="18" stroke="#d63031" stroke-width="2"/><line x1="156" y1="30" x2="754" y2="30" stroke="#2e6bd6" stroke-width="2"/><text x="745" y="15" font-size="8" fill="#d63031" text-anchor="end">+5V</text><text x="745" y="38" font-size="8" fill="#2e6bd6" text-anchor="end">GND</text>
+<g class="uno">
+<rect x="60" y="200" width="340" height="170" rx="10" fill="#0e7c86" stroke="#064d50" stroke-width="2.5"/>
+<rect x="46" y="218" width="46" height="36" rx="3" fill="#b8c2cc" stroke="#556"/>
+<text x="69" y="240" text-anchor="middle" font-size="9">USB</text>
+<rect x="50" y="308" width="38" height="32" rx="3" fill="#222"/>
+<text x="69" y="328" text-anchor="middle" font-size="7" fill="#fff">DC</text>
+<rect x="210" y="292" width="150" height="28" rx="3" fill="#1b1b1b"/>
+<text x="285" y="310" text-anchor="middle" font-size="10" fill="#ccc">ATmega328P</text>
+<text x="150" y="286" font-size="15" font-weight="700" fill="#fff">ARDUINO UNO</text>
+<rect x="148" y="205" width="224" height="14" fill="#111"/>
+<rect x="152" y="209" width="6" height="6" fill="#c9a227"/>
+<text x="158" y="224" font-size="7.5" fill="#fff" transform="rotate(90 158 224)">GND</text>
+<rect x="166" y="209" width="6" height="6" fill="#c9a227"/>
+<text x="172" y="224" font-size="7.5" fill="#fff" transform="rotate(90 172 224)">13</text>
+<rect x="180" y="209" width="6" height="6" fill="#c9a227"/>
+<text x="186" y="224" font-size="7.5" fill="#fff" transform="rotate(90 186 224)">12</text>
+<rect x="194" y="209" width="6" height="6" fill="#c9a227"/>
+<text x="200" y="224" font-size="7.5" fill="#fff" transform="rotate(90 200 224)">~11</text>
+<rect x="208" y="209" width="6" height="6" fill="#c9a227"/>
+<text x="214" y="224" font-size="7.5" fill="#fff" transform="rotate(90 214 224)">~10</text>
+<rect x="222" y="209" width="6" height="6" fill="#c9a227"/>
+<text x="228" y="224" font-size="7.5" fill="#fff" transform="rotate(90 228 224)">~9</text>
+<rect x="236" y="209" width="6" height="6" fill="#c9a227"/>
+<text x="242" y="224" font-size="7.5" fill="#fff" transform="rotate(90 242 224)">8</text>
+<rect x="264" y="209" width="6" height="6" fill="#c9a227"/>
+<text x="270" y="224" font-size="7.5" fill="#fff" transform="rotate(90 270 224)">7</text>
+<rect x="278" y="209" width="6" height="6" fill="#c9a227"/>
+<text x="284" y="224" font-size="7.5" fill="#fff" transform="rotate(90 284 224)">~6</text>
+<rect x="292" y="209" width="6" height="6" fill="#c9a227"/>
+<text x="298" y="224" font-size="7.5" fill="#fff" transform="rotate(90 298 224)">~5</text>
+<rect x="306" y="209" width="6" height="6" fill="#c9a227"/>
+<text x="312" y="224" font-size="7.5" fill="#fff" transform="rotate(90 312 224)">4</text>
+<rect x="320" y="209" width="6" height="6" fill="#c9a227"/>
+<text x="326" y="224" font-size="7.5" fill="#fff" transform="rotate(90 326 224)">~3</text>
+<rect x="334" y="209" width="6" height="6" fill="#c9a227"/>
+<text x="340" y="224" font-size="7.5" fill="#fff" transform="rotate(90 340 224)">2</text>
+<rect x="348" y="209" width="6" height="6" fill="#c9a227"/>
+<text x="354" y="224" font-size="7.5" fill="#fff" transform="rotate(90 354 224)">1</text>
+<rect x="362" y="209" width="6" height="6" fill="#c9a227"/>
+<text x="368" y="224" font-size="7.5" fill="#fff" transform="rotate(90 368 224)">0</text>
+<rect x="163" y="351" width="196" height="14" fill="#111"/>
+<rect x="167" y="355" width="6" height="6" fill="#c9a227"/>
+<text x="173" y="348" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 173 348)">IOREF</text>
+<rect x="181" y="355" width="6" height="6" fill="#c9a227"/>
+<text x="187" y="348" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 187 348)">RES</text>
+<rect x="195" y="355" width="6" height="6" fill="#c9a227"/>
+<text x="201" y="348" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 201 348)">3V3</text>
+<rect x="209" y="355" width="6" height="6" fill="#c9a227"/>
+<text x="215" y="348" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 215 348)">5V</text>
+<rect x="223" y="355" width="6" height="6" fill="#c9a227"/>
+<text x="229" y="348" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 229 348)">GND</text>
+<rect x="237" y="355" width="6" height="6" fill="#c9a227"/>
+<text x="243" y="348" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 243 348)">GND</text>
+<rect x="251" y="355" width="6" height="6" fill="#c9a227"/>
+<text x="257" y="348" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 257 348)">VIN</text>
+<rect x="279" y="355" width="6" height="6" fill="#c9a227"/>
+<text x="285" y="348" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 285 348)">A0</text>
+<rect x="293" y="355" width="6" height="6" fill="#c9a227"/>
+<text x="299" y="348" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 299 348)">A1</text>
+<rect x="307" y="355" width="6" height="6" fill="#c9a227"/>
+<text x="313" y="348" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 313 348)">A2</text>
+<rect x="321" y="355" width="6" height="6" fill="#c9a227"/>
+<text x="327" y="348" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 327 348)">A3</text>
+<rect x="335" y="355" width="6" height="6" fill="#c9a227"/>
+<text x="341" y="348" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 341 348)">A4</text>
+<rect x="349" y="355" width="6" height="6" fill="#c9a227"/>
+<text x="355" y="348" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 355 348)">A5</text>
+</g>
+<path d="M212 358 V420 H18 V18 H160" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M212 358 V420 H18 V18 H160" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" /><circle cx="160" cy="18" r="3.2" class="dot"/>
+<path d="M155 212 V30" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M155 212 V30" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" /><circle cx="155" cy="30" r="3.2" class="dot"/>
+<rect x="450" y="78" width="80" height="62" rx="4" fill="#1565c0" stroke="#0d47a1"/><rect x="468" y="70" width="4" height="10" fill="#c9a227"/><rect x="488" y="70" width="4" height="10" fill="#c9a227"/><rect x="508" y="70" width="4" height="10" fill="#c9a227"/><g font-size="6.5" fill="#fff" text-anchor="middle"><text x="470" y="88">OUT</text><text x="490" y="88">GND</text><text x="510" y="88">VCC</text></g><circle cx="490" cy="106" r="7" fill="#1e88e5" stroke="#fff"/><path d="M486 106 h8 M490 102 v8" stroke="#fff"/><rect x="458" y="98" width="14" height="10" fill="#111"/><text x="465" y="118" font-size="5" fill="#fff" text-anchor="middle">LM393</text><circle cx="516" cy="100" r="3" fill="#2ecc71"/><circle  cx="516" cy="112" r="3" fill="#2ecc71" class="blink"/><rect x="472" y="140" width="12" height="22" rx="5" fill="#ecf0f1" stroke="#999"/><rect x="496" y="140" width="12" height="22" rx="5" fill="#222"/><text x="478" y="172" font-size="7" text-anchor="middle">IR LED</text><text x="502" y="180" font-size="7" text-anchor="middle">fotodiyot</text>
+<path d="M490 70 V30" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="490" cy="30" r="3.2" class="dot"/><path d="M510 70 V18" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="510" cy="18" r="3.2" class="dot"/>
+<path d="M470 70 V52 H440 V180 H239 V212" fill="none" stroke="#16a085" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M470 70 V52 H440 V180 H239 V212" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<text x="536" y="120" font-size="10">IR engel</text><text x="536" y="133" font-size="10">→ D8</text>
+<rect x="620" y="78" width="80" height="70" rx="4" fill="#2e7d32" stroke="#1b5e20"/><rect x="638" y="70" width="4" height="10" fill="#c9a227"/><rect x="658" y="70" width="4" height="10" fill="#c9a227"/><rect x="678" y="70" width="4" height="10" fill="#c9a227"/><g font-size="6.5" fill="#fff" text-anchor="middle"><text x="640" y="88">VCC</text><text x="660" y="88">OUT</text><text x="680" y="88">GND</text></g><path d="M630 148 a30 30 0 0 1 60 0z" fill="#f5f5f5" stroke="#bbb"/><path d="M636 148 q24 -26 48 0" fill="none" stroke="#ddd"/><path d="M644 148 q16 -21 32 0" fill="none" stroke="#ddd"/><path d="M652 148 q8 -16 16 0" fill="none" stroke="#ddd"/><text x="660" y="166" font-size="9" text-anchor="middle">HC-SR501</text>
+<path d="M640 70 V18" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="640" cy="18" r="3.2" class="dot"/><path d="M680 70 V30" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="680" cy="30" r="3.2" class="dot"/>
+<path d="M660 70 V56 H600 V190 H267 V212" fill="none" stroke="#e67e22" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M660 70 V56 H600 V190 H267 V212" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<text x="706" y="120" font-size="10">PIR</text><text x="706" y="133" font-size="10">→ D7</text>
+<circle cx="190" cy="120" r="18" fill="#222"/><circle cx="190" cy="120" r="4" fill="#555"/><text x="176" y="146" font-size="8">+</text><line x1="183" y1="138" x2="183" y2="150" stroke="#999" stroke-width="2"/><line x1="200" y1="102" x2="200" y2="92" stroke="#999" stroke-width="2"/>
+<path d="M183 150 V212" fill="none" stroke="#2e86de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M183 150 V212" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<path d="M200 92 V30" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="200" cy="30" r="3.2" class="dot"/>
+<text x="214" y="124" font-size="9">buzzer (D12)</text>
+<text x="230" y="390" font-size="10">D13: kart üzerindeki L LED'i gösterge olarak kullanılır</text></svg><div class="cap">Şekil 7. IR engel sensörü (OUT → D8), PIR hareket sensörü (OUT → D7) ve buzzer (D12) bağlantısı. Modüller üst güç hattından beslenir; siyah noktalar bağlantı noktalarıdır.</div></div>
+<table class="tbl"><tr><th>Modül</th><th>Pin sırası</th><th>Bağlantı</th></tr><tr><td>IR engel (FC-51)</td><td>OUT – GND – VCC</td><td>OUT → D8, VCC → 5V, GND → GND</td></tr>
+<tr><td>PIR (HC-SR501)</td><td>VCC – OUT – GND</td><td>OUT → D7, VCC → 5V, GND → GND</td></tr><tr><td>Buzzer</td><td>+ / −</td><td>+ → D12, − → GND</td></tr></table>
+</section>
+<section class="card" id="donem"><h2><span class="num">11</span>Dönem Sonu: Neler Öğrendik? Proje Fikirleri</h2>
+<p>14 hafta boyunca temel elektrikten başlayarak sensör okuma, karar verme ve eyleyici sürmeye kadar bir gömülü sistemin bütün katmanlarını gördük. Her proje aynı üç adımlı yapıya oturur: <b>Algıla → Karar ver → Uygula</b>.</p>
+<table class="tbl"><tr><th>Haftalar</th><th>Konu</th><th>Kazanılan beceri</th></tr>
+<tr><td>1–2</td><td>Ohm ve Kirchhoff kanunları, gerilim bölücü, breadboard</td><td>Devre kurma, direnç hesabı</td></tr>
+<tr><td>3–5</td><td>digitalWrite / digitalRead, if-else, for döngüsü</td><td>Dijital G/Ç, program akışı</td></tr>
+<tr><td>6–7, 9</td><td>analogRead, potansiyometre, LDR, analogWrite (PWM)</td><td>Analog ölçüm, map(), parlaklık kontrolü</td></tr>
+<tr><td>10–11</td><td>Sıcaklık sensörü, HC-SR04 ultrasonik sensör</td><td>Fiziksel büyüklük ölçme, pulseIn()</td></tr>
+<tr><td>12</td><td>Servo motor, su seviye sensörü</td><td>Servo.h, histerezisli kontrol</td></tr>
+<tr><td>13</td><td>I²C LCD, MPU6050</td><td>Kütüphane kullanımı, I²C, veri gösterme</td></tr>
+<tr><td>14</td><td>IR kumanda, IR engel, PIR</td><td>Kablosuz komut alma, olay algılama</td></tr></table>
+<h3>Dönem sonu proje fikirleri</h3>
+<div class="cards">
+<div class="pc"><h4>🏠 Akıllı Oda</h4><p>PIR ile hareket, LDR ile karanlık algılanınca ışığı (LED/PWM) yak; IR kumandayla elle aç/kapa; sıcaklık LCD'de.</p><p class="pill">Hafta 6, 9, 10, 13, 14</p></div>
+<div class="pc"><h4>🚗 Park Asistanı</h4><p>HC-SR04 ile mesafe, LCD'de çubuk grafik, buzzer ile uyarı; servo ile bariyer kolu.</p><p class="pill">Hafta 11, 12, 13</p></div>
+<div class="pc"><h4>🌱 Otomatik Bitki Sulama</h4><p>Toprak nemi/su seviyesi okunur, servo vana açılır; histerezisle aşırı sulama önlenir, durum LCD'de.</p><p class="pill">Hafta 7, 12, 13</p></div>
+<div class="pc"><h4>🔐 Şifreli Kapı Kilidi</h4><p>IR kumandayla 4 haneli şifre girilir, doğruysa servo kilidi açar; LCD'de mesajlar, hatalı girişte alarm.</p><p class="pill">Hafta 12, 13, 14</p></div>
+<div class="pc"><h4>🤖 Engelden Kaçan Robot</h4><p>IR engel sensörleri ve HC-SR04 ile çevre algılanır, motor sürücü (L298N) ile yön değiştirilir.</p><p class="pill">Hafta 11, 14 (+ motor sürücü)</p></div>
+<div class="pc"><h4>📐 Dijital Su Terazisi / Eğim Alarmı</h4><p>MPU6050 eğimi ölçer, LCD'de açı gösterilir; belirli açının üzerinde buzzer ve LED uyarı verir.</p><p class="pill">Hafta 3, 13</p></div>
+</div>
+<h3>Proje raporunda olması gerekenler</h3>
+<ol class="steps"><li><b>Problem tanımı</b> ve hedef: sistem ne yapacak, kim kullanacak?</li><li><b>Blok diyagram</b> (Algıla → Karar ver → Uygula) ve malzeme listesi.</li>
+<li><b>Bağlantı şeması</b> (pin tablosu ile) ve gerekli hesaplar (LED direnci, güç tüketimi).</li><li><b>Akış şeması</b> ve açıklamalı kaynak kodu; kullanılan kütüphaneler ve sürümleri.</li>
+<li><b>Test sonuçları</b>, karşılaşılan sorunlar ve iyileştirme önerileri; kısa bir çalışma videosu.</li></ol>
+<div class="tip">Projeyi parça parça geliştirin: önce her sensörü ayrı bir programla test edin (bu dersteki uygulamalar gibi), sonra birleştirin. Birleştirirken zamanlayıcı çakışmalarına dikkat edin: <code>Servo.h</code> → Timer1 (D9/D10 PWM yok), <code>tone()</code> ve <code>IRremote</code> → Timer2 (D3/D11 PWM yok, ikisi birlikte kullanılamaz).</div>
+</section>
+<section class="card quiz" id="quiz"><h2><span class="num">12</span>Kendini Test Et</h2>
+<p>Doğru seçeneği bulduğunuzda kısa bir açıklama görüntülenir.</p><div class="q" data-answer="b"><p>1) TV kumandaları ve IR engel sensörleri genellikle hangi dalga boyunda çalışır?</p><button class="opt" data-k="a">a) ≈ 450 nm (mavi)</button><button class="opt" data-k="b">b) ≈ 940 nm (yakın IR)</button><button class="opt" data-k="c">c) ≈ 10 µm (termal IR)</button><div class="fb">✓ Kumanda LED'leri ve engel sensörleri ≈ 850–940 nm yakın IR kullanır; ≈ 10 µm vücut ısısıdır (PIR).</div></div>
+<div class="q" data-answer="b"><p>2) VS1838B IR alıcının OUT pini, 38 kHz'lik IR sinyali alırken hangi seviyededir?</p><button class="opt" data-k="a">a) HIGH</button><button class="opt" data-k="b">b) LOW</button><button class="opt" data-k="c">c) 38 kHz kare dalga</button><div class="fb">✓ Alıcı taşıyıcıyı demodüle eder; çıkış aktif-düşüktür, yani IR paketi geldiği sürece LOW olur.</div></div>
+<div class="q" data-answer="b"><p>3) <code>IrReceiver.resume()</code> çağrılmazsa ne olur?</p><button class="opt" data-k="a">a) Program derlenmez</button><button class="opt" data-k="b">b) Yeni tuş basışları alınamaz</button><button class="opt" data-k="c">c) LED'ler söner</button><div class="fb">✓ decode() sonrası alıcı tamponu kilitli kalır; resume() bir sonraki çerçeveyi almak için alıcıyı yeniden etkinleştirir.</div></div>
+<div class="q" data-answer="a"><p>4) IR engel sensörünün önüne mat siyah bir kutu konduğunda OUT çoğunlukla nedir?</p><button class="opt" data-k="a">a) HIGH (engel yok gibi)</button><button class="opt" data-k="b">b) LOW (engel var)</button><button class="opt" data-k="c">c) Analog bir değer</button><div class="fb">✓ Siyah mat yüzey IR'yi soğurur, fotodiyota yeterli yansıma ulaşmaz; OUT HIGH kalır ve engel algılanmaz.</div></div>
+<div class="q" data-answer="b"><p>5) PIR sensörü neden 'pasif' olarak adlandırılır?</p><button class="opt" data-k="a">a) Pil gerektirmediği için</button><button class="opt" data-k="b">b) Kendisi IR yaymadığı, yalnızca ortamdaki IR değişimini algıladığı için</button><button class="opt" data-k="c">c) Sadece LOW çıkış verdiği için</button><div class="fb">✓ PIR ışık kaynağı içermez; insan vücudunun yaydığı termal IR'deki değişimi piroelektrik elemanla algılar.</div></div>
+</section>
+<section class="card" id="odev"><h2><span class="num">13</span>Ödev ve Özet</h2>
+<h3>Ödev</h3><ol>
+<li>Kumandanın ◀ ve ▶ tuşlarıyla 12. haftadaki servoyu 10'ar derece döndüren bir program yazın (IRremote Timer2, Servo.h Timer1 kullandığı için birlikte çalışırlar).</li>
+<li>Kumandayla 4 haneli şifre girilen, doğru şifrede yeşil LED'i yakan, yanlışta buzzer çalan bir kapı kilidi yapın (girilen haneleri LCD'de * olarak gösterin).</li>
+<li>PIR ve LDR'yi birleştirerek yalnızca <b>karanlıkta ve hareket olduğunda</b> 20 saniye yanan bir koridor lambası tasarlayın.</li>
+<li>IR engel sensörüyle önünden geçen nesneleri sayan bir "bant sayacı" yapın; sayıyı LCD'de gösterin, kumandanın 0 tuşuyla sıfırlayın.</li></ol>
+<details><summary>2. ödev için ipucu (tıklayın)</summary><div class="codebox"><span class="lbl">sifre_ipucu.ino</span><pre class="code">// İpucu: kumanda ile 4 haneli şifre girişi
+const uint8_t RAKAM[10] = {0x19, 0x45, 0x46, 0x47, 0x44, 0x40, 0x43, 0x07, 0x15, 0x09}; // 0..9
+const char SIFRE[] = "1907";
+char giris[5] = "";
+byte n = 0;
+
+int rakamBul(uint8_t komut) {
+  for (int i = 0; i &lt; 10; i++) if (RAKAM[i] == komut) return i;
+  return -1;                        // rakam tuşu değil
+}
+
+// loop() içinde, tekrar olmayan her komut için:
+//   int r = rakamBul(komut);
+//   if (r &gt;= 0 &amp;&amp; n &lt; 4) { giris[n++] = '0' + r; giris[n] = '\0'; }
+//   if (komut == 0x1C) {             // OK tuşu
+//     if (strcmp(giris, SIFRE) == 0) { /* kapıyı aç: servo, yeşil LED */ }
+//     else { /* hatalı: kırmızı LED, buzzer */ }
+//     n = 0; giris[0] = '\0';
+//   }</pre></div></details>
+<h3>Özet</h3><ul>
+<li>IR, görünür kırmızıdan uzun dalga boylu ışınımdır; kumanda/engel sensörleri ≈ 940 nm yakın IR, PIR ≈ 10 µm termal IR ile çalışır.</li>
+<li>IR alıcılar 38 kHz taşıyıcıyı ayıklar; çıkış aktif-düşüktür. Yaygın kumandalar NEC protokolü (adres + komut, 32 bit) kullanır.</li>
+<li>IRremote v4: <code>IrReceiver.begin()</code> → <code>decode()</code> → <code>decodedIRData.command</code> → <code>resume()</code>; Timer2 kullanır.</li>
+<li>IR engel modülü: engel varken OUT = LOW; mesafe ölçmez, yüzey rengine ve ortam ışığına duyarlıdır.</li>
+<li>PIR (HC-SR501): harekette OUT = HIGH; süre ve hassasiyet potansiyometreleri, H/L tetikleme modu ve ısınma süresi vardır.</li>
+<li>Dönem sonu projesi: Algıla → Karar ver → Uygula; parçaları ayrı test edip birleştirin.</li></ul>
+</section>
+
+</main>
+<footer>Arduino ile Programlama · Ders Notları · 14. Hafta<br>Kaynaklar: C. Taşdemir – <i>Arduino</i>; G. Döktaş – <i>Arduino Eğitim Kitabı</i>; E. Delebe – <i>Projeler ile Arduino</i></footer>
+<script>
+(function(){
+ const KW=['void','if','else','for','while','do','return','switch','case','break','default','const','true','false','#include','#define'];
+ const TY=['int','float','long','unsigned','byte','bool','boolean','char','double','String','word'];
+ const CST=['HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP','LED_BUILTIN','A0','A1','A2','A3','A4','A5'];
+ const FN=['pinMode','digitalWrite','digitalRead','analogRead','analogWrite','delay','delayMicroseconds','millis','micros','setup','loop','map','constrain','pulseIn','tone','noTone','Serial','begin','print','println','attach','write','read','available','random'];
+ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+ function hl(src){
+  let out='',i=0;
+  const re=/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(#?[A-Za-z_][A-Za-z0-9_]*)|(\b\d+(?:\.\d+)?\b)/g;let m,last=0;
+  while((m=re.exec(src))){out+=esc(src.slice(last,m.index));
+   if(m[1])out+='<span class="com">'+esc(m[1])+'</span>';
+   else if(m[2])out+='<span class="str">'+esc(m[2])+'</span>';
+   else if(m[3]){const w=m[3];let c=KW.includes(w)?'kw':TY.includes(w)?'ty':CST.includes(w)?'cst':FN.includes(w)?'fn':'';out+=c?'<span class="'+c+'">'+esc(w)+'</span>':esc(w)}
+   else if(m[4])out+='<span class="num">'+m[4]+'</span>';
+   last=re.lastIndex}
+  return out+esc(src.slice(last))}
+ document.querySelectorAll('pre.code').forEach(p=>{const raw=p.textContent;p.innerHTML=hl(raw);
+  const b=document.createElement('button');b.className='copybtn';b.textContent='Kopyala';
+  b.onclick=()=>{navigator.clipboard.writeText(raw).then(()=>{b.textContent='Kopyalandı ✓';setTimeout(()=>b.textContent='Kopyala',1500)})};
+  p.parentElement.appendChild(b)});
+ document.querySelectorAll('.quiz .q').forEach(q=>{const ans=q.dataset.answer;const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{q.querySelectorAll('.opt').forEach(x=>x.classList.remove('ok','no'));
+   if(o.dataset.k===ans){o.classList.add('ok');if(fb)fb.style.display='block'}else{o.classList.add('no')}})});
+ document.querySelectorAll('.quiz .fb').forEach(f=>f.style.display='none');
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+function serial(el,line,max){const s=$(el);s.textContent+=line+'\n';const L=s.textContent.split('\n');if(L.length>(max||50))s.textContent=L.slice(-(max||50)).join('\n');s.scrollTop=1e9}
+// ---------- Simülasyon 1: kumanda ----------
+const KEYS=[['1',0x45],['2',0x46],['3',0x47],['4',0x44],['5',0x40],['6',0x43],['7',0x07],['8',0x15],['9',0x09],['*',0x16],['0',0x19],['#',0x0D]];
+const NAV=[['▲',0x18,85,240],['◀',0x08,48,268],['OK',0x1C,85,268],['▶',0x5A,122,268],['▼',0x52,85,296]];
+let kh='';KEYS.forEach(([t,c],i)=>{const x=48+(i%3)*37,y=62+Math.floor(i/3)*40;kh+=`<g class="key" data-c="${c}" data-t="${t}"><rect x="${x-15}" y="${y-14}" width="30" height="28" rx="7" fill="#34495e"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="13" fill="#fff">${t}</text></g>`});
+NAV.forEach(([t,c,x,y])=>{kh+=`<g class="key" data-c="${c}" data-t="${t}"><rect x="${x-16}" y="${y-12}" width="32" height="24" rx="${t==='OK'?12:6}" fill="#34495e"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="${t==='OK'?10:12}" fill="#fff">${t}</text></g>`});
+$('keys').innerHTML=kh;
+const LP=[[230,'#ff4d4d','#3d1512','D5'],[300,'#f1c40f','#3d3510','D6'],[370,'#2ecc71','#1e3d27','D9']];
+$('irLeds').innerHTML=LP.map(([x,on,off,p],i)=>`<circle id="irL${i}" cx="${x}" cy="160" r="12" fill="${off}"/><text x="${x}" y="184" text-anchor="middle" font-size="9" fill="#fff">${p}</text>`).join('');
+let durum=[false,false,false],parl=255;
+function hex(n){return '0x'+n.toString(16).toUpperCase()}
+function ledsUpd(){LP.forEach(([x,on,off],i)=>{const e=$('irL'+i);if(durum[i]){e.setAttribute('fill',on);e.style.opacity=0.25+0.75*parl/255;e.style.filter=`drop-shadow(0 0 ${3+5*parl/255}px ${on})`}else{e.setAttribute('fill',off);e.style.opacity=1;e.style.filter='none'}})}
+function necPath(cmd,rep){const k=230/70000;let x=190,d='M190 230 ';const lo=v=>{const w=v*k;d+=`V242 H${(x+w).toFixed(1)} V230 `;x+=w},hi=v=>{x+=v*k;d+=`H${x.toFixed(1)} `};
+ if(rep){lo(9000);hi(2250);lo(562);hi(5000)}else{lo(9000);hi(4500);const bytes=[0x00,0xFF,cmd,(~cmd)&0xFF];bytes.forEach(b=>{for(let i=0;i<8;i++){lo(562);hi((b>>i)&1?1687:562)}});lo(562);hi(1500)}
+ $('necWave').setAttribute('d',d);
+ $('necTxt').textContent=rep?'TEKRAR: 9 ms + 2,25 ms + 0,56 ms':`00 FF ${cmd.toString(16).toUpperCase().padStart(2,'0')} ${((~cmd)&0xFF).toString(16).toUpperCase().padStart(2,'0')} (adres, ~adres, komut, ~komut)`}
+function receive(cmd,rep,t){ // Uygulama 2'nin loop() gövdesi
+ $('irBeam').setAttribute('opacity',1);$('rLed').setAttribute('fill','#ff3b3b');setTimeout(()=>{$('irBeam').setAttribute('opacity',0);$('rLed').setAttribute('fill','#5a1d1d')},90);
+ necPath(cmd,rep);
+ if(!rep){switch(cmd){case 0x45:durum[0]=!durum[0];break;case 0x46:durum[1]=!durum[1];break;case 0x47:durum[2]=!durum[2];break;case 0x19:durum=[false,false,false];break;case 0x0D:durum=[true,true,true];break}}
+ if(cmd===0x18)parl=Math.min(255,parl+15);if(cmd===0x52)parl=Math.max(15,parl-15);
+ ledsUpd();
+ serial('irSer',`Komut: 0x${cmd.toString(16).toUpperCase()}${rep?' (tekrar)':''}  LED: ${durum.map(b=>b?'1':'0').join('')}  Parlaklık: ${parl}`);
+ $('irOut').innerHTML=`Tuş <b>${t}</b> → Protokol: NEC · Adres: 0x0 · Komut: <b>${hex(cmd)}</b>${rep?' · <i>tekrar çerçevesi</i>':''}<br>LED durumları: kırmızı ${durum[0]?'●':'○'} sarı ${durum[1]?'●':'○'} yeşil ${durum[2]?'●':'○'} · analogWrite değeri: ${parl}`}
+let holdT=null,repT=null,curKey=null;
+function release(){clearTimeout(holdT);clearInterval(repT);holdT=repT=null;if(curKey)curKey.classList.remove('down');curKey=null}
+document.querySelectorAll('#keys .key').forEach(g=>{g.addEventListener('pointerdown',e=>{e.preventDefault();release();curKey=g;g.classList.add('down');const c=+g.dataset.c,t=g.dataset.t;receive(c,false,t);
+ holdT=setTimeout(()=>{repT=setInterval(()=>receive(c,true,t),108)},108)})});
+window.addEventListener('pointerup',release);
+serial('irSer','Kumandanın bir tuşuna basın...');ledsUpd();necPath(0x45,false);
+
+// ---------- Simülasyon 2: engel sensörü ----------
+const X0=86,SC=7.5; // 1 cm = 7.5 px
+let od=20,prev=null;const osv=$('obSvg');
+function svgX(svg,e){const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse()).x}
+function obUpd(){const thr=+$('obT').value,refl=+$('obS').value;const eff=thr*refl;const engel=od<=eff;
+ $('obDv').textContent=od;$('obTv').textContent=thr;const x=X0+od*SC;$('obBox').setAttribute('x',x);
+ const col=refl>0.9?'#ecf0f1':refl>0.3?'#a1887f':'#222';$('obBox').setAttribute('fill',col);
+ $('obEmit').setAttribute('d',`M86 79 L${x} 79`);$('obRefl').setAttribute('d',engel?`M${x} 82 L86 109`:'');
+ const tx=X0+eff*SC;$('obThr').setAttribute('x1',tx);$('obThr').setAttribute('x2',tx);$('obThrT').setAttribute('x',tx);
+ $('obLed').setAttribute('fill',engel?'#2ecc71':'#1e3d27');$('obL13').setAttribute('fill',engel?'#ffb300':'#5a4a00');$('obL13').style.filter=engel?'drop-shadow(0 0 5px #ffb300)':'none';
+ $('obBz').setAttribute('fill',engel?'#ff5252':'#444');
+ $('obOut').innerHTML=`Etkin algılama mesafesi ≈ ${thr} cm × ${refl} = <b>${eff.toFixed(1)} cm</b><br>digitalRead(8) = <b>${engel?'LOW':'HIGH'}</b> → ${engel?'Engel VAR: LED yanık, tone(12, 1500)':'Engel YOK: noTone(12)'}`;
+ if(engel!==prev){serial('obSer',engel?'Engel VAR':'Engel YOK');prev=engel}}
+$('obD').oninput=e=>{od=+e.target.value;obUpd()};$('obT').oninput=obUpd;$('obS').onchange=obUpd;
+let odr=false;$('obObj').addEventListener('pointerdown',e=>{odr=true;e.preventDefault()});window.addEventListener('pointerup',()=>odr=false);
+osv.addEventListener('pointermove',e=>{if(!odr)return;let d=Math.round((svgX(osv,e)-13-X0)/SC);d=Math.max(1,Math.min(40,d));od=d;$('obD').value=d;obUpd()});
+obUpd();
+
+// ---------- Simülasyon 3: PIR ----------
+let px=60,lastPx=60,walking=false,wdir=1,out=false,until=0,lock=0,cnt=0,prevOut=false,lastMove=-1e9;const psv=$('prSvg');
+(function(){let z='';for(let i=0;i<7;i++){const a1=(-55+i*110/7)*Math.PI/180,a2=(-55+(i+1)*110/7)*Math.PI/180;const r=240;
+ z+=`<path d="M210 24 L${210+r*Math.sin(a1)} ${24+r*Math.cos(a1)} L${210+r*Math.sin(a2)} ${24+r*Math.cos(a2)} Z" fill="${i%2?'#e67e22':'none'}" opacity=".08"/>`}$('prZones').innerHTML=z})();
+function inCone(x){const dx=x-210,dy=150;const ang=Math.atan2(dx,dy)*180/Math.PI;return Math.abs(ang)<=55}
+function zoneOf(x){const ang=Math.atan2(x-210,150)*180/Math.PI;return Math.floor((ang+55)/(110/7))}
+let lastZone=zoneOf(px);
+function prTick(){const now=performance.now()/1000;const hold=+$('prH').value,mode=$('prM').value;
+ if(walking){px+=wdir*2.2;if(px>400||px<20){walking=false;px=Math.max(20,Math.min(400,px))}}
+ const z=zoneOf(px),moved=inCone(px)&&z!==lastZone&&Math.abs(px-lastPx)>0;lastZone=z;lastPx=px;
+ if(moved)lastMove=now;
+ if(moved){if(!out&&now>=lock){out=true;until=now+hold}else if(out&&mode==='H'){until=now+hold}}
+ if(out&&now>=until){out=false;lock=now+2.5}
+ $('prMan').setAttribute('transform',`translate(${px},0)`);
+ $('prL13').setAttribute('fill',out?'#ffb300':'#5a4a00');$('prL13').style.filter=out?'drop-shadow(0 0 5px #ffb300)':'none';
+ $('prOutT').textContent='OUT='+(out?'HIGH':'LOW');$('prCone').setAttribute('opacity',out?0.22:0.10);
+ const rem=out?Math.max(0,until-now):0;$('prBar').setAttribute('width',out?120*rem/hold:0);
+ $('prBarT').textContent=out?`kalan süre ${rem.toFixed(1)} s`:(now<lock?`kilitli ${(lock-now).toFixed(1)} s`:'');
+ $('prOut').innerHTML=`Kişi ${inCone(px)?'algılama konisinin <b>içinde</b>':'konisinin <b>dışında</b>'} · ${now-lastMove<0.3?'hareket ediyor':'hareketsiz'}<br>digitalRead(7) = <b>${out?'HIGH':'LOW'}</b> · Mod: ${mode==='H'?'H (süre her harekette yenilenir)':'L (süre dolunca 2,5 s kilit)'}`;
+ if(out&&!prevOut){cnt++;serial('prSer','Hareket algılandı! #'+cnt)}else if(!out&&prevOut)serial('prSer','Hareket bitti.');prevOut=out}
+$('prH').oninput=e=>$('prHv').textContent=e.target.value;
+$('prWalk').onclick=()=>{if(px>=390)wdir=-1;else if(px<=30)wdir=1;walking=true};$('prStop').onclick=()=>walking=false;
+let pdr=false;$('prMan').addEventListener('pointerdown',e=>{pdr=true;walking=false;e.preventDefault()});window.addEventListener('pointerup',()=>pdr=false);
+psv.addEventListener('pointermove',e=>{if(!pdr)return;px=Math.max(20,Math.min(400,svgX(psv,e)))});
+serial('prSer','PIR ısınıyor (30 s)...');serial('prSer','Hazır.');
+setInterval(prTick,50);prTick();
+})();
+</script>
+</body></html>

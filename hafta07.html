@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>7. Hafta – Potansiyometre, Analog Okuma ve LDR-LED | Arduino ile Programlama</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#1d2733;--muted:#5b6b7d;--teal:#00979d;--teal2:#00b3b9;--accent:#e67e22;--red:#e74c3c;--green:#27ae60;--code:#0f1b26;--border:#dde5ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+header.top{background:linear-gradient(135deg,#006468,#00979d 60%,#00b3b9);color:#fff;padding:28px 20px 34px;position:relative;overflow:hidden}
+header.top::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px),repeating-linear-gradient(0deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px);pointer-events:none}
+.wrap{max-width:1050px;margin:0 auto;padding:0 18px}
+.badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:3px 12px;border-radius:20px;font-size:.85em;letter-spacing:.5px}
+header.top h1{margin:10px 0 6px;font-size:2em}
+header.top p{margin:0;opacity:.92}
+nav.weeknav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;position:relative;z-index:1}
+nav.weeknav a{color:#fff;text-decoration:none;background:rgba(0,0,0,.18);padding:6px 12px;border-radius:6px;font-size:.9em}
+nav.weeknav a:hover{background:rgba(0,0,0,.35)}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;margin:22px 0}
+.toc ol{margin:6px 0;columns:2}
+.toc a{color:var(--teal);text-decoration:none}
+section.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin:22px 0;box-shadow:0 2px 8px rgba(20,40,60,.05);animation:fadeUp .6s ease both}
+section.card h2{margin-top:0;color:#006468;border-bottom:2px solid #e3f3f3;padding-bottom:8px}
+section.card h2 .num{display:inline-block;background:var(--teal);color:#fff;border-radius:50%;width:32px;height:32px;text-align:center;line-height:32px;margin-right:8px;font-size:.8em}
+h3{color:#0b4f6c}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.goals li{margin:4px 0}
+.note,.warn,.tip{border-radius:8px;padding:12px 16px;margin:14px 0;border-left:5px solid}
+.note{background:#eaf6ff;border-color:#2e86de}.warn{background:#fff3e6;border-color:var(--accent)}.tip{background:#eafaf1;border-color:var(--green)}
+.note::before{content:"ℹ️ Not: ";font-weight:600}.warn::before{content:"⚠️ Dikkat: ";font-weight:600}.tip::before{content:"💡 İpucu: ";font-weight:600}
+.formula{font-family:Cambria,"Times New Roman",serif;font-size:1.5em;text-align:center;background:#f7fbfb;border:1px dashed var(--teal);border-radius:8px;padding:12px;margin:14px 0}
+table.tbl{border-collapse:collapse;width:100%;margin:12px 0;font-size:.95em}
+table.tbl th,table.tbl td{border:1px solid var(--border);padding:7px 10px;text-align:left}
+table.tbl th{background:#e9f6f6;color:#064d50}
+table.tbl tr:nth-child(even) td{background:#fafcfd}
+.codebox{position:relative;margin:14px 0}
+.codebox .lbl{background:#1f3344;color:#9fd7da;font-size:.8em;padding:4px 12px;border-radius:8px 8px 0 0;display:inline-block;font-family:Consolas,monospace}
+pre.code{background:var(--code);color:#d7e3ee;padding:16px 18px;border-radius:0 8px 8px 8px;overflow:auto;font-family:Consolas,"Courier New",monospace;font-size:.92em;line-height:1.5;margin:0}
+pre.code .kw{color:#c792ea}.code .ty{color:#82aaff}.code .fn{color:#f78c6c}.code .num{color:#f7c56c}.code .str{color:#c3e88d}.code .com{color:#6b8299;font-style:italic}.code .cst{color:#ff5370}
+.copybtn{position:absolute;top:30px;right:8px;background:#2b4459;color:#cfe;border:0;border-radius:5px;padding:4px 10px;cursor:pointer;font-size:.8em}
+.copybtn:hover{background:var(--teal)}
+.figure{text-align:center;margin:16px 0}
+.figure svg{max-width:100%;height:auto}
+.figure .cap{font-size:.88em;color:var(--muted);margin-top:6px}
+.sim{background:#f3fafa;border:1px solid #bfe3e4;border-radius:10px;padding:16px;margin:16px 0}
+.sim h4{margin:0 0 10px;color:#006468}
+.sim label{display:block;margin:8px 0 2px;font-weight:600;font-size:.92em}
+.sim input[type=range]{width:100%;accent-color:var(--teal)}
+.sim .out{font-family:Consolas,monospace;background:#fff;border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-top:10px}
+.serial{background:#0b1620;color:#7CFC9a;font-family:Consolas,monospace;border-radius:6px;padding:10px;height:140px;overflow:auto;font-size:.88em;white-space:pre}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:.92em;margin:4px 4px 4px 0}
+.btn:hover{background:#007a7f}.btn.alt{background:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.toc ol{columns:1}}
+/* animations */
+.flow{stroke-dasharray:6 10;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+.glow{filter:drop-shadow(0 0 6px #ff4d4d)}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.spin{transform-origin:center;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* quiz */
+.quiz .q{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0}
+.quiz .q p{margin:0 0 8px;font-weight:600}
+.quiz .opt{display:block;width:100%;text-align:left;background:#f7f9fb;border:1px solid var(--border);border-radius:6px;padding:7px 10px;margin:4px 0;cursor:pointer;font-size:.95em}
+.quiz .opt:hover{background:#eef6f6}
+.quiz .opt.ok{background:#d9f5e3;border-color:var(--green)}
+.quiz .opt.no{background:#fde2df;border-color:var(--red)}
+.quiz .fb{font-size:.9em;margin-top:6px;color:var(--muted)}
+details{background:#fbfcfd;border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin:10px 0}
+details summary{cursor:pointer;font-weight:600;color:#0b4f6c}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding:8px 0 8px 46px;margin:6px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:32px;height:32px;border-radius:50%;background:var(--teal);color:#fff;text-align:center;line-height:32px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:30px 10px 40px}
+.pill{display:inline-block;background:#e3f3f3;color:#064d50;border-radius:12px;padding:2px 10px;font-size:.85em;margin:2px}
+</style></head><body>
+<header class="top"><div class="wrap">
+<span class="badge">ARDUİNO İLE PROGRAMLAMA · 7. HAFTA</span>
+<h1>Potansiyometre, Analog Okuma ve LDR-LED</h1><p>Potansiyometrenin yapısı, ayarlı gerilim bölücü, float ile gerilim hesabı, map() fonksiyonu; hız ayarı, LED bar ve ayarlanabilir eşikli gece lambası</p>
+<nav class="weeknav"><a href="index.html">☰ Tüm Haftalar</a><a href="hafta06.html">← 6. Hafta</a><a href="hafta08.html">8. Hafta →</a></nav>
+</div></header>
+<main class="wrap">
+<div class="toc"><strong>Bu haftanın içeriği</strong><ol><li><a href="#hedef">Haftanın Hedefleri</a></li><li><a href="#yapi">Potansiyometre: Yapısı ve Çeşitleri</a></li><li><a href="#bolucu">Gerilim Bölücü Olarak Potansiyometre</a></li><li><a href="#devre">Devre Şeması: Potansiyometre, LDR ve LED</a></li><li><a href="#volt">Uygulama 1: Potansiyometreyi Okuma ve Volta Çevirme (float)</a></li><li><a href="#map">map() ve constrain() Fonksiyonları</a></li><li><a href="#blink">Uygulama 2: Potansiyometre ile Yanıp Sönme Hızı</a></li><li><a href="#bar">Uygulama 3: Potansiyometre ile LED Bar Göstergesi</a></li><li><a href="#ldrpot">Uygulama 4: Potansiyometre ile LDR Eşiğini Ayarlama</a></li><li><a href="#fonk">Bu Haftanın Yeni Fonksiyonları ve Türleri</a></li><li><a href="#quiz">Kendini Test Et</a></li><li><a href="#odev">Ödev ve Özet</a></li></ol></div>
+<style>
+@keyframes wiperSwing{0%{transform:rotate(-125deg)}50%{transform:rotate(125deg)}100%{transform:rotate(-125deg)}}
+.wiperAnim{transform-box:view-box;animation:wiperSwing 6s ease-in-out infinite}
+.knobsvg{touch-action:none;cursor:grab}
+.knobsvg:active{cursor:grabbing}
+.mapin{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.mapin input{width:100%;padding:4px;font-family:Consolas,monospace}
+.bigval{font-family:Consolas,monospace;font-size:1.6em;text-align:center;color:#006468;font-weight:700}
+</style>
+
+<section class="card" id="hedef"><h2><span class="num">1</span>Haftanın Hedefleri</h2>
+<ul class="goals">
+<li><b>Potansiyometrenin</b> yapısını (direnç izi, silecek, 3 bacak) ve çeşitlerini tanımak</li>
+<li>Potansiyometreyi bir <b>ayarlı gerilim bölücü</b> olarak bağlayıp <code>analogRead()</code> ile okuyabilmek</li>
+<li>Okunan 0–1023 değerini <b>float</b> kullanarak volta çevirebilmek ve tamsayı bölme hatasından kaçınmak</li>
+<li><code>map()</code> ve <code>constrain()</code> fonksiyonlarıyla değerleri istenen aralığa ölçekleyebilmek</li>
+<li>Potansiyometre ile <b>yanıp sönme hızını</b> ayarlamak ve <b>LED bar göstergesi</b> yapmak</li>
+<li>Potansiyometre ile <b>LDR eşik değerini</b> ayarlanabilir hâle getirmek (iki analog girişin birlikte kullanımı)</li></ul>
+<div class="note">Gerekli malzemeler: Arduino UNO, breadboard, 10 kΩ doğrusal (B tipi) potansiyometre, LDR + 10 kΩ direnç, 6 adet LED, 6 adet 220 Ω direnç, jumper kablolar. Geçen haftanın <code>analogRead()</code> ve LDR konularının üzerine kurulur.</div>
+</section>
+
+<section class="card" id="yapi"><h2><span class="num">2</span>Potansiyometre: Yapısı ve Çeşitleri</h2>
+<p><b>Potansiyometre</b> (kısaca pot), direnci elle ayarlanabilen <b>üç uçlu</b> bir dirençtir. İçinde, iki ucu 1 ve 3 numaralı bacaklara bağlı yay şeklinde bir <b>direnç izi</b> (karbon ya da sermet) bulunur. Mile bağlı metal bir <b>silecek (wiper)</b> bu iz üzerinde kayar ve orta bacağa (2) bağlıdır. Mil çevrildikçe silecek konum değiştirir ve uçlar arasındaki direnç paylaşımı değişir.</p>
+<div class="figure"><svg viewBox="0 0 620 300" width="620"><rect x="1" y="1" width="318" height="298" rx="10" fill="#fff" stroke="#bfe3e4"/><text x="160" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#006468">İç yapı (kapak açık)</text><circle cx="160" cy="140" r="110" fill="#e9eef2" stroke="#9fb3c8" stroke-width="2"/><path d="M99.9 200.1 A85 85 0 1 1 220.1 200.1" fill="none" stroke="#3a2a1a" stroke-width="16" stroke-linecap="round"/><path d="M99.9 200.1 L99.9 265" stroke="#c9a227" stroke-width="6"/><path d="M220.1 200.1 L220.1 265" stroke="#c9a227" stroke-width="6"/><path d="M160 140 V265" stroke="#c9a227" stroke-width="6"/><g class="wiperAnim" style="transform-origin:160px 140px"><path d="M160 140 L160 55" stroke="#d4ac0d" stroke-width="7" stroke-linecap="round"/><circle cx="160" cy="55" r="7" fill="#f1c40f" stroke="#7d6608"/></g><circle cx="160" cy="140" r="16" fill="#41566a"/><circle cx="160" cy="140" r="5" fill="#9fb3c8"/><text x="100" y="285" text-anchor="middle" font-size="12" font-weight="700">1</text><text x="160" y="285" text-anchor="middle" font-size="12" font-weight="700">2</text><text x="220" y="285" text-anchor="middle" font-size="12" font-weight="700">3</text><text x="40" y="70" font-size="11" fill="#3a2a1a">direnç izi</text><text x="40" y="83" font-size="11" fill="#3a2a1a">(karbon)</text><text x="210" y="95" font-size="11" fill="#7d6608">silecek</text><text x="210" y="108" font-size="11" fill="#7d6608">(wiper)</text><text x="250" y="270" font-size="10" fill="#5b6b7d">orta uç = silecek</text><rect x="330" y="1" width="288" height="298" rx="10" fill="#fff" stroke="#bfe3e4"/><text x="474" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#006468">Devre sembolü ve çeşitleri</text><path d="M360 70 H400" stroke="#333" stroke-width="2.5"/><rect x="400" y="60" width="90" height="20" fill="#fff" stroke="#333" stroke-width="2.5"/><path d="M490 70 H530" stroke="#333" stroke-width="2.5"/><path d="M445 115 V84" stroke="#333" stroke-width="2.5"/><path d="M445 82 l-6 10 h12z" fill="#333"/><text x="360" y="62" font-size="11">1</text><text x="526" y="62" font-size="11">3</text><text x="452" y="112" font-size="11">2</text><g transform="translate(355,150)"><circle cx="30" cy="40" r="26" fill="#2b3a48"/><rect x="25" y="2" width="10" height="26" fill="#9fb3c8"/><path d="M14 66 v18 M30 66 v18 M46 66 v18" stroke="#c9a227" stroke-width="4"/><text x="30" y="110" text-anchor="middle" font-size="11">Döner</text></g><g transform="translate(435,150)"><rect x="0" y="30" width="80" height="22" rx="3" fill="#2b3a48"/><rect x="0" y="38" width="80" height="6" fill="#111"/><rect class="pulse" x="30" y="20" width="16" height="40" rx="2" fill="#9fb3c8"/><path d="M8 52 v30 M72 52 v30 M40 52 v30" stroke="#c9a227" stroke-width="4"/><text x="40" y="110" text-anchor="middle" font-size="11">Sürgülü</text></g><g transform="translate(540,150)"><rect x="2" y="20" width="50" height="46" rx="4" fill="#2e86de"/><circle cx="27" cy="43" r="14" fill="#f4f4f4"/><path d="M20 43 h14 M27 36 v14" stroke="#555" stroke-width="3"/><path d="M10 66 v18 M27 66 v18 M44 66 v18" stroke="#c9a227" stroke-width="4"/><text x="27" y="110" text-anchor="middle" font-size="11">Trimpot</text></g></svg><div class="cap">Şekil 1. Potansiyometrenin iç yapısı (animasyonda silecek iz üzerinde gidip gelir), devre sembolü ve yaygın çeşitleri</div></div>
+<div class="grid2"><div><table class="tbl"><tr><th>Uçlar arası</th><th>Direnç</th></tr>
+<tr><td>1 – 3 (dış uçlar)</td><td>Her zaman toplam değer (ör. 10 kΩ), mil konumundan bağımsız</td></tr>
+<tr><td>1 – 2</td><td>Silecek 1'e yaklaştıkça azalır (0 → 10 kΩ)</td></tr>
+<tr><td>2 – 3</td><td>Silecek 3'e yaklaştıkça azalır (10 kΩ → 0)</td></tr>
+<tr><td>R<sub>12</sub> + R<sub>23</sub></td><td>= R<sub>toplam</sub></td></tr></table></div>
+<div><ul><li><b>Döner pot:</b> mil yaklaşık 270–300° döner; ses ayarı, kontrol panelleri.</li>
+<li><b>Sürgülü pot:</b> doğrusal hareket; mikser masaları.</li>
+<li><b>Trimpot:</b> tornavida ile ayarlanır; devrede bir kez kalibrasyon için.</li>
+<li><b>Doğrusal (B) / logaritmik (A):</b> Arduino ile ölçüm için <b>B tipi (doğrusal)</b> seçilir; A tipi ses düzeyi için kullanılır. Üzerinde “B10K” yazan pot, 10 kΩ doğrusal demektir.</li></ul></div></div>
+</section>
+
+<section class="card" id="bolucu"><h2><span class="num">3</span>Gerilim Bölücü Olarak Potansiyometre</h2>
+<p>Dış bacaklardan biri GND'ye, diğeri +5 V'a bağlandığında potansiyometre, oranı mil ile değişen bir <b>gerilim bölücü</b> olur. Silecek ucu (2) ile GND arasındaki gerilim, silecek konumuyla doğru orantılıdır:</p>
+<div class="formula">V<sub>silecek</sub> = 5 V · R<sub>12</sub> / (R<sub>12</sub> + R<sub>23</sub>) = 5 V · θ / θ<sub>maks</sub></div>
+<p>Toplam direnç formülden sadeleşir; bu yüzden 10 kΩ yerine 1 kΩ ya da 100 kΩ pot da aynı gerilimi verir. Ancak çok küçük değerli pot fazla akım çeker (5 V / 1 kΩ = 5 mA), çok büyük değerli pot ise ADC girişinde gürültüye daha açıktır. Arduino için <b>10 kΩ</b> önerilen değerdir (5 V / 10 kΩ = 0,5 mA).</p>
+<div class="sim"><h4>🔬 Simülasyon: Potansiyometreyi çevirin (topuzu fareyle sürükleyin veya kaydırıcıyı kullanın)</h4>
+<div class="grid2"><div class="figure" style="margin:0"><svg viewBox="0 0 300 250" width="300" id="k1Svg" class="knobsvg"><rect x="1" y="1" width="298" height="248" rx="10" fill="#fff" stroke="#bfe3e4"/><line x1="80.7" y1="194.3" x2="73.6" y2="201.4" stroke="#789" stroke-width="2"/><line x1="56.8" y1="155.3" x2="51.1" y2="157.1" stroke="#789" stroke-width="2"/><line x1="53.2" y1="109.7" x2="47.3" y2="108.7" stroke="#789" stroke-width="2"/><line x1="70.7" y1="67.4" x2="65.9" y2="63.9" stroke="#789" stroke-width="2"/><line x1="105.5" y1="37.7" x2="102.8" y2="32.3" stroke="#789" stroke-width="2"/><line x1="150.0" y1="27.0" x2="150.0" y2="17.0" stroke="#789" stroke-width="2"/><line x1="194.5" y1="37.7" x2="197.2" y2="32.3" stroke="#789" stroke-width="2"/><line x1="229.3" y1="67.4" x2="234.1" y2="63.9" stroke="#789" stroke-width="2"/><line x1="246.8" y1="109.7" x2="252.7" y2="108.7" stroke="#789" stroke-width="2"/><line x1="243.2" y1="155.3" x2="248.9" y2="157.1" stroke="#789" stroke-width="2"/><line x1="219.3" y1="194.3" x2="226.4" y2="201.4" stroke="#789" stroke-width="2"/><path d="M89.9 185.1 A85 85 0 1 1 210.1 185.1" fill="none" stroke="#3a2a1a" stroke-width="12" stroke-linecap="round"/><path id="k1A1" fill="none" stroke="#2e86de" stroke-width="8" stroke-linecap="round"/><path id="k1A2" fill="none" stroke="#e67e22" stroke-width="8" stroke-linecap="round"/><circle cx="150" cy="125" r="62" fill="#2b3a48" stroke="#111" stroke-width="2"/><g id="k1Rot"><circle cx="150" cy="125" r="50" fill="#41566a"/><line x1="150.0" y1="81.0" x2="150.0" y2="75.0" stroke="#2b3a48" stroke-width="3"/><line x1="165.0" y1="83.7" x2="167.1" y2="78.0" stroke="#2b3a48" stroke-width="3"/><line x1="178.3" y1="91.3" x2="182.1" y2="86.7" stroke="#2b3a48" stroke-width="3"/><line x1="188.1" y1="103.0" x2="193.3" y2="100.0" stroke="#2b3a48" stroke-width="3"/><line x1="193.3" y1="117.4" x2="199.2" y2="116.3" stroke="#2b3a48" stroke-width="3"/><line x1="193.3" y1="132.6" x2="199.2" y2="133.7" stroke="#2b3a48" stroke-width="3"/><line x1="188.1" y1="147.0" x2="193.3" y2="150.0" stroke="#2b3a48" stroke-width="3"/><line x1="178.3" y1="158.7" x2="182.1" y2="163.3" stroke="#2b3a48" stroke-width="3"/><line x1="165.0" y1="166.3" x2="167.1" y2="172.0" stroke="#2b3a48" stroke-width="3"/><line x1="150.0" y1="169.0" x2="150.0" y2="175.0" stroke="#2b3a48" stroke-width="3"/><line x1="135.0" y1="166.3" x2="132.9" y2="172.0" stroke="#2b3a48" stroke-width="3"/><line x1="121.7" y1="158.7" x2="117.9" y2="163.3" stroke="#2b3a48" stroke-width="3"/><line x1="111.9" y1="147.0" x2="106.7" y2="150.0" stroke="#2b3a48" stroke-width="3"/><line x1="106.7" y1="132.6" x2="100.8" y2="133.7" stroke="#2b3a48" stroke-width="3"/><line x1="106.7" y1="117.4" x2="100.8" y2="116.3" stroke="#2b3a48" stroke-width="3"/><line x1="111.9" y1="103.0" x2="106.7" y2="100.0" stroke="#2b3a48" stroke-width="3"/><line x1="121.7" y1="91.3" x2="117.9" y2="86.7" stroke="#2b3a48" stroke-width="3"/><line x1="135.0" y1="83.7" x2="132.9" y2="78.0" stroke="#2b3a48" stroke-width="3"/><line x1="150" y1="113" x2="150" y2="79" stroke="#ffd54f" stroke-width="5" stroke-linecap="round"/><line x1="150" y1="75" x2="150" y2="45" stroke="#c9a227" stroke-width="3"/><circle cx="150" cy="40" r="5" fill="#c9a227"/></g><circle cx="150" cy="125" r="8" fill="#9fb3c8"/><text x="63" y="214" font-size="11" text-anchor="middle">0</text><text x="239" y="214" font-size="11" text-anchor="middle">1023</text><text x="30" y="242" font-size="11" fill="#2e86de">1: GND</text><text x="150" y="242" font-size="11" text-anchor="middle">2: silecek → A0</text><text x="270" y="242" font-size="11" fill="#e67e22" text-anchor="end">3: +5 V</text></svg></div>
+<div><label>Mil açısı θ = <span id="k1Av">135</span>° (0–270°)</label><input type="range" id="k1S" min="0" max="270" step="0.5" value="135">
+<div class="bigval" id="k1Big">512</div>
+<div class="out" id="k1Out"></div>
+<div class="serial" id="k1Ser" style="height:110px"></div></div></div>
+<p style="font-size:.9em;color:#5b6b7d;margin:6px 0 0">Mavi yay: R<sub>12</sub> (silecek – GND) · Turuncu yay: R<sub>23</sub> (silecek – 5 V). Seri Monitör, aşağıdaki <code>PotOku.ino</code> programının çıktısını taklit eder.</p></div>
+</section>
+
+<section class="card" id="devre"><h2><span class="num">4</span>Devre Şeması: Potansiyometre, LDR ve LED</h2>
+<p>Bu haftanın tüm uygulamaları tek bir devre üzerinde yapılabilir: potansiyometre <b>A0</b>'a, geçen haftaki LDR gerilim bölücüsü <b>A1</b>'e, LED ise 220 Ω üzerinden <b>D9</b>'a bağlanır. (LED bar uygulaması için ayrıca D2–D7'ye 6 LED bağlanır; bağlantı 5. haftadaki gibidir.)</p>
+<div class="figure"><svg viewBox="0 0 760 440" width="760"><defs><pattern id="holes7" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="7" cy="7" r="1.6" fill="#c9c9bf"/></pattern></defs><rect x="10" y="20" width="230" height="395" rx="12" fill="#0e7c86" stroke="#064d50" stroke-width="3"/><text x="80" y="210" fill="#fff" font-size="18" font-weight="700" text-anchor="middle" transform="rotate(-90 80 210)">ARDUINO UNO</text><rect x="208" y="40" width="24" height="365" fill="#111"/><rect x="265" y="20" width="490" height="395" rx="8" fill="#f4f4ee" stroke="#c8c8bd"/><rect x="300" y="30" width="420" height="375" fill="url(#holes7)"/><line x1="285" y1="30" x2="285" y2="405" stroke="#2e86de" stroke-width="3"/><line x1="735" y1="30" x2="735" y2="405" stroke="#e74c3c" stroke-width="3"/><text x="277" y="160" font-size="11" fill="#2e86de" text-anchor="middle" transform="rotate(-90 277 160)">GND hattı</text><text x="748" y="150" font-size="11" fill="#e74c3c" text-anchor="middle" transform="rotate(-90 748 150)">+5V hattı</text><rect x="215" y="75" width="10" height="10" fill="#c9a227"/><text x="202" y="84" fill="#fff" font-size="12" text-anchor="end" font-family="Consolas">D9</text><rect x="215" y="285" width="10" height="10" fill="#c9a227"/><text x="202" y="294" fill="#fff" font-size="12" text-anchor="end" font-family="Consolas">A0</text><rect x="215" y="315" width="10" height="10" fill="#c9a227"/><text x="202" y="324" fill="#fff" font-size="12" text-anchor="end" font-family="Consolas">A1</text><rect x="215" y="355" width="10" height="10" fill="#c9a227"/><text x="202" y="364" fill="#fff" font-size="12" text-anchor="end" font-family="Consolas">GND</text><rect x="215" y="385" width="10" height="10" fill="#c9a227"/><text x="202" y="394" fill="#fff" font-size="12" text-anchor="end" font-family="Consolas">5V</text><path d="M225 360 H285" stroke="#222" stroke-width="4"/><path d="M225 390 H250 V428 H735 V405" stroke="#e74c3c" stroke-width="4" fill="none"/><path d="M225 80 H400" stroke="#27ae60" stroke-width="4"/><path d="M460 80 H505 M535 80 H560 V112 H285" stroke="#888" stroke-width="2.5" fill="none"/><rect x="400" y="73" width="60" height="14" rx="6" fill="#e8cfa6" stroke="#a5835a"/><rect x="410" y="73" width="5" height="14" fill="#d00"/><rect x="419" y="73" width="5" height="14" fill="#d00"/><rect x="428" y="73" width="5" height="14" fill="#7b3f00"/><rect x="448" y="73" width="5" height="14" fill="#c9a227"/><text x="430" y="66" text-anchor="middle" font-size="11">220 Ω</text><circle cx="520" cy="80" r="13" fill="#ff3b3b" stroke="#333" class="blink" style="filter:drop-shadow(0 0 7px #ff3b3b)"/><text x="590" y="76" font-size="11">LED (D9)</text><path d="M405 182 V210 H285 M455 182 V210 H735" stroke="#888" stroke-width="2.5" fill="none"/><path d="M430 182 V290 H225" stroke="#f1c40f" stroke-width="4" fill="none"/><rect x="395" y="168" width="70" height="16" rx="3" fill="#1f2d3a"/><circle cx="430" cy="150" r="32" fill="#2b3a48" stroke="#111"/><g class="wiperAnim" style="transform-origin:430px 150px"><circle cx="430" cy="150" r="22" fill="#41566a"/><line x1="430" y1="146" x2="430" y2="130" stroke="#ffd54f" stroke-width="4" stroke-linecap="round"/></g><text x="399" y="200" font-size="10" text-anchor="end" font-weight="700">1</text><text x="425" y="200" font-size="10" text-anchor="end" font-weight="700">2</text><text x="461" y="200" font-size="10" font-weight="700">3</text><text x="485" y="150" font-size="11">10 kΩ pot</text><path d="M285 345 H320 M400 345 H510 M570 345 H735" stroke="#888" stroke-width="2.5"/><rect x="320" y="338" width="80" height="14" rx="6" fill="#e8cfa6" stroke="#a5835a"/><rect x="332" y="338" width="5" height="14" fill="#7b3f00"/><rect x="342" y="338" width="5" height="14" fill="#000"/><rect x="352" y="338" width="5" height="14" fill="#f80"/><rect x="382" y="338" width="5" height="14" fill="#c9a227"/><text x="360" y="370" text-anchor="middle" font-size="11">10 kΩ</text><circle cx="540" cy="345" r="26" fill="#fffdf2" stroke="#333" stroke-width="2"/><polyline points="520,345 525,351 530,339 535,351 540,339 545,351 550,339 555,351 560,345" fill="none" stroke="#333" stroke-width="2"/><text x="540" y="388" text-anchor="middle" font-size="11">LDR</text><g class="pulse" style="transform-box:fill-box;transform-origin:center"><circle cx="610" cy="290" r="12" fill="#ffd54f"/><path d="M598 300 L572 320 M606 304 L590 322" stroke="#f1c40f" stroke-width="3"/></g><circle cx="450" cy="345" r="5" fill="#333"/><path d="M225 320 H450 V340" stroke="#8e44ad" stroke-width="4" fill="none"/><path d="M225 390 H250 V428 H735 V210 H455 V182 M405 182 V210 H285 V360 H225" stroke="#ffe066" stroke-width="2" fill="none" class="flow"/><path d="M735 345 H285" stroke="#ffe066" stroke-width="2" fill="none" class="flow"/><path d="M225 80 H560 V112 H285" stroke="#ffe066" stroke-width="2" fill="none" class="flow"/><text x="300" y="282" font-size="10" fill="#7d6608">A0: silecek gerilimi</text><text x="300" y="312" font-size="10" fill="#6c3483">A1: LDR bölücü</text></svg><div class="cap">Şekil 2. Pot: 1 → GND, 2 (silecek) → A0, 3 → 5 V · LDR bölücü: 5 V → LDR → A1 düğümü → 10 kΩ → GND · LED: D9 → 220 Ω → LED → GND. Sarı çizgiler akımın yolunu gösterir.</div></div>
+<div class="warn">Potansiyometrenin <b>orta bacağını</b> doğrudan 5 V veya GND'ye bağlamayın. Mil uç konuma getirildiğinde silecek ile dış uç arasındaki direnç 0 Ω'a yaklaşır ve 5 V–GND arasında kısa devre oluşur.</div>
+<div class="tip">Mil saat yönünde çevrildiğinde değerin artması için 1 numaralı bacağı GND'ye, 3 numaralı bacağı 5 V'a bağlayın. Dış bacakların yerini değiştirmek yönü tersine çevirir; programda hiçbir değişiklik gerekmez.</div>
+</section>
+
+<section class="card" id="volt"><h2><span class="num">5</span>Uygulama 1: Potansiyometreyi Okuma ve Volta Çevirme (float)</h2>
+<p>Okunan ham değer (0–1023) çoğu zaman anlaşılır değildir. Bunu volta çevirmek için ondalıklı sayı türü <b>float</b> kullanılır. Arduino'nun resmî <i>ReadAnalogVoltage</i> örneğindeki gibi çarpan 5,0 / 1023,0 alınırsa 1023 değeri tam 5,00 V'a karşılık gelir.</p>
+<div class="grid2"><div><div class="codebox"><span class="lbl">PotOku.ino</span><pre class="code">// Potansiyometreyi okuyup ham değer, gerilim ve yüzde yazdırma
+const int POT_PIN = A0;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int deger = analogRead(POT_PIN);          // 0 ... 1023
+  float volt = deger * (5.0 / 1023.0);      // 0,00 ... 5,00 V
+  int yuzde = map(deger, 0, 1023, 0, 100);  // 0 ... 100
+
+  Serial.print("Deger: ");
+  Serial.print(deger);
+  Serial.print("  Gerilim: ");
+  Serial.print(volt);          // float varsayılan 2 basamak yazılır
+  Serial.print(" V  Yuzde: %");
+  Serial.println(yuzde);
+  delay(200);
+}</pre></div></div><div>
+<h3>Tamsayı bölme tuzağı</h3>
+<table class="tbl"><tr><th>İfade (deger = 614)</th><th>Sonuç</th><th>Neden?</th></tr>
+<tr><td><code>deger * (5 / 1023)</code></td><td><b>0</b></td><td>5 / 1023 iki tamsayının bölümüdür → 0; 614 · 0 = 0</td></tr>
+<tr><td><code>deger * 5 / 1023</code></td><td><b>3</b></td><td>3070 / 1023 = 3,0009 → küsurat atılır</td></tr>
+<tr><td><code>deger * (5.0 / 1023.0)</code></td><td><b>3,00</b></td><td>5.0 ondalıklı olduğu için işlem float yapılır ✓</td></tr></table>
+<div class="note">1023 mü, 1024 mü? ADC 1024 basamaklıdır, yani her basamak 5/1024 V'tur ve ölçülebilen en büyük değer aslında 5 · 1023/1024 ≈ 4,995 V'tur. 5.0/1023.0 kullanımı, en üst değeri 5,00 V gösterir. İki yöntem arasındaki fark %0,1'den azdır; ölçüm hassasiyetinin (≈ 4,9 mV) altında kalır.</div>
+<p><code>Serial.print(volt, 3)</code> yazılırsa üç ondalık basamak gösterilir.</p></div></div>
+</section>
+
+<section class="card" id="map"><h2><span class="num">6</span>map() ve constrain() Fonksiyonları</h2>
+<p><code>map()</code>, bir aralıktaki değeri başka bir aralığa <b>doğrusal olarak</b> dönüştürür. Örneğin 0–1023 arasındaki pot değerini 50–1000 ms bekleme süresine ya da 0–100 yüzdeye çevirebiliriz.</p>
+<div class="formula" style="font-family:Consolas,monospace;font-size:1.1em">sonuç = map(değer, girişMin, girişMaks, çıkışMin, çıkışMaks)</div>
+<div class="formula">sonuç = (x − g<sub>min</sub>) · (ç<sub>maks</sub> − ç<sub>min</sub>) / (g<sub>maks</sub> − g<sub>min</sub>) + ç<sub>min</sub></div>
+<div class="grid2"><div><div class="codebox"><span class="lbl">Arduino çekirdeğindeki tanım (WMath.cpp)</span><pre class="code">long map(long x, long in_min, long in_max,
+         long out_min, long out_max) {
+  return (x - in_min) * (out_max - out_min)
+         / (in_max - in_min) + out_min;
+}</pre></div>
+<ul><li><code>map()</code> <b>tamsayı</b> (long) ile çalışır: bölmede küsurat atılır, yuvarlama yapılmaz.</li>
+<li>Giriş aralık dışındaysa sonuç da aralık dışına çıkar; sınırlamak için <code>constrain(x, alt, üst)</code> kullanılır.</li>
+<li>Çıkış aralığı ters verilebilir: <code>map(x, 0, 1023, 255, 0)</code>.</li></ul></div>
+<div><table class="tbl"><tr><th>Çağrı</th><th>Sonuç</th><th>Açıklama</th></tr><tr><td><code>map(512, 0, 1023, 0, 255)</code></td><td><b>127</b></td><td>Ölçek dönüştürme (ileride analogWrite için)</td></tr><tr><td><code>map(512, 0, 1023, 50, 1000)</code></td><td><b>525</b></td><td>Bekleme süresi aralığına çevirme</td></tr><tr><td><code>map(300, 0, 1023, 0, 100)</code></td><td><b>29</b></td><td>Yüzde: 29,3 değil 29 (küsurat atılır)</td></tr><tr><td><code>map(512, 0, 1023, 255, 0)</code></td><td><b>128</b></td><td>Ters aralık: değer arttıkça sonuç azalır</td></tr><tr><td><code>map(1023, 0, 1024, 0, 7)</code></td><td><b>6</b></td><td>LED bar seviyesi 0–6 (eşit bantlar)</td></tr><tr><td><code>map(1100, 0, 1023, 0, 100)</code></td><td><b>107</b></td><td>Aralık dışı giriş sınırlanmaz → 107</td></tr></table></div></div>
+<div class="sim"><h4>🔬 Simülasyon: map() hesaplayıcı (Arduino'daki tamsayı aritmetiğiyle)</h4>
+<div class="grid2"><div>
+<label>Giriş değeri x = <span id="mXv">512</span></label><input type="range" id="mX" min="-100" max="1123" value="512">
+<div class="mapin"><div><label>girişMin</label><input type="number" id="mA" value="0"></div><div><label>girişMaks</label><input type="number" id="mB" value="1023"></div>
+<div><label>çıkışMin</label><input type="number" id="mC" value="50"></div><div><label>çıkışMaks</label><input type="number" id="mD" value="1000"></div></div>
+<label style="font-weight:400"><input type="checkbox" id="mK"> Sonucu <code>constrain()</code> ile çıkış aralığında sınırla</label>
+<button class="btn" data-p="0,1023,0,255">0–255</button><button class="btn" data-p="0,1023,0,100">yüzde</button><button class="btn" data-p="0,1023,50,1000">bekleme</button><button class="btn" data-p="0,1024,0,7">LED bar</button><button class="btn alt" data-p="0,1023,255,0">ters</button>
+<div class="out" id="mOut"></div></div>
+<div class="figure" style="margin:0"><svg viewBox="0 0 330 200" width="330"><rect x="1" y="1" width="328" height="198" rx="8" fill="#fff" stroke="#bfe3e4"/>
+<text x="20" y="30" font-size="12" font-weight="700" fill="#2e86de">Giriş</text><line x1="20" y1="55" x2="310" y2="55" stroke="#2e86de" stroke-width="6" stroke-linecap="round"/>
+<text id="mAl" x="20" y="75" font-size="11" font-family="Consolas">0</text><text id="mBl" x="310" y="75" font-size="11" text-anchor="end" font-family="Consolas">1023</text>
+<text x="20" y="125" font-size="12" font-weight="700" fill="#e67e22">Çıkış</text><line x1="20" y1="150" x2="310" y2="150" stroke="#e67e22" stroke-width="6" stroke-linecap="round"/>
+<text id="mCl" x="20" y="170" font-size="11" font-family="Consolas">50</text><text id="mDl" x="310" y="170" font-size="11" text-anchor="end" font-family="Consolas">1000</text>
+<line id="mLink" stroke="#555" stroke-width="2" stroke-dasharray="4 3"/><circle id="mP1" r="8" fill="#2e86de" stroke="#fff" stroke-width="2"/><circle id="mP2" r="8" fill="#e67e22" stroke="#fff" stroke-width="2"/>
+<text id="mR" x="165" y="195" text-anchor="middle" font-size="11" fill="#333"></text></svg></div></div></div>
+</section>
+
+<section class="card" id="blink"><h2><span class="num">7</span>Uygulama 2: Potansiyometre ile Yanıp Sönme Hızı</h2>
+<p>Pot değerini <code>map()</code> ile 50–1000 ms aralığındaki bir bekleme süresine dönüştürüp LED'in yanık ve sönük kalma süresi olarak kullanıyoruz. Mil çevrildikçe LED'in yanıp sönme hızı değişir.</p>
+<div class="grid2"><div><div class="codebox"><span class="lbl">PotBlink.ino</span><pre class="code">// Potansiyometre ile LED yanıp sönme hızı ayarı
+const int POT_PIN = A0;
+const int LED_PIN = 9;
+
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int deger = analogRead(POT_PIN);              // 0 ... 1023
+  int bekleme = map(deger, 0, 1023, 50, 1000);  // 50 ... 1000 ms
+
+  Serial.print("Pot: ");
+  Serial.print(deger);
+  Serial.print("  Bekleme: ");
+  Serial.print(bekleme);
+  Serial.println(" ms");
+
+  digitalWrite(LED_PIN, HIGH);
+  delay(bekleme);
+  digitalWrite(LED_PIN, LOW);
+  delay(bekleme);
+}</pre></div>
+<div class="formula">T = 2 · bekleme &nbsp;&nbsp; f = 1000 / (2 · bekleme) Hz</div></div>
+<div class="sim"><h4>🔬 Simülasyon: Pot → bekleme → LED</h4>
+<div class="figure" style="margin:0"><svg viewBox="0 0 300 250" width="220" id="k2Svg" class="knobsvg"><rect x="1" y="1" width="298" height="248" rx="10" fill="#fff" stroke="#bfe3e4"/><line x1="80.7" y1="194.3" x2="73.6" y2="201.4" stroke="#789" stroke-width="2"/><line x1="56.8" y1="155.3" x2="51.1" y2="157.1" stroke="#789" stroke-width="2"/><line x1="53.2" y1="109.7" x2="47.3" y2="108.7" stroke="#789" stroke-width="2"/><line x1="70.7" y1="67.4" x2="65.9" y2="63.9" stroke="#789" stroke-width="2"/><line x1="105.5" y1="37.7" x2="102.8" y2="32.3" stroke="#789" stroke-width="2"/><line x1="150.0" y1="27.0" x2="150.0" y2="17.0" stroke="#789" stroke-width="2"/><line x1="194.5" y1="37.7" x2="197.2" y2="32.3" stroke="#789" stroke-width="2"/><line x1="229.3" y1="67.4" x2="234.1" y2="63.9" stroke="#789" stroke-width="2"/><line x1="246.8" y1="109.7" x2="252.7" y2="108.7" stroke="#789" stroke-width="2"/><line x1="243.2" y1="155.3" x2="248.9" y2="157.1" stroke="#789" stroke-width="2"/><line x1="219.3" y1="194.3" x2="226.4" y2="201.4" stroke="#789" stroke-width="2"/><circle cx="150" cy="125" r="62" fill="#2b3a48" stroke="#111" stroke-width="2"/><g id="k2Rot"><circle cx="150" cy="125" r="50" fill="#41566a"/><line x1="150.0" y1="81.0" x2="150.0" y2="75.0" stroke="#2b3a48" stroke-width="3"/><line x1="165.0" y1="83.7" x2="167.1" y2="78.0" stroke="#2b3a48" stroke-width="3"/><line x1="178.3" y1="91.3" x2="182.1" y2="86.7" stroke="#2b3a48" stroke-width="3"/><line x1="188.1" y1="103.0" x2="193.3" y2="100.0" stroke="#2b3a48" stroke-width="3"/><line x1="193.3" y1="117.4" x2="199.2" y2="116.3" stroke="#2b3a48" stroke-width="3"/><line x1="193.3" y1="132.6" x2="199.2" y2="133.7" stroke="#2b3a48" stroke-width="3"/><line x1="188.1" y1="147.0" x2="193.3" y2="150.0" stroke="#2b3a48" stroke-width="3"/><line x1="178.3" y1="158.7" x2="182.1" y2="163.3" stroke="#2b3a48" stroke-width="3"/><line x1="165.0" y1="166.3" x2="167.1" y2="172.0" stroke="#2b3a48" stroke-width="3"/><line x1="150.0" y1="169.0" x2="150.0" y2="175.0" stroke="#2b3a48" stroke-width="3"/><line x1="135.0" y1="166.3" x2="132.9" y2="172.0" stroke="#2b3a48" stroke-width="3"/><line x1="121.7" y1="158.7" x2="117.9" y2="163.3" stroke="#2b3a48" stroke-width="3"/><line x1="111.9" y1="147.0" x2="106.7" y2="150.0" stroke="#2b3a48" stroke-width="3"/><line x1="106.7" y1="132.6" x2="100.8" y2="133.7" stroke="#2b3a48" stroke-width="3"/><line x1="106.7" y1="117.4" x2="100.8" y2="116.3" stroke="#2b3a48" stroke-width="3"/><line x1="111.9" y1="103.0" x2="106.7" y2="100.0" stroke="#2b3a48" stroke-width="3"/><line x1="121.7" y1="91.3" x2="117.9" y2="86.7" stroke="#2b3a48" stroke-width="3"/><line x1="135.0" y1="83.7" x2="132.9" y2="78.0" stroke="#2b3a48" stroke-width="3"/><line x1="150" y1="113" x2="150" y2="79" stroke="#ffd54f" stroke-width="5" stroke-linecap="round"/></g><circle cx="150" cy="125" r="8" fill="#9fb3c8"/><text x="63" y="214" font-size="11" text-anchor="middle">0</text><text x="239" y="214" font-size="11" text-anchor="middle">1023</text><text x="150" y="242" font-size="11" text-anchor="middle" fill="#5b6b7d">topuzu sürükleyerek çevirin</text></svg></div>
+<label>Pot konumu (kaydırıcı) = <span id="k2Av">135</span>°</label><input type="range" id="k2S" min="0" max="270" step="0.5" value="60">
+<svg viewBox="0 0 300 70" width="300"><rect x="1" y="1" width="298" height="68" rx="8" fill="#1c2833"/><circle id="bLed" cx="45" cy="35" r="20" fill="#4a1414"/><text id="bTxt" x="80" y="40" fill="#fff" font-size="13" font-family="Consolas">LOW</text></svg>
+<div class="out" id="k2Out"></div>
+<div class="serial" id="k2Ser" style="height:100px"></div></div></div>
+<div class="note">Program pot değerini yalnızca her döngünün <b>başında</b> okur. Bekleme 1000 ms iken mili çevirirseniz yeni hız en fazla 2 saniye sonra devreye girer. Simülasyon da aynı biçimde davranır. Daha hızlı tepki için ileride <code>millis()</code> kullanılacaktır.</div>
+</section>
+
+<section class="card" id="bar"><h2><span class="num">8</span>Uygulama 3: Potansiyometre ile LED Bar Göstergesi</h2>
+<p>D2–D7 pinlerine bağlı 6 LED, pot konumunu bir <b>seviye göstergesi</b> gibi gösterecek. Mil sıfırdayken hiçbir LED yanmaz, sona gelindiğinde 6 LED'in tamamı yanar. Burada 5. haftadaki <b>dizi</b> ve <b>for döngüsü</b> ile bu haftaki <code>map()</code> birlikte kullanılır.</p>
+<div class="grid2"><div><div class="codebox"><span class="lbl">PotBar.ino</span><pre class="code">// Potansiyometre ile 6 LED'lik bar göstergesi
+const int POT_PIN = A0;
+const int ledler[] = {2, 3, 4, 5, 6, 7};
+const int LED_SAYISI = 6;
+
+void setup() {
+  Serial.begin(9600);
+  for (int i = 0; i &lt; LED_SAYISI; i++) {
+    pinMode(ledler[i], OUTPUT);
+  }
+}
+
+void loop() {
+  int deger = analogRead(POT_PIN);
+  // 0..1023 -&gt; 0..6 (7 eşit bant; 1024 ve 7 kullanıldı)
+  int seviye = map(deger, 0, 1024, 0, LED_SAYISI + 1);
+
+  for (int i = 0; i &lt; LED_SAYISI; i++) {
+    if (i &lt; seviye) {
+      digitalWrite(ledler[i], HIGH);   // seviyenin altındakiler yanar
+    } else {
+      digitalWrite(ledler[i], LOW);
+    }
+  }
+  Serial.print("Deger: ");
+  Serial.print(deger);
+  Serial.print("  Seviye: ");
+  Serial.println(seviye);
+  delay(50);
+}</pre></div></div><div>
+<div class="warn">Neden <code>map(deger, 0, 1023, 0, 6)</code> yazmadık? map() küsuratı attığı için 6 sonucu yalnızca deger = 1023 iken elde edilir; son LED neredeyse hiç yanmaz. <code>map(deger, 0, 1024, 0, 7)</code> ise 0–1023 aralığını her biri ≈ 146 birimlik <b>7 eşit banda</b> böler (0, 1, …, 6).</div>
+<table class="tbl"><tr><th>deger aralığı</th><th>seviye</th><th>Yanan LED</th></tr>
+<tr><td>0 – 146</td><td>0</td><td>yok</td></tr><tr><td>147 – 292</td><td>1</td><td>D2</td></tr><tr><td>293 – 438</td><td>2</td><td>D2–D3</td></tr>
+<tr><td>…</td><td>…</td><td>…</td></tr><tr><td>878 – 1023</td><td>6</td><td>D2–D7</td></tr></table>
+<div class="sim"><h4>🔬 Simülasyon: LED bar</h4>
+<label>Pot değeri (analogRead) = <span id="gVv">600</span></label><input type="range" id="gV" min="0" max="1023" value="600">
+<svg viewBox="0 0 330 100" width="330" id="gSvg"></svg>
+<div class="out" id="gOut"></div></div></div></div>
+</section>
+
+<section class="card" id="ldrpot"><h2><span class="num">9</span>Uygulama 4: Potansiyometre ile LDR Eşiğini Ayarlama</h2>
+<p>Geçen haftaki gece lambasında eşik değeri programın içine sabit olarak yazılmıştı (<code>ESIK = 300</code>). Ortam değiştiğinde yeniden kod yüklemek gerekiyordu. Şimdi eşiği potansiyometreden okuyarak <b>kullanıcı tarafından ayarlanabilir</b> hâle getiriyoruz. Program iki analog girişi okur: A0 (pot = eşik) ve A1 (LDR = ışık).</p>
+<div class="grid2"><div><div class="codebox"><span class="lbl">AyarliGeceLambasi.ino</span><pre class="code">// Potansiyometre ile ayarlanabilir eşikli gece lambası
+const int POT_PIN = A0;   // eşik ayarı
+const int LDR_PIN = A1;   // ışık sensörü (5V-LDR-A1-10k-GND)
+const int LED_PIN = 9;
+
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int esik = analogRead(POT_PIN);   // 0 ... 1023
+  int isik = analogRead(LDR_PIN);   // 0 ... 1023
+
+  Serial.print("Isik: ");
+  Serial.print(isik);
+  Serial.print("  Esik: ");
+  Serial.print(esik);
+
+  if (isik &lt; esik) {                // ortam eşikten karanlık
+    digitalWrite(LED_PIN, HIGH);
+    Serial.println("  -&gt; LED ACIK");
+  } else {
+    digitalWrite(LED_PIN, LOW);
+    Serial.println("  -&gt; LED KAPALI");
+  }
+  delay(200);
+}</pre></div></div><div class="sim"><h4>🔬 Simülasyon: LDR + potansiyometre</h4>
+<label>Ortam ışığı: <span id="cLv"></span></label><input type="range" id="cL" min="0" max="100" value="45">
+<label>Eşik potu (mil açısı) = <span id="cPv"></span>°</label><input type="range" id="cP" min="0" max="270" step="0.5" value="80">
+<svg viewBox="0 0 330 150" width="330"><rect x="1" y="1" width="328" height="148" rx="8" fill="#fff" stroke="#bfe3e4"/>
+<text x="15" y="22" font-size="11" fill="#5b6b7d">0</text><text x="315" y="22" font-size="11" fill="#5b6b7d" text-anchor="end">1023</text>
+<rect x="15" y="30" width="300" height="20" rx="4" fill="#eef3f6"/><rect id="cBarL" x="15" y="30" height="20" rx="4" fill="#f1c40f"/>
+<line id="cMark" y1="24" y2="56" stroke="#e74c3c" stroke-width="3"/><text id="cMarkT" y="70" font-size="10" fill="#e74c3c" text-anchor="middle">eşik</text>
+<text x="15" y="90" font-size="11">A1 (ışık): <tspan id="cIs" font-family="Consolas" font-weight="700"></tspan></text>
+<text x="15" y="108" font-size="11">A0 (eşik): <tspan id="cEs" font-family="Consolas" font-weight="700"></tspan></text>
+<circle id="cLed" cx="275" cy="105" r="20" fill="#4a1414"/><text x="275" y="140" font-size="10" text-anchor="middle">LED (D9)</text></svg>
+<div class="out" id="cOut"></div>
+<div class="serial" id="cSer" style="height:100px"></div></div></div>
+<div class="tip">Pot tam aralığı kullanılınca çok karanlık ya da çok aydınlık eşik değerleri de seçilebilir. Ayarı daha hassas yapmak için eşiği daraltılmış bir aralığa çevirebilirsiniz: <code>int esik = map(analogRead(A0), 0, 1023, 100, 700);</code></div>
+</section>
+
+<section class="card" id="fonk"><h2><span class="num">10</span>Bu Haftanın Yeni Fonksiyonları ve Türleri</h2>
+<table class="tbl"><tr><th>Fonksiyon / Tür</th><th>Örnek</th><th>Görevi</th></tr>
+<tr><td><code>map(x, gMin, gMaks, çMin, çMaks)</code></td><td><code>map(deger, 0, 1023, 0, 100)</code></td><td>Değeri bir aralıktan diğerine doğrusal ölçekler (tamsayı sonuç)</td></tr>
+<tr><td><code>constrain(x, alt, üst)</code></td><td><code>constrain(sicaklik, 0, 50)</code></td><td>x'i [alt, üst] aralığında sınırlar</td></tr>
+<tr><td><code>float</code></td><td><code>float volt = deger * (5.0 / 1023.0);</code></td><td>Ondalıklı sayı türü (UNO'da 4 bayt, ≈ 6–7 anlamlı basamak)</td></tr>
+<tr><td><code>Serial.print(x, n)</code></td><td><code>Serial.print(volt, 3);</code></td><td>float sayıyı n ondalık basamakla yazdırır (varsayılan 2)</td></tr>
+<tr><td><code>analogRead(pin)</code></td><td><code>analogRead(A1)</code></td><td>Birden çok analog giriş sırayla okunabilir (A0–A5)</td></tr></table>
+<div class="note">Arduino'da <code>analogWrite()</code> fonksiyonu da vardır; ancak adına rağmen gerçek analog gerilim üretmez, <b>PWM</b> sinyali üretir ve yalnızca ~ işaretli 3, 5, 6, 9, 10, 11 pinlerinde çalışır. Pot ile LED parlaklığını ayarlamayı (solma etkisi) 9. haftada göreceğiz; LED'i bu yüzden şimdiden PWM destekli D9'a bağladık.</div>
+</section>
+
+<section class="card quiz" id="quiz"><h2><span class="num">11</span>Kendini Test Et</h2>
+<div class="q" data-answer="b"><p>1) Potansiyometreyi gerilim bölücü olarak kullanırken Arduino'nun analog girişine hangi bacak bağlanır?</p><button class="opt" data-k="a">a) 1 numaralı dış bacak</button><button class="opt" data-k="b">b) Orta bacak (silecek)</button><button class="opt" data-k="c">c) 3 numaralı dış bacak</button><div class="fb">✓ Dış bacaklar 5 V ve GND'ye bağlanır; mil konumuna göre değişen gerilim orta bacakta (silecek) oluşur ve A0'a bağlanır.</div></div>
+<div class="q" data-answer="b"><p>2) <code>map(512, 0, 1023, 0, 255)</code> ifadesinin sonucu nedir?</p><button class="opt" data-k="a">a) 128</button><button class="opt" data-k="b">b) 127</button><button class="opt" data-k="c">c) 127,6</button><div class="fb">✓ 512 · 255 / 1023 = 127,6; map() tamsayı aritmetiği kullandığı için küsurat atılır → 127. Yuvarlama yapılmaz.</div></div>
+<div class="q" data-answer="b"><p>3) <code>int deger = 614; float volt = deger * (5 / 1023);</code> satırından sonra volt kaç olur?</p><button class="opt" data-k="a">a) 3,00</button><button class="opt" data-k="b">b) 0,00</button><button class="opt" data-k="c">c) 3</button><div class="fb">✓ Parantez içindeki 5 / 1023 iki tamsayının bölümüdür ve 0 çıkar. Doğrusu 5.0 / 1023.0 yazmaktır.</div></div>
+<div class="q" data-answer="b"><p>4) <code>PotBlink.ino</code>'da pot en uçta (deger = 1023) iken LED'in bir tam yanıp sönme periyodu kaç ms'dir?</p><button class="opt" data-k="a">a) 1000 ms</button><button class="opt" data-k="b">b) 2000 ms</button><button class="opt" data-k="c">c) 1023 ms</button><div class="fb">✓ bekleme = map(1023, 0, 1023, 50, 1000) = 1000 ms. LED 1000 ms yanık + 1000 ms sönük kalır: T = 2000 ms (0,5 Hz).</div></div>
+<div class="q" data-answer="a"><p>5) Ayarlı gece lambasında A1'den okunan ışık 420, A0'dan okunan eşik 610 ise LED'in durumu nedir?</p><button class="opt" data-k="a">a) Yanar, çünkü 420 &lt; 610</button><button class="opt" data-k="b">b) Söner, çünkü 420 &lt; 610</button><button class="opt" data-k="c">c) Yanıp söner</button><div class="fb">✓ Koşul isik &lt; esik → 420 &lt; 610 doğru olduğundan LED HIGH yapılır. Eşik potu yükseltildikçe lamba daha aydınlık ortamlarda da yanar.</div></div>
+</section>
+
+<section class="card" id="odev"><h2><span class="num">12</span>Ödev ve Özet</h2>
+<h3>Ödev</h3><ol>
+<li>5. haftadaki Kara Şimşek programına potansiyometre ekleyin: bekleme süresi pot ile 20–300 ms arasında ayarlansın ve her adımda yeniden okunsun.</li>
+<li>Pot değerini 0–15 aralığına çevirip 4 LED'li ikili sayıcıda gösterin; aynı anda Seri Monitör'e onluk ve ikili değeri yazdırın.</li>
+<li>Ayarlı gece lambasına geçen haftaki <b>histerezisi</b> ekleyin: LED, ışık (esik − 20)'nin altına inince yansın, (esik + 20)'nin üstüne çıkınca sönsün.</li>
+<li>Potu bir <b>mod seçici</b> olarak kullanın: değer 0–340 ise LED sürekli sönük, 341–681 ise yavaş yanıp sönsün, 682–1023 ise sürekli yanık olsun.</li></ol>
+<details><summary>2. ödev için ipucu (tıklayın)</summary>
+<p>0–1023 aralığını 16 eşit banda bölmek için LED bar uygulamasındaki yöntemi kullanın: <code>map(deger, 0, 1024, 0, 16)</code>. Sonra 5. haftadaki gibi <code>bitRead()</code> ile bitleri LED'lere yazın.</p><div class="codebox"><span class="lbl">pot_ikili_ipucu.ino</span><pre class="code">const int bitPinleri[] = {2, 3, 4, 5};
+
+void setup() {
+  Serial.begin(9600);
+  for (int b = 0; b &lt; 4; b++) pinMode(bitPinleri[b], OUTPUT);
+}
+
+void loop() {
+  int sayi = map(analogRead(A0), 0, 1024, 0, 16);   // 0 ... 15
+  for (int b = 0; b &lt; 4; b++) {
+    digitalWrite(bitPinleri[b], bitRead(sayi, b));
+  }
+  Serial.print(sayi);
+  Serial.print("  ");
+  Serial.println(sayi, BIN);
+  delay(100);
+}</pre></div></details>
+<h3>Özet</h3><ul>
+<li>Potansiyometre üç uçludur: dış uçlar arası direnç sabittir, silecek (orta uç) mil ile hareket eder.</li>
+<li>Dış uçlar 5 V ve GND'ye bağlanınca pot ayarlı bir gerilim bölücü olur: V = 5 · θ / θ<sub>maks</sub>; orta uç A0'a bağlanır.</li>
+<li>Gerilime çevirme: <code>float volt = deger * (5.0 / 1023.0);</code> – tamsayı bölmeye dikkat.</li>
+<li><code>map()</code> doğrusal ölçekleme yapar, küsuratı atar ve sınırlamaz; gerekirse <code>constrain()</code> eklenir.</li>
+<li>Eşit bantlar için <code>map(deger, 0, 1024, 0, N + 1)</code> kalıbı kullanılabilir.</li>
+<li>Birden çok analog giriş (pot A0, LDR A1) aynı programda okunarak ayarlanabilir sistemler kurulur.</li></ul>
+</section>
+</main>
+<footer>Arduino ile Programlama · Ders Notları · 7. Hafta<br>Kaynaklar: C. Taşdemir – <i>Arduino</i>; G. Döktaş – <i>Arduino Eğitim Kitabı</i>; E. Delebe – <i>Projeler ile Arduino</i></footer>
+<script>
+(function(){
+ const KW=['void','if','else','for','while','do','return','switch','case','break','default','const','true','false','#include','#define'];
+ const TY=['int','float','long','unsigned','byte','bool','boolean','char','double','String','word'];
+ const CST=['HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP','LED_BUILTIN','A0','A1','A2','A3','A4','A5'];
+ const FN=['pinMode','digitalWrite','digitalRead','analogRead','analogWrite','delay','delayMicroseconds','millis','micros','setup','loop','map','constrain','pulseIn','tone','noTone','Serial','begin','print','println','attach','write','read','available','random'];
+ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+ function hl(src){
+  let out='',i=0;
+  const re=/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(#?[A-Za-z_][A-Za-z0-9_]*)|(\b\d+(?:\.\d+)?\b)/g;let m,last=0;
+  while((m=re.exec(src))){out+=esc(src.slice(last,m.index));
+   if(m[1])out+='<span class="com">'+esc(m[1])+'</span>';
+   else if(m[2])out+='<span class="str">'+esc(m[2])+'</span>';
+   else if(m[3]){const w=m[3];let c=KW.includes(w)?'kw':TY.includes(w)?'ty':CST.includes(w)?'cst':FN.includes(w)?'fn':'';out+=c?'<span class="'+c+'">'+esc(w)+'</span>':esc(w)}
+   else if(m[4])out+='<span class="num">'+m[4]+'</span>';
+   last=re.lastIndex}
+  return out+esc(src.slice(last))}
+ document.querySelectorAll('pre.code').forEach(p=>{const raw=p.textContent;p.innerHTML=hl(raw);
+  const b=document.createElement('button');b.className='copybtn';b.textContent='Kopyala';
+  b.onclick=()=>{navigator.clipboard.writeText(raw).then(()=>{b.textContent='Kopyalandı ✓';setTimeout(()=>b.textContent='Kopyala',1500)})};
+  p.parentElement.appendChild(b)});
+ document.querySelectorAll('.quiz .q').forEach(q=>{const ans=q.dataset.answer;const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{q.querySelectorAll('.opt').forEach(x=>x.classList.remove('ok','no'));
+   if(o.dataset.k===ans){o.classList.add('ok');if(fb)fb.style.display='block'}else{o.classList.add('no')}})});
+ document.querySelectorAll('.quiz .fb').forEach(f=>f.style.display='none');
+})();
+</script>
+<script>
+const fmt=(x,d)=>x.toFixed(d).replace('.',',');
+function cmap(x,a,b,c,d){if(b===a)return NaN;return Math.trunc((x-a)*(d-c)/(b-a))+c}
+function P(cx,cy,r,a){const t=a*Math.PI/180;return[cx+r*Math.sin(t),cy-r*Math.cos(t)]}
+function arcD(cx,cy,r,a0,a1){if(a1-a0<0.5)return '';const p0=P(cx,cy,r,a0),p1=P(cx,cy,r,a1);return `M${p0[0].toFixed(1)} ${p0[1].toFixed(1)} A${r} ${r} 0 ${a1-a0>180?1:0} 1 ${p1[0].toFixed(1)} ${p1[1].toFixed(1)}`}
+// sürüklenebilir topuz: θ (0..270) kaydırıcıyla eşlenir
+function knob(p,slider,cb){const svg=document.getElementById(p+'Svg'),rot=document.getElementById(p+'Rot');const cx=150,cy=125;let drag=false;
+ function draw(){const th=+slider.value;rot.setAttribute('transform',`rotate(${th-135} ${cx} ${cy})`);
+  const a1=document.getElementById(p+'A1'),a2=document.getElementById(p+'A2');
+  if(a1){a1.setAttribute('d',arcD(cx,cy,85,-135,th-135));a2.setAttribute('d',arcD(cx,cy,85,th-135,135))}cb(th)}
+ function ev(e){const r=svg.getBoundingClientRect();const x=(e.clientX-r.left)/r.width*300,y=(e.clientY-r.top)/r.height*250;
+  let a=Math.atan2(x-cx,cy-y)*180/Math.PI;const prev=+slider.value-135;
+  if(a>135||a<-135){a=prev>0?135:-135}slider.value=a+135;draw()}
+ svg.addEventListener('pointerdown',e=>{drag=true;svg.setPointerCapture(e.pointerId);ev(e)});
+ svg.addEventListener('pointermove',e=>{if(drag)ev(e)});
+ svg.addEventListener('pointerup',()=>drag=false);svg.addEventListener('pointercancel',()=>drag=false);
+ slider.addEventListener('input',draw);draw();return draw}
+const adc=th=>Math.min(1023,Math.floor(th/270*1024));
+function logS(el,line){el.textContent+=line+'\n';const L=el.textContent.split('\n');if(L.length>150)el.textContent=L.slice(-100).join('\n');el.scrollTop=1e9}
+
+// ---- 1: gerilim bölücü ----
+(function(){const s=document.getElementById('k1S'),ser=document.getElementById('k1Ser');let cur=512;
+ knob('k1',s,th=>{const f=th/270;const R12=f*10000,R23=10000-R12;const V=5*f;const N=adc(th);cur=N;
+  document.getElementById('k1Av').textContent=fmt(th,1);document.getElementById('k1Big').textContent=N;
+  document.getElementById('k1Out').innerHTML=`R<sub>12</sub> = ${fmt(R12/1000,2)} kΩ · R<sub>23</sub> = ${fmt(R23/1000,2)} kΩ<br>V<sub>silecek</sub> = 5 · ${fmt(R12/1000,2)} / 10 = <b>${fmt(V,3)} V</b><br>analogRead(A0) = <b>${N}</b> → volt = ${N} · (5.0/1023.0) = <b>${fmt(N*5/1023,2)} V</b> · yüzde = ${cmap(N,0,1023,0,100)}`});
+ setInterval(()=>logS(ser,`Deger: ${cur}  Gerilim: ${(cur*5/1023).toFixed(2)} V  Yuzde: %${cmap(cur,0,1023,0,100)}`),400);
+})();
+
+// ---- 2: map hesaplayıcı ----
+(function(){const ids=['mX','mA','mB','mC','mD','mK'];const g=i=>document.getElementById(i);
+ function f(){const x=+g('mX').value,a=+g('mA').value,b=+g('mB').value,c=+g('mC').value,d=+g('mD').value;g('mXv').textContent=x;
+  let r=cmap(x,a,b,c,d);const raw=(x-a)*(d-c)/(b-a)+c;let txt;
+  if(isNaN(r)){g('mOut').innerHTML='girişMin ile girişMaks eşit olamaz (sıfıra bölme).';return}
+  const lo=Math.min(c,d),hi=Math.max(c,d);let rc=r;if(g('mK').checked)rc=Math.min(hi,Math.max(lo,r));
+  g('mOut').innerHTML=`(${x} − ${a}) · (${d} − ${c}) / (${b} − ${a}) + ${c}<br>= ${(x-a)*(d-c)} / ${b-a} + ${c} = ${fmt(raw,3)} (gerçek)<br>map() sonucu (küsurat atılır): <b>${r}</b>`+(g('mK').checked?`<br>constrain(…, ${lo}, ${hi}) → <b>${rc}</b>`:'')+((r<lo||r>hi)&&!g('mK').checked?'<br><span style="color:#e74c3c">Sonuç çıkış aralığının dışında!</span>':'');
+  ['mA','mB','mC','mD'].forEach(i=>g(i+'l').textContent=g(i).value);
+  const X1=20+Math.max(-0.1,Math.min(1.1,(x-a)/(b-a)))*290;const X2=20+Math.max(-0.1,Math.min(1.1,(rc-c)/(d-c)))*290;
+  g('mP1').setAttribute('cx',X1);g('mP1').setAttribute('cy',55);g('mP2').setAttribute('cx',X2);g('mP2').setAttribute('cy',150);
+  const L=g('mLink');L.setAttribute('x1',X1);L.setAttribute('y1',63);L.setAttribute('x2',X2);L.setAttribute('y2',142);
+  g('mR').textContent=`map(${x}) = ${rc}`}
+ ids.forEach(i=>g(i).addEventListener('input',f));
+ document.querySelectorAll('#map .btn[data-p]').forEach(b=>b.onclick=()=>{const v=b.dataset.p.split(',');['mA','mB','mC','mD'].forEach((i,k)=>g(i).value=v[k]);f()});
+ f()})();
+
+// ---- 3: pot ile blink ----
+(function(){const s=document.getElementById('k2S'),ser=document.getElementById('k2Ser'),led=document.getElementById('bLed'),tx=document.getElementById('bTxt');let on=false,bek=0,t=null;
+ knob('k2',s,th=>{const N=adc(th);const b=cmap(N,0,1023,50,1000);document.getElementById('k2Av').textContent=fmt(th,1);
+  document.getElementById('k2Out').innerHTML=`deger = ${N} → bekleme = map(${N}, 0, 1023, 50, 1000) = <b>${b} ms</b><br>T = 2 · ${b} = ${2*b} ms · f = <b>${fmt(1000/(2*b),2)} Hz</b>`+(bek&&b!==bek?`<br><i>Şu an çalışan döngü: ${bek} ms (yeni değer bir sonraki loop() başında okunacak)</i>`:'')});
+ function cycle(){const N=adc(+s.value);bek=cmap(N,0,1023,50,1000);logS(ser,`Pot: ${N}  Bekleme: ${bek} ms`);
+  set(true);t=setTimeout(()=>{set(false);t=setTimeout(cycle,bek)},bek);s.dispatchEvent(new Event('input'))}
+ function set(v){on=v;led.setAttribute('fill',v?'#ff2a2a':'#4a1414');led.style.filter=v?'drop-shadow(0 0 10px #ff3b3b)':'none';tx.textContent=v?`HIGH  (${bek} ms)`:`LOW   (${bek} ms)`}
+ cycle()})();
+
+// ---- 4: LED bar ----
+(function(){const s=document.getElementById('gV'),svg=document.getElementById('gSvg');let h='<rect x="1" y="1" width="328" height="98" rx="8" fill="#1c2833"/>';
+ for(let i=0;i<6;i++){const cx=35+i*52;h+=`<circle id="gL${i}" cx="${cx}" cy="40" r="17" fill="#4a1414"/><text x="${cx}" y="82" fill="#fff" font-size="12" text-anchor="middle" font-family="Consolas">D${i+2}</text>`}
+ svg.innerHTML=h;
+ function f(){const N=+s.value;const lv=cmap(N,0,1024,0,7);document.getElementById('gVv').textContent=N;
+  for(let i=0;i<6;i++){const c=document.getElementById('gL'+i);const on=i<lv;const col=i<3?'#2ecc71':i<5?'#f1c40f':'#ff3b3b';c.setAttribute('fill',on?col:'#3a2a2a');c.style.filter=on?`drop-shadow(0 0 8px ${col})`:'none'}
+  const alt=Math.ceil(lv*1024/7),ust=Math.ceil((lv+1)*1024/7)-1;
+  document.getElementById('gOut').innerHTML=`seviye = map(${N}, 0, 1024, 0, 7) = ⌊${N}·7/1024⌋ = <b>${lv}</b><br>Bu seviyenin bandı: ${alt} – ${Math.min(1023,ust)} · yanan LED: ${lv}<br>Seri: Deger: ${N}  Seviye: ${lv}`}
+ s.oninput=f;f()})();
+
+// ---- 5: LDR + pot ----
+(function(){const L=document.getElementById('cL'),Pp=document.getElementById('cP'),ser=document.getElementById('cSer');
+ function ldrN(s){const lux=Math.pow(10,s/20-1);const R=Math.min(1e6,15000*Math.pow(lux/10,-0.6));const V=5*10000/(R+10000);return{lux,R,N:Math.min(1023,Math.floor(V*1024/5))}}
+ function desc(l){return l<0.5?'Zifiri karanlık':l<3?'Gece':l<30?'Loş oda':l<300?'Aydınlık oda':l<3000?'Çok aydınlık':'Güneş ışığı'}
+ let last={};
+ function f(){const m=ldrN(+L.value);const es=adc(+Pp.value);const on=m.N<es;last={is:m.N,es,on};
+  document.getElementById('cLv').textContent=desc(m.lux)+' (≈ '+(m.lux<1?fmt(m.lux,2):Math.round(m.lux))+' lx)';
+  document.getElementById('cPv').textContent=fmt(+Pp.value,1);
+  document.getElementById('cBarL').setAttribute('width',Math.max(1,m.N/1023*300));
+  const x=15+es/1023*300;const mk=document.getElementById('cMark');mk.setAttribute('x1',x);mk.setAttribute('x2',x);const mt=document.getElementById('cMarkT');mt.setAttribute('x',Math.min(300,Math.max(30,x)));
+  document.getElementById('cIs').textContent=m.N;document.getElementById('cEs').textContent=es;
+  const c=document.getElementById('cLed');c.setAttribute('fill',on?'#ffe14d':'#4a3a14');c.style.filter=on?'drop-shadow(0 0 12px #ffd000)':'none';
+  document.getElementById('cOut').innerHTML=`R<sub>LDR</sub> ≈ ${m.R>=1e3?fmt(m.R/1e3,1)+' kΩ':Math.round(m.R)+' Ω'} → isik = <b>${m.N}</b><br>esik = analogRead(A0) = <b>${es}</b><br>isik &lt; esik → ${m.N} &lt; ${es} → <b>${on?'doğru: LED ACIK':'yanlış: LED KAPALI'}</b>`}
+ L.oninput=f;Pp.oninput=f;f();
+ setInterval(()=>logS(ser,`Isik: ${last.is}  Esik: ${last.es}  -> LED ${last.on?'ACIK':'KAPALI'}`),400)})();
+</script>
+</body></html>

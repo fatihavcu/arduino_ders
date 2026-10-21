@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3. Hafta – Dijital Yazma, if-else ve LED Uygulamaları | Arduino ile Programlama</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#1d2733;--muted:#5b6b7d;--teal:#00979d;--teal2:#00b3b9;--accent:#e67e22;--red:#e74c3c;--green:#27ae60;--code:#0f1b26;--border:#dde5ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+header.top{background:linear-gradient(135deg,#006468,#00979d 60%,#00b3b9);color:#fff;padding:28px 20px 34px;position:relative;overflow:hidden}
+header.top::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px),repeating-linear-gradient(0deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px);pointer-events:none}
+.wrap{max-width:1050px;margin:0 auto;padding:0 18px}
+.badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:3px 12px;border-radius:20px;font-size:.85em;letter-spacing:.5px}
+header.top h1{margin:10px 0 6px;font-size:2em}
+header.top p{margin:0;opacity:.92}
+nav.weeknav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;position:relative;z-index:1}
+nav.weeknav a{color:#fff;text-decoration:none;background:rgba(0,0,0,.18);padding:6px 12px;border-radius:6px;font-size:.9em}
+nav.weeknav a:hover{background:rgba(0,0,0,.35)}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;margin:22px 0}
+.toc ol{margin:6px 0;columns:2}
+.toc a{color:var(--teal);text-decoration:none}
+section.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin:22px 0;box-shadow:0 2px 8px rgba(20,40,60,.05);animation:fadeUp .6s ease both}
+section.card h2{margin-top:0;color:#006468;border-bottom:2px solid #e3f3f3;padding-bottom:8px}
+section.card h2 .num{display:inline-block;background:var(--teal);color:#fff;border-radius:50%;width:32px;height:32px;text-align:center;line-height:32px;margin-right:8px;font-size:.8em}
+h3{color:#0b4f6c}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.goals li{margin:4px 0}
+.note,.warn,.tip{border-radius:8px;padding:12px 16px;margin:14px 0;border-left:5px solid}
+.note{background:#eaf6ff;border-color:#2e86de}.warn{background:#fff3e6;border-color:var(--accent)}.tip{background:#eafaf1;border-color:var(--green)}
+.note::before{content:"ℹ️ Not: ";font-weight:600}.warn::before{content:"⚠️ Dikkat: ";font-weight:600}.tip::before{content:"💡 İpucu: ";font-weight:600}
+.formula{font-family:Cambria,"Times New Roman",serif;font-size:1.5em;text-align:center;background:#f7fbfb;border:1px dashed var(--teal);border-radius:8px;padding:12px;margin:14px 0}
+table.tbl{border-collapse:collapse;width:100%;margin:12px 0;font-size:.95em}
+table.tbl th,table.tbl td{border:1px solid var(--border);padding:7px 10px;text-align:left}
+table.tbl th{background:#e9f6f6;color:#064d50}
+table.tbl tr:nth-child(even) td{background:#fafcfd}
+.codebox{position:relative;margin:14px 0}
+.codebox .lbl{background:#1f3344;color:#9fd7da;font-size:.8em;padding:4px 12px;border-radius:8px 8px 0 0;display:inline-block;font-family:Consolas,monospace}
+pre.code{background:var(--code);color:#d7e3ee;padding:16px 18px;border-radius:0 8px 8px 8px;overflow:auto;font-family:Consolas,"Courier New",monospace;font-size:.92em;line-height:1.5;margin:0}
+pre.code .kw{color:#c792ea}.code .ty{color:#82aaff}.code .fn{color:#f78c6c}.code .num{color:#f7c56c}.code .str{color:#c3e88d}.code .com{color:#6b8299;font-style:italic}.code .cst{color:#ff5370}
+.copybtn{position:absolute;top:30px;right:8px;background:#2b4459;color:#cfe;border:0;border-radius:5px;padding:4px 10px;cursor:pointer;font-size:.8em}
+.copybtn:hover{background:var(--teal)}
+.figure{text-align:center;margin:16px 0}
+.figure svg{max-width:100%;height:auto}
+.figure .cap{font-size:.88em;color:var(--muted);margin-top:6px}
+.sim{background:#f3fafa;border:1px solid #bfe3e4;border-radius:10px;padding:16px;margin:16px 0}
+.sim h4{margin:0 0 10px;color:#006468}
+.sim label{display:block;margin:8px 0 2px;font-weight:600;font-size:.92em}
+.sim input[type=range]{width:100%;accent-color:var(--teal)}
+.sim .out{font-family:Consolas,monospace;background:#fff;border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-top:10px}
+.serial{background:#0b1620;color:#7CFC9a;font-family:Consolas,monospace;border-radius:6px;padding:10px;height:140px;overflow:auto;font-size:.88em;white-space:pre}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:.92em;margin:4px 4px 4px 0}
+.btn:hover{background:#007a7f}.btn.alt{background:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.toc ol{columns:1}}
+/* animations */
+.flow{stroke-dasharray:6 10;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+.glow{filter:drop-shadow(0 0 6px #ff4d4d)}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.spin{transform-origin:center;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* quiz */
+.quiz .q{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0}
+.quiz .q p{margin:0 0 8px;font-weight:600}
+.quiz .opt{display:block;width:100%;text-align:left;background:#f7f9fb;border:1px solid var(--border);border-radius:6px;padding:7px 10px;margin:4px 0;cursor:pointer;font-size:.95em}
+.quiz .opt:hover{background:#eef6f6}
+.quiz .opt.ok{background:#d9f5e3;border-color:var(--green)}
+.quiz .opt.no{background:#fde2df;border-color:var(--red)}
+.quiz .fb{font-size:.9em;margin-top:6px;color:var(--muted)}
+details{background:#fbfcfd;border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin:10px 0}
+details summary{cursor:pointer;font-weight:600;color:#0b4f6c}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding:8px 0 8px 46px;margin:6px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:32px;height:32px;border-radius:50%;background:var(--teal);color:#fff;text-align:center;line-height:32px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:30px 10px 40px}
+.pill{display:inline-block;background:#e3f3f3;color:#064d50;border-radius:12px;padding:2px 10px;font-size:.85em;margin:2px}
+</style></head><body>
+<header class="top"><div class="wrap">
+<span class="badge">ARDUİNO İLE PROGRAMLAMA · 3. HAFTA</span>
+<h1>Dijital Yazma, if-else ve LED Uygulamaları</h1><p>pinMode/digitalWrite, değişkenler ve veri tipleri, operatörler, if-else, trafik lambası, sayaç ve millis()</p>
+<nav class="weeknav"><a href="index.html">☰ Tüm Haftalar</a><a href="hafta02.html">← 2. Hafta</a><a href="hafta04.html">4. Hafta →</a></nav>
+</div></header>
+<main class="wrap">
+<div class="toc"><strong>Bu haftanın içeriği</strong><ol><li><a href="#hedef">Haftanın Hedefleri</a></li><li><a href="#dijital">Dijital Sinyal ve Çıkış Pinleri</a></li><li><a href="#pinmode">pinMode() ve digitalWrite()</a></li><li><a href="#degisken">Değişkenler ve Veri Tipleri</a></li><li><a href="#operator">Karşılaştırma ve Mantık Operatörleri</a></li><li><a href="#ifelse">if – else if – else Yapısı</a></li><li><a href="#blink">Uygulama 1 ve 2: Harici LED ve Sırayla Yanan İki LED</a></li><li><a href="#trafik">Uygulama 3: Trafik Lambası</a></li><li><a href="#sayac">Uygulama 4: Sayaca Göre LED (if – else if – else)</a></li><li><a href="#millis">delay() Yerine millis(): Beklemesiz Zamanlama</a></li><li><a href="#quiz">Kendini Test Et</a></li><li><a href="#odev">Ödev ve Özet</a></li></ol></div>
+<section class="card" id="hedef"><h2><span class="num">1</span>Haftanın Hedefleri</h2>
+<style>
+@keyframes scan{from{transform:translateX(0)}to{transform:translateX(400px)}}
+.scan{animation:scan 4s linear infinite}
+.grid2>*{min-width:0}
+.ledrow circle{stroke:#555}
+.codeline{font-family:Consolas,monospace;font-size:.88em;padding:2px 8px;border-radius:4px;margin:2px 0;background:#fff;border:1px solid var(--border)}
+.codeline.on{background:#d9f5e3;border-color:var(--green);font-weight:700}
+</style>
+<ul class="goals">
+<li>Dijital sinyal kavramını (HIGH/LOW, 5 V/0 V) açıklayabilmek</li>
+<li><code>pinMode()</code> ve <code>digitalWrite()</code> ile bir pini çıkış olarak kullanabilmek</li>
+<li>Arduino'daki temel veri tiplerini (<code>bool</code>, <code>byte</code>, <code>int</code>, <code>long</code>, <code>float</code>…) ve sınırlarını bilmek</li>
+<li>Karşılaştırma ve mantık operatörleri ile koşul yazabilmek</li>
+<li><code>if</code>, <code>else if</code>, <code>else</code> yapılarıyla karar veren programlar yazabilmek</li>
+<li>Harici LED, iki LED'in sırayla yanması, trafik lambası ve sayaç uygulamalarını kurup programlayabilmek</li>
+<li><code>delay()</code> yerine <code>millis()</code> ile beklemesiz zamanlama fikrini kavramak</li>
+</ul>
+<div class="note">Bu haftanın tüm devreleri 2. haftada öğrendiğimiz <b>pin → 220 Ω → LED → GND</b> devresinin tekrarıdır. Fark şu: LED'i artık sabit 5V pini değil, programımızın kontrol ettiği bir <b>dijital pin</b> besliyor.</div>
+
+</section>
+
+<section class="card" id="dijital"><h2><span class="num">2</span>Dijital Sinyal ve Çıkış Pinleri</h2>
+
+<p>Dijital bir sinyal yalnızca iki değer alabilir: <b>HIGH (1)</b> ve <b>LOW (0)</b>. Arduino UNO 5 V ile çalıştığından bir çıkış pini HIGH yapıldığında pinde ≈ <b>5 V</b>, LOW yapıldığında ≈ <b>0 V</b> bulunur.</p>
+<div class="figure"><svg viewBox="0 0 520 170" width="620">
+ <line x1="60" y1="20" x2="60" y2="140" stroke="#333"/><line x1="60" y1="140" x2="500" y2="140" stroke="#333"/>
+ <text x="52" y="44" text-anchor="end" font-size="11">5 V</text><text x="52" y="134" text-anchor="end" font-size="11">0 V</text>
+ <text x="20" y="90" font-size="10" fill="#5b6b7d" transform="rotate(-90 20 90)" text-anchor="middle">gerilim</text>
+ <path d="M60 130 H100 V40 H180 V130 H260 V40 H340 V130 H420 V40 H500" fill="none" stroke="#00979d" stroke-width="3"/>
+ <text x="140" y="32" text-anchor="middle" font-size="11" fill="#e67e22">HIGH</text><text x="220" y="124" text-anchor="middle" font-size="11" fill="#2e86de">LOW</text>
+ <path d="M100 152 H180" stroke="#555" marker-start="url(#ok3)" marker-end="url(#ok3)"/><text x="140" y="166" text-anchor="middle" font-size="10">delay(1000)</text>
+ <path d="M180 152 H260" stroke="#555" marker-start="url(#ok3)" marker-end="url(#ok3)"/><text x="220" y="166" text-anchor="middle" font-size="10">delay(1000)</text>
+ <text x="500" y="158" text-anchor="end" font-size="10" fill="#5b6b7d">zaman →</text>
+ <g class="scan"><line x1="100" y1="20" x2="100" y2="140" stroke="#e74c3c" stroke-width="2" stroke-dasharray="4 3"/></g>
+ <defs><marker id="ok3" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><circle cx="3" cy="3" r="2" fill="#555"/></marker></defs>
+</svg><div class="cap">Şekil 1. Blink programının pin gerilimi: 1 s HIGH, 1 s LOW (kare dalga). Kırmızı çizgi zamanı tarar.</div></div>
+<div class="grid2"><div>
+<h3>Akım kaynağı ve akım yutucu</h3>
+<p>Bir LED pine iki şekilde bağlanabilir:</p>
+<ul><li><b>(a) Kaynak (source):</b> pin → direnç → LED → GND. Pin <b>HIGH</b> olunca LED yanar. Bu derste kullanacağımız bağlantı budur.</li>
+<li><b>(b) Yutucu (sink):</b> 5V → direnç → LED → pin. Pin <b>LOW</b> olunca LED yanar (ters mantık).</li></ul>
+<div class="warn">Bir G/Ç pininden en fazla <b>20 mA</b> çekilmesi önerilir (mutlak sınır 40 mA). Tüm pinlerin toplam akımı da ≈ 200 mA'i geçmemelidir. LED'i <b>asla</b> dirençsiz olarak pine bağlamayın.</div></div>
+<div class="figure"><svg viewBox="0 0 300 200" width="320">
+ <text x="70" y="16" text-anchor="middle" font-size="11" font-weight="700">(a) HIGH → yanar</text>
+ <rect x="45" y="24" width="50" height="20" rx="3" fill="#0e7c86"/><text x="70" y="38" text-anchor="middle" font-size="10" fill="#fff">pin 8</text>
+ <path d="M70 44 V60 M70 90 V112 M70 136 V170" stroke="#444" stroke-width="2"/>
+ <path d="M70 44 V170" stroke="#f1c40f" stroke-width="3" class="flow" fill="none"/>
+ <rect x="62" y="60" width="16" height="30" rx="3" fill="#d9b38c" stroke="#7a5230"/><text x="84" y="80" font-size="10">220 Ω</text>
+ <path d="M58 112 H82 L70 134 Z" fill="#ff3b3b" class="glow"/><line x1="58" y1="136" x2="82" y2="136" stroke="#333" stroke-width="2"/>
+ <text x="70" y="186" text-anchor="middle" font-size="10">GND</text>
+ <text x="230" y="16" text-anchor="middle" font-size="11" font-weight="700">(b) LOW → yanar</text>
+ <text x="230" y="36" text-anchor="middle" font-size="10">5V</text>
+ <path d="M230 42 V60 M230 90 V112 M230 136 V156" stroke="#444" stroke-width="2"/>
+ <rect x="222" y="60" width="16" height="30" rx="3" fill="#d9b38c" stroke="#7a5230"/><text x="244" y="80" font-size="10">220 Ω</text>
+ <path d="M218 112 H242 L230 134 Z" fill="#ff3b3b"/><line x1="218" y1="136" x2="242" y2="136" stroke="#333" stroke-width="2"/>
+ <rect x="205" y="156" width="50" height="20" rx="3" fill="#0e7c86"/><text x="230" y="170" text-anchor="middle" font-size="10" fill="#fff">pin 8</text>
+</svg><div class="cap">Şekil 2. Kaynak (a) ve yutucu (b) LED bağlantısı</div></div></div>
+
+</section>
+
+<section class="card" id="pinmode"><h2><span class="num">3</span>pinMode() ve digitalWrite()</h2>
+
+<p>Bir dijital pini kullanmadan önce <b>yönünü</b> belirtmeliyiz. Bu işlem genellikle <code>setup()</code> içinde, bir kez yapılır.</p>
+<table class="tbl"><tr><th>Fonksiyon</th><th>Parametreler</th><th>Açıklama</th></tr>
+<tr><td><code>pinMode(pin, mod)</code></td><td>pin: 0–13 (A0–A5 de olur), mod: <code>OUTPUT</code>, <code>INPUT</code>, <code>INPUT_PULLUP</code></td><td>Pini çıkış veya giriş olarak ayarlar. Açılışta tüm pinler <code>INPUT</code> durumundadır.</td></tr>
+<tr><td><code>digitalWrite(pin, değer)</code></td><td>değer: <code>HIGH</code> (1) veya <code>LOW</code> (0)</td><td>Çıkış pinini 5 V veya 0 V yapar. Pin bir sonraki <code>digitalWrite</code>'a kadar bu durumda kalır.</td></tr>
+<tr><td><code>delay(ms)</code></td><td>ms: milisaniye (<code>unsigned long</code>)</td><td>Programı belirtilen süre boyunca durdurur; bu sırada başka iş yapılamaz.</td></tr>
+<tr><td><code>LED_BUILTIN</code></td><td>—</td><td>UNO'da 13 numaralı pini temsil eden hazır sabit (kart üzerindeki L LED'i).</td></tr></table>
+<table class="tbl"><tr><th>UNO dijital pinleri</th><th>Özel görevi</th></tr>
+<tr><td>0 (RX), 1 (TX)</td><td>USB seri haberleşme. <code>Serial</code> kullanılırken LED bağlamaktan kaçının.</td></tr>
+<tr><td>2, 3</td><td>Harici kesme (interrupt) girişleri</td></tr>
+<tr><td>3, 5, 6, 9, 10, 11 (~)</td><td>PWM (<code>analogWrite</code>) çıkışı verebilir — 9. haftada</td></tr>
+<tr><td>13</td><td>Kart üzerindeki L LED'ine bağlı</td></tr>
+<tr><td>A0–A5</td><td>Gerektiğinde dijital pin olarak da kullanılabilir (14–19)</td></tr></table>
+
+</section>
+
+<section class="card" id="degisken"><h2><span class="num">4</span>Değişkenler ve Veri Tipleri</h2>
+
+<p><b>Değişken</b>, bellekte bir değeri saklamak için ayrılan ve bir isimle erişilen alandır. Kullanmadan önce <b>tipi</b> ve <b>adı</b> belirtilerek tanımlanır:</p>
+<div class="codebox"><span class="lbl">degisken_ornek.ino</span><pre class="code">int ledPin = 8;              // tam sayı; pin numarası
+unsigned long sure = 1500;   // büyük, pozitif tam sayı; milisaniye
+float sicaklik = 23.5;       // ondalıklı sayı (ondalık ayırıcı NOKTA)
+bool ledAcik = false;        // true / false
+const int ESIK = 100;        // const: değeri değiştirilemez (sabit)</pre></div>
+<table class="tbl"><tr><th>Tip</th><th>Boyut (UNO)</th><th>Değer aralığı</th><th>Tipik kullanım</th></tr>
+<tr><td><code>bool</code></td><td>1 bayt</td><td>true / false</td><td>LED açık mı? Buton basılı mı?</td></tr>
+<tr><td><code>byte</code></td><td>1 bayt</td><td>0 … 255</td><td>Küçük pozitif sayılar, pin numarası</td></tr>
+<tr><td><code>char</code></td><td>1 bayt</td><td>−128 … 127 (bir karakter)</td><td>'A', '7'</td></tr>
+<tr><td><code>int</code></td><td>2 bayt</td><td>−32 768 … 32 767</td><td>Sayaçlar, analogRead değeri</td></tr>
+<tr><td><code>unsigned int</code></td><td>2 bayt</td><td>0 … 65 535</td><td>Yalnızca pozitif sayılar</td></tr>
+<tr><td><code>long</code></td><td>4 bayt</td><td>−2 147 483 648 … 2 147 483 647</td><td>Büyük tam sayılar</td></tr>
+<tr><td><code>unsigned long</code></td><td>4 bayt</td><td>0 … 4 294 967 295</td><td><code>millis()</code> zamanı</td></tr>
+<tr><td><code>float</code></td><td>4 bayt</td><td>±3,4·10<sup>38</sup>, 6–7 anlamlı basamak</td><td>Gerilim, sıcaklık (UNO'da <code>double</code> = <code>float</code>)</td></tr></table>
+<div class="grid2"><div>
+<h3>Kurallar</h3><ul>
+<li>İsimler harf veya _ ile başlar; Türkçe karakter (ç, ş, ı…) ve boşluk içeremez: <code>ledPini</code> ✓, <code>led pini</code> ✗, <code>ışık</code> ✗</li>
+<li>Büyük/küçük harf duyarlıdır: <code>Sayac</code> ≠ <code>sayac</code></li>
+<li>Fonksiyonların <b>dışında</b> tanımlanan değişken <b>global</b>dir (her yerden erişilir); bir fonksiyonun <b>içinde</b> tanımlanan <b>yerel</b>dir ve fonksiyon her çağrıldığında yeniden oluşturulur.</li>
+<li>Tam sayı bölmesi küsuratı atar: <code>7 / 2</code> = 3, <code>7.0 / 2</code> = 3.5</li></ul></div>
+<div class="sim"><h4>🔬 Simülasyon: Taşma (overflow)</h4>
+<p style="margin:0 0 6px;font-size:.92em">Bir değişken, tipinin sınırını aşarsa "başa sarar". Tip seçin ve değeri artırıp azaltın:</p>
+<label>Veri tipi</label><select id="ovType"><option value="byte">byte (8 bit, işaretsiz)</option><option value="int" selected>int (16 bit, işaretli)</option><option value="uint">unsigned int (16 bit, işaretsiz)</option></select><br>
+<button class="btn" id="ovM">−1</button><button class="btn" id="ovP">+1</button><button class="btn" id="ovP1000">+1000</button><button class="btn alt" id="ovMax">En büyük değere git</button>
+<div class="out" id="ovOut"></div></div></div>
+
+</section>
+
+<section class="card" id="operator"><h2><span class="num">5</span>Karşılaştırma ve Mantık Operatörleri</h2>
+
+<div class="grid2"><div><h3>Karşılaştırma (sonuç: true / false)</h3>
+<table class="tbl"><tr><th>Operatör</th><th>Anlamı</th><th>Örnek (x = 5)</th></tr>
+<tr><td><code>==</code></td><td>eşit mi</td><td><code>x == 5</code> → true</td></tr>
+<tr><td><code>!=</code></td><td>eşit değil mi</td><td><code>x != 5</code> → false</td></tr>
+<tr><td><code>&lt;</code> / <code>&gt;</code></td><td>küçük / büyük</td><td><code>x &lt; 3</code> → false</td></tr>
+<tr><td><code>&lt;=</code> / <code>&gt;=</code></td><td>küçük-eşit / büyük-eşit</td><td><code>x &gt;= 5</code> → true</td></tr></table></div>
+<div><h3>Mantık</h3>
+<table class="tbl"><tr><th>Operatör</th><th>Anlamı</th><th>Örnek (x = 5)</th></tr>
+<tr><td><code>&amp;&amp;</code></td><td>VE: ikisi de doğruysa</td><td><code>x &gt; 3 &amp;&amp; x &lt; 7</code> → true</td></tr>
+<tr><td><code>||</code></td><td>VEYA: en az biri doğruysa</td><td><code>x &lt; 3 || x == 5</code> → true</td></tr>
+<tr><td><code>!</code></td><td>DEĞİL: tersine çevirir</td><td><code>!(x == 5)</code> → false</td></tr></table></div></div>
+<h3>Aritmetik ve atama operatörleri</h3>
+<p><code>+ − * /</code> dört işlem; <code>%</code> bölümden kalan (<code>7 % 3</code> = 1; bir sayının çift olup olmadığı <code>x % 2 == 0</code> ile anlaşılır); <code>x++</code> bir artırır, <code>x--</code> bir azaltır; <code>x += 5</code> ⟺ <code>x = x + 5</code>.</p>
+<div class="warn"><code>=</code> <b>atama</b>, <code>==</code> <b>karşılaştırma</b>dır. <code>if (sayac = 5)</code> yazarsanız sayaca 5 atanır ve koşul her zaman doğru olur; derleyici hata vermez! Doğrusu: <code>if (sayac == 5)</code>.</div>
+
+</section>
+
+<section class="card" id="ifelse"><h2><span class="num">6</span>if – else if – else Yapısı</h2>
+
+<div class="grid2"><div>
+<div class="codebox"><span class="lbl">if-else şablonu (genel yazım)</span><pre class="code">if (koşul1) {
+  // koşul1 doğruysa çalışır
+} else if (koşul2) {
+  // koşul1 yanlış, koşul2 doğruysa çalışır
+} else {
+  // hiçbiri doğru değilse çalışır
+}</pre></div>
+<p>Koşullar <b>yukarıdan aşağıya</b> denenir; ilk doğru olan bloğun içi çalışır ve geri kalanlar atlanır. <code>else if</code> ve <code>else</code> kısımları isteğe bağlıdır. Blokta tek komut varsa süslü parantez yazılmayabilir, ancak hataları önlemek için her zaman yazmanız önerilir.</p></div>
+<div class="figure"><svg viewBox="0 0 280 300" width="290">
+ <rect x="90" y="5" width="100" height="30" rx="15" fill="#e67e22"/><text x="140" y="25" text-anchor="middle" fill="#fff" font-size="12">başla</text>
+ <path d="M140 35 V55" stroke="#333" stroke-width="2" marker-end="url(#ok3b)"/>
+ <g class="pulse" style="transform-origin:140px 90px"><path d="M140 55 L200 90 L140 125 L80 90 Z" fill="#2e86de"/></g><text x="140" y="94" text-anchor="middle" fill="#fff" font-size="12">koşul?</text>
+ <path d="M200 90 H235 V150" stroke="#27ae60" stroke-width="2" fill="none" marker-end="url(#ok3b)"/><text x="218" y="84" font-size="11" fill="#27ae60">doğru</text>
+ <path d="M80 90 H45 V150" stroke="#e74c3c" stroke-width="2" fill="none" marker-end="url(#ok3b)"/><text x="40" y="84" font-size="11" fill="#e74c3c">yanlış</text>
+ <rect x="185" y="150" width="90" height="40" rx="6" fill="#27ae60"/><text x="230" y="168" text-anchor="middle" fill="#fff" font-size="11">if bloğu</text><text x="230" y="182" text-anchor="middle" fill="#fff" font-size="9">LED'i yak</text>
+ <rect x="5" y="150" width="90" height="40" rx="6" fill="#e74c3c"/><text x="50" y="168" text-anchor="middle" fill="#fff" font-size="11">else bloğu</text><text x="50" y="182" text-anchor="middle" fill="#fff" font-size="9">LED'i söndür</text>
+ <path d="M230 190 V230 H140 M50 190 V230 H140 V255" stroke="#333" stroke-width="2" fill="none" marker-end="url(#ok3b)"/>
+ <rect x="80" y="255" width="120" height="32" rx="6" fill="#00979d"/><text x="140" y="276" text-anchor="middle" fill="#fff" font-size="11">sonraki satır</text>
+ <defs><marker id="ok3b" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8z" fill="#333"/></marker></defs>
+</svg><div class="cap">Şekil 3. if-else akış şeması</div></div></div>
+
+</section>
+
+<section class="card" id="blink"><h2><span class="num">7</span>Uygulama 1 ve 2: Harici LED ve Sırayla Yanan İki LED</h2>
+
+<p>Pin 8'e kırmızı, pin 9'a yeşil LED bağlıyoruz (her biri kendi 220 Ω direnciyle GND rayına). Uygulama 1 yalnızca pin 8'i kullanır; Uygulama 2 iki LED'i sırayla yakar.</p>
+<div class="sim"><h4>🔬 Simülasyon: Devre şeması ve program birlikte çalışıyor</h4>
+<button class="btn" id="aM1">Uygulama 1: harici_blink.ino</button><button class="btn alt" id="aM2">Uygulama 2: sirali_iki_led.ino</button>
+<label>Bekleme süresi (koddaki <code>delay</code> değeri) = <span id="aTv">500</span> ms</label><input type="range" id="aT" min="100" max="1500" step="50" value="500">
+<div class="figure"><svg viewBox="0 0 640 325" width="760">
+<defs><pattern id="aH" width="14" height="14" patternUnits="userSpaceOnUse"><rect x="4" y="4" width="5" height="5" fill="#c4c4bc"/></pattern></defs>
+<rect x="20" y="108" width="225" height="192" rx="12" fill="#0e7c86" stroke="#064d50" stroke-width="3"/>
+<text x="132" y="190" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Arduino UNO</text>
+<rect x="85" y="215" width="95" height="32" rx="3" fill="#1b1b1b"/><text x="132" y="235" text-anchor="middle" fill="#ccc" font-size="10">ATmega328P</text>
+<rect x="38" y="112" width="186" height="14" fill="#111"/>
+<rect x="46" y="115" width="8" height="8" fill="#c9a227"/><text x="50" y="142" text-anchor="middle" fill="#fff" font-size="10">GND</text>
+<rect x="72" y="115" width="8" height="8" fill="#c9a227"/><text x="76" y="142" text-anchor="middle" fill="#fff" font-size="10">13</text>
+<rect x="98" y="115" width="8" height="8" fill="#c9a227"/><text x="102" y="142" text-anchor="middle" fill="#fff" font-size="10">12</text>
+<rect x="124" y="115" width="8" height="8" fill="#c9a227"/><text x="128" y="142" text-anchor="middle" fill="#fff" font-size="10">11</text>
+<rect x="150" y="115" width="8" height="8" fill="#c9a227"/><text x="154" y="142" text-anchor="middle" fill="#fff" font-size="10">10</text>
+<rect x="176" y="115" width="8" height="8" fill="#c9a227"/><text x="180" y="142" text-anchor="middle" fill="#fff" font-size="10">9</text>
+<rect x="202" y="115" width="8" height="8" fill="#c9a227"/><text x="206" y="142" text-anchor="middle" fill="#fff" font-size="10">8</text>
+<rect x="130" y="288" width="40" height="12" fill="#111"/><rect x="146" y="290" width="8" height="8" fill="#c9a227"/><text x="150" y="282" text-anchor="middle" fill="#fff" font-size="10">GND</text>
+<rect x="300" y="30" width="325" height="272" rx="8" fill="#f2f2ee" stroke="#b9b9b0" stroke-width="2"/>
+<rect x="306" y="36" width="313" height="226" fill="url(#aH)"/>
+<line x1="310" y1="280" x2="615" y2="280" stroke="#2e86de" stroke-width="2.5"/><text x="612" y="296" text-anchor="end" font-size="10" fill="#2e86de">− (GND) rayı</text>
+<path d="M150 298 V314 H320 V280" stroke="#222" stroke-width="3.5" fill="none"/>
+<path d="M180 119 V50 H565 V82" stroke="#2e86de" stroke-width="3.5" fill="none"/>
+<line x1="565" y1="82" x2="565" y2="140" stroke="#888" stroke-width="2"/>
+<line x1="565" y1="175" x2="565" y2="280" stroke="#888" stroke-width="2"/>
+<rect x="559" y="140" width="12" height="35" rx="5" fill="#e8cfa6" stroke="#a5835a"/>
+<rect x="559" y="146" width="12" height="3" fill="#d00"/>
+<rect x="559" y="152" width="12" height="3" fill="#d00"/>
+<rect x="559" y="158" width="12" height="3" fill="#7b3f00"/>
+<rect x="559" y="167" width="12" height="3" fill="#c9a227"/>
+<text x="575" y="162" font-size="10" fill="#333">220 Ω</text>
+<circle id="aL9" data-on="#3cdc5a" data-off="#163d1e" cx="565" cy="100" r="12" fill="#163d1e" stroke="#555"/>
+<text x="581" y="96" font-size="10" fill="#333">LED2</text><text x="581" y="109" font-size="9" fill="#777">pin 9</text>
+<path d="M206 119 V62 H470 V82" stroke="#e67e22" stroke-width="3.5" fill="none"/>
+<line x1="470" y1="82" x2="470" y2="140" stroke="#888" stroke-width="2"/>
+<line x1="470" y1="175" x2="470" y2="280" stroke="#888" stroke-width="2"/>
+<rect x="464" y="140" width="12" height="35" rx="5" fill="#e8cfa6" stroke="#a5835a"/>
+<rect x="464" y="146" width="12" height="3" fill="#d00"/>
+<rect x="464" y="152" width="12" height="3" fill="#d00"/>
+<rect x="464" y="158" width="12" height="3" fill="#7b3f00"/>
+<rect x="464" y="167" width="12" height="3" fill="#c9a227"/>
+<text x="480" y="162" font-size="10" fill="#333">220 Ω</text>
+<circle id="aL8" data-on="#ff3b3b" data-off="#5a1a1a" cx="470" cy="100" r="12" fill="#5a1a1a" stroke="#555"/>
+<text x="486" y="96" font-size="10" fill="#333">LED1</text><text x="486" y="109" font-size="9" fill="#777">pin 8</text>
+<path id="aF9" d="M180 119 V50 H565 V280 H320 V314 H150 V298" fill="none" stroke="#f1c40f" stroke-width="3" class="flow" style="display:none"/>
+<path id="aF8" d="M206 119 V62 H470 V280 H320 V314 H150 V298" fill="none" stroke="#f1c40f" stroke-width="3" class="flow" style="display:none"/>
+<text x="462" y="320" text-anchor="middle" font-size="10" fill="#555">Sarı kesikli çizgi: o anda HIGH olan pinden GND'ye akan akım</text>
+</svg></div>
+<label>Seri Monitör yerine program izleyici (hangi satır çalıştı?)</label><div class="serial" id="aLog" style="height:110px"></div></div>
+<div><div class="codebox"><span class="lbl">harici_blink.ino</span><pre class="code">// Uygulama 1: Pin 8'e bağlı harici LED'i yakıp söndürme
+const int LED_PIN = 8;       // LED'in bağlı olduğu dijital pin
+int beklemeSuresi = 500;     // milisaniye cinsinden bekleme
+
+void setup() {
+  pinMode(LED_PIN, OUTPUT);  // Pin 8'i çıkış yap
+}
+
+void loop() {
+  digitalWrite(LED_PIN, HIGH);   // Pine 5 V ver: LED yanar
+  delay(beklemeSuresi);
+  digitalWrite(LED_PIN, LOW);    // Pini 0 V yap: LED söner
+  delay(beklemeSuresi);
+}</pre></div></div><div><div class="codebox"><span class="lbl">sirali_iki_led.ino</span><pre class="code">// Uygulama 2: İki LED'in sırayla (dönüşümlü) yanması
+const int LED1 = 8;
+const int LED2 = 9;
+bool sira = true;            // true: LED1'in sırası, false: LED2'nin
+
+void setup() {
+  pinMode(LED1, OUTPUT);
+  pinMode(LED2, OUTPUT);
+}
+
+void loop() {
+  if (sira) {                    // sira == true ise
+    digitalWrite(LED1, HIGH);
+    digitalWrite(LED2, LOW);
+  } else {                       // sira == false ise
+    digitalWrite(LED1, LOW);
+    digitalWrite(LED2, HIGH);
+  }
+  sira = !sira;                  // Sırayı tersine çevir
+  delay(500);
+}</pre></div></div>
+<div class="tip"><code>if (sira)</code> yazmak <code>if (sira == true)</code> ile aynıdır. <code>sira = !sira;</code> satırı her döngüde değişkeni true ↔ false arasında değiştirir; bu kalıba <b>toggle</b> (aç-kapa) denir ve 4. haftada butonla birlikte tekrar kullanacağız.</div>
+
+</section>
+
+<section class="card" id="trafik"><h2><span class="num">8</span>Uygulama 3: Trafik Lambası</h2>
+
+<p>Kırmızı LED pin 12'ye, sarı LED pin 11'e, yeşil LED pin 10'a bağlanır. Türkiye'deki taşıt lambalarına benzer şekilde sıra <b>kırmızı → kırmızı+sarı → yeşil → sarı → kırmızı</b> biçimindedir.</p>
+<div class="figure"><svg viewBox="0 0 640 325" width="760">
+<defs><pattern id="tH" width="14" height="14" patternUnits="userSpaceOnUse"><rect x="4" y="4" width="5" height="5" fill="#c4c4bc"/></pattern></defs>
+<rect x="20" y="108" width="225" height="192" rx="12" fill="#0e7c86" stroke="#064d50" stroke-width="3"/>
+<text x="132" y="190" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Arduino UNO</text>
+<rect x="85" y="215" width="95" height="32" rx="3" fill="#1b1b1b"/><text x="132" y="235" text-anchor="middle" fill="#ccc" font-size="10">ATmega328P</text>
+<rect x="38" y="112" width="186" height="14" fill="#111"/>
+<rect x="46" y="115" width="8" height="8" fill="#c9a227"/><text x="50" y="142" text-anchor="middle" fill="#fff" font-size="10">GND</text>
+<rect x="72" y="115" width="8" height="8" fill="#c9a227"/><text x="76" y="142" text-anchor="middle" fill="#fff" font-size="10">13</text>
+<rect x="98" y="115" width="8" height="8" fill="#c9a227"/><text x="102" y="142" text-anchor="middle" fill="#fff" font-size="10">12</text>
+<rect x="124" y="115" width="8" height="8" fill="#c9a227"/><text x="128" y="142" text-anchor="middle" fill="#fff" font-size="10">11</text>
+<rect x="150" y="115" width="8" height="8" fill="#c9a227"/><text x="154" y="142" text-anchor="middle" fill="#fff" font-size="10">10</text>
+<rect x="176" y="115" width="8" height="8" fill="#c9a227"/><text x="180" y="142" text-anchor="middle" fill="#fff" font-size="10">9</text>
+<rect x="202" y="115" width="8" height="8" fill="#c9a227"/><text x="206" y="142" text-anchor="middle" fill="#fff" font-size="10">8</text>
+<rect x="130" y="288" width="40" height="12" fill="#111"/><rect x="146" y="290" width="8" height="8" fill="#c9a227"/><text x="150" y="282" text-anchor="middle" fill="#fff" font-size="10">GND</text>
+<rect x="300" y="30" width="325" height="272" rx="8" fill="#f2f2ee" stroke="#b9b9b0" stroke-width="2"/>
+<rect x="306" y="36" width="313" height="226" fill="url(#tH)"/>
+<line x1="310" y1="280" x2="615" y2="280" stroke="#2e86de" stroke-width="2.5"/><text x="612" y="296" text-anchor="end" font-size="10" fill="#2e86de">− (GND) rayı</text>
+<path d="M150 298 V314 H320 V280" stroke="#222" stroke-width="3.5" fill="none"/>
+<path d="M102 119 V50 H565 V82" stroke="#e74c3c" stroke-width="3.5" fill="none"/>
+<line x1="565" y1="82" x2="565" y2="140" stroke="#888" stroke-width="2"/>
+<line x1="565" y1="175" x2="565" y2="280" stroke="#888" stroke-width="2"/>
+<rect x="559" y="140" width="12" height="35" rx="5" fill="#e8cfa6" stroke="#a5835a"/>
+<rect x="559" y="146" width="12" height="3" fill="#d00"/>
+<rect x="559" y="152" width="12" height="3" fill="#d00"/>
+<rect x="559" y="158" width="12" height="3" fill="#7b3f00"/>
+<rect x="559" y="167" width="12" height="3" fill="#c9a227"/>
+<text x="575" y="162" font-size="10" fill="#333">220 Ω</text>
+<circle id="tL12" data-on="#ff3b3b" data-off="#5a1a1a" cx="565" cy="100" r="12" fill="#5a1a1a" stroke="#555"/>
+<text x="581" y="96" font-size="10" fill="#333">kırmızı</text><text x="581" y="109" font-size="9" fill="#777">pin 12</text>
+<path d="M128 119 V62 H470 V82" stroke="#e67e22" stroke-width="3.5" fill="none"/>
+<line x1="470" y1="82" x2="470" y2="140" stroke="#888" stroke-width="2"/>
+<line x1="470" y1="175" x2="470" y2="280" stroke="#888" stroke-width="2"/>
+<rect x="464" y="140" width="12" height="35" rx="5" fill="#e8cfa6" stroke="#a5835a"/>
+<rect x="464" y="146" width="12" height="3" fill="#d00"/>
+<rect x="464" y="152" width="12" height="3" fill="#d00"/>
+<rect x="464" y="158" width="12" height="3" fill="#7b3f00"/>
+<rect x="464" y="167" width="12" height="3" fill="#c9a227"/>
+<text x="480" y="162" font-size="10" fill="#333">220 Ω</text>
+<circle id="tL11" data-on="#ffd31a" data-off="#5a4a00" cx="470" cy="100" r="12" fill="#5a4a00" stroke="#555"/>
+<text x="486" y="96" font-size="10" fill="#333">sarı</text><text x="486" y="109" font-size="9" fill="#777">pin 11</text>
+<path d="M154 119 V74 H375 V82" stroke="#27ae60" stroke-width="3.5" fill="none"/>
+<line x1="375" y1="82" x2="375" y2="140" stroke="#888" stroke-width="2"/>
+<line x1="375" y1="175" x2="375" y2="280" stroke="#888" stroke-width="2"/>
+<rect x="369" y="140" width="12" height="35" rx="5" fill="#e8cfa6" stroke="#a5835a"/>
+<rect x="369" y="146" width="12" height="3" fill="#d00"/>
+<rect x="369" y="152" width="12" height="3" fill="#d00"/>
+<rect x="369" y="158" width="12" height="3" fill="#7b3f00"/>
+<rect x="369" y="167" width="12" height="3" fill="#c9a227"/>
+<text x="385" y="162" font-size="10" fill="#333">220 Ω</text>
+<circle id="tL10" data-on="#3cdc5a" data-off="#163d1e" cx="375" cy="100" r="12" fill="#163d1e" stroke="#555"/>
+<text x="391" y="96" font-size="10" fill="#333">yeşil</text><text x="391" y="109" font-size="9" fill="#777">pin 10</text>
+<path id="tF12" d="M102 119 V50 H565 V280 H320 V314 H150 V298" fill="none" stroke="#f1c40f" stroke-width="3" class="flow" style="display:none"/>
+<path id="tF11" d="M128 119 V62 H470 V280 H320 V314 H150 V298" fill="none" stroke="#f1c40f" stroke-width="3" class="flow" style="display:none"/>
+<path id="tF10" d="M154 119 V74 H375 V280 H320 V314 H150 V298" fill="none" stroke="#f1c40f" stroke-width="3" class="flow" style="display:none"/>
+<text x="462" y="320" text-anchor="middle" font-size="10" fill="#555">Devre aşağıdaki simülasyonla eş zamanlı çalışır</text>
+</svg><div class="cap">Şekil 4. Trafik lambası devresi: üç LED, üç 220 Ω direnç, ortak GND</div></div>
+<div class="codebox"><span class="lbl">trafik_lambasi.ino</span><pre class="code">// Uygulama 3: Trafik lambası
+const int KIRMIZI = 12;
+const int SARI    = 11;
+const int YESIL   = 10;
+
+// Üç lambanın durumunu tek satırda ayarlayan yardımcı fonksiyon
+void lambalar(int k, int s, int y) {
+  digitalWrite(KIRMIZI, k);
+  digitalWrite(SARI, s);
+  digitalWrite(YESIL, y);
+}
+
+void setup() {
+  pinMode(KIRMIZI, OUTPUT);
+  pinMode(SARI, OUTPUT);
+  pinMode(YESIL, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  lambalar(HIGH, LOW, LOW);   Serial.println("KIRMIZI");      delay(5000);
+  lambalar(HIGH, HIGH, LOW);  Serial.println("KIRMIZI+SARI"); delay(2000);
+  lambalar(LOW, LOW, HIGH);   Serial.println("YESIL");        delay(5000);
+  lambalar(LOW, HIGH, LOW);   Serial.println("SARI");         delay(2000);
+}</pre></div>
+<div class="sim"><h4>🔬 Simülasyon: trafik_lambasi.ino (araç kırmızıda durur, yeşilde geçer)</h4>
+<div class="grid2"><div class="figure"><svg viewBox="0 0 360 200" width="360">
+ <rect x="0" y="130" width="360" height="50" fill="#555"/><path d="M0 155 H360" stroke="#fff" stroke-width="2" stroke-dasharray="14 10"/>
+ <rect x="248" y="130" width="6" height="50" fill="#fff"/>
+ <rect x="268" y="40" width="6" height="90" fill="#333"/>
+ <rect x="250" y="5" width="42" height="110" rx="8" fill="#222"/>
+ <circle id="tlR" cx="271" cy="25" r="13" fill="#5a1a1a"/><circle id="tlY" cx="271" cy="60" r="13" fill="#5a4a00"/><circle id="tlG" cx="271" cy="95" r="13" fill="#163d1e"/>
+ <g id="car"><rect x="0" y="136" width="54" height="16" rx="4" fill="#2e86de"/><rect x="10" y="128" width="30" height="12" rx="4" fill="#5dade2"/><circle cx="12" cy="153" r="5" fill="#111"/><circle cx="42" cy="153" r="5" fill="#111"/></g>
+ <text id="tlTxt" x="10" y="25" font-size="14" font-weight="700" fill="#333">KIRMIZI</text>
+ <text id="tlRem" x="10" y="45" font-size="11" fill="#5b6b7d"></text>
+ <rect x="10" y="60" width="200" height="10" rx="5" fill="#dde5ee"/><rect id="tlBar" x="10" y="60" width="0" height="10" rx="5" fill="#00979d"/>
+ <text x="10" y="90" font-size="10" fill="#5b6b7d">durma çizgisi →</text>
+</svg></div>
+<div><label>Simülasyon hızı = <span id="tlSv">1</span>×</label><input type="range" id="tlS" min="1" max="5" value="1">
+<button class="btn" id="tlRun">⏸ Duraklat</button><button class="btn alt" id="tlRst">⟲ Baştan başlat</button>
+<label>Seri Monitör (9600 baud)</label><div class="serial" id="tlSer" style="height:120px"></div></div></div></div>
+<table class="tbl"><tr><th>Yeni yapı</th><th>Açıklama</th></tr>
+<tr><td><code>void lambalar(int k, int s, int y)</code></td><td>Parametre alan, değer döndürmeyen (<code>void</code>) kendi fonksiyonumuz. Tekrar eden üç satırı tek çağrıya indirir.</td></tr>
+<tr><td><code>digitalWrite(KIRMIZI, k)</code></td><td><code>HIGH</code> = 1 ve <code>LOW</code> = 0 olduğundan değer bir <code>int</code> değişkenden de verilebilir.</td></tr>
+<tr><td><code>Serial.println("YESIL")</code></td><td>Lambanın durumunu Seri Monitör'e yazar; hata ayıklamada çok işe yarar.</td></tr></table>
+
+</section>
+
+<section class="card" id="sayac"><h2><span class="num">9</span>Uygulama 4: Sayaca Göre LED (if – else if – else)</h2>
+
+<p>Aynı trafik lambası devresini kullanıyoruz. Bir sayaç her saniye 1 artar ve 0–9 arasında döner. Sayacın değerine göre: <b>0–2 → yeşil</b>, <b>3–6 → sarı</b>, <b>7–9 → kırmızı</b> LED yanar. Ayrıca sayaç <b>çift</b> ise kart üzerindeki L LED'i (pin 13) yanar.</p>
+<div><div class="codebox"><span class="lbl">sayac_led.ino</span><pre class="code">// Uygulama 4: Sayaç değerine göre LED seçimi
+const int YESIL = 10, SARI = 11, KIRMIZI = 12;
+int sayac = 0;                       // 0..9 arası döner
+
+void setup() {
+  pinMode(YESIL, OUTPUT);
+  pinMode(SARI, OUTPUT);
+  pinMode(KIRMIZI, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);      // Pin 13 (L LED'i)
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Önce bütün LED'leri söndür
+  digitalWrite(YESIL, LOW);
+  digitalWrite(SARI, LOW);
+  digitalWrite(KIRMIZI, LOW);
+
+  if (sayac &lt; 3) {                   // 0, 1, 2
+    digitalWrite(YESIL, HIGH);
+  } else if (sayac &lt;= 6) {           // 3, 4, 5, 6
+    digitalWrite(SARI, HIGH);
+  } else {                           // 7, 8, 9
+    digitalWrite(KIRMIZI, HIGH);
+  }
+
+  if (sayac % 2 == 0) {              // Çift sayı mı?
+    digitalWrite(LED_BUILTIN, HIGH);
+  } else {
+    digitalWrite(LED_BUILTIN, LOW);
+  }
+
+  Serial.print("sayac = ");
+  Serial.println(sayac);
+
+  sayac++;                           // Bir artır
+  if (sayac &gt; 9) {                   // 9'u geçtiyse başa dön
+    sayac = 0;
+  }
+  delay(1000);
+}</pre></div></div>
+<div class="sim"><h4>🔬 Simülasyon: sayac_led.ino</h4>
+<div class="grid2"><div><svg viewBox="0 0 300 120" width="300" class="ledrow">
+ <rect x="0" y="0" width="300" height="120" rx="10" fill="#0e7c86"/>
+ <text id="cNum" x="55" y="82" text-anchor="middle" font-size="60" font-family="Consolas" fill="#ff0">0</text>
+ <circle id="cG" cx="140" cy="45" r="14" fill="#163d1e"/><circle id="cY" cx="185" cy="45" r="14" fill="#5a4a00"/><circle id="cR" cx="230" cy="45" r="14" fill="#5a1a1a"/><circle id="cL" cx="275" cy="45" r="7" fill="#5a4a00"/>
+ <text x="140" y="80" text-anchor="middle" font-size="10" fill="#fff">10</text><text x="185" y="80" text-anchor="middle" font-size="10" fill="#fff">11</text><text x="230" y="80" text-anchor="middle" font-size="10" fill="#fff">12</text><text x="275" y="80" text-anchor="middle" font-size="10" fill="#fff">L(13)</text>
+ <text x="55" y="108" text-anchor="middle" font-size="10" fill="#fff">sayac</text>
+</svg><br><button class="btn" id="cStep">⏭ Tek adım (bir loop)</button><button class="btn alt" id="cRun">▶ Otomatik</button></div><div>
+<div class="codeline" id="cl1">if (sayac &lt; 3) → YEŞİL</div><div class="codeline" id="cl2">else if (sayac &lt;= 6) → SARI</div><div class="codeline" id="cl3">else → KIRMIZI</div><div class="codeline" id="cl4">if (sayac % 2 == 0) → L yanar</div>
+<div class="serial" id="cSer" style="height:90px;margin-top:6px"></div></div></div></div>
+
+</section>
+
+<section class="card" id="millis"><h2><span class="num">10</span>delay() Yerine millis(): Beklemesiz Zamanlama</h2>
+
+<p><code>delay()</code> çalışırken işlemci <b>hiçbir şey yapamaz</b>: 5 saniyelik bir <code>delay(5000)</code> sırasında basılan bir butonu fark etmez. <code>millis()</code> ise kart açıldığından beri geçen süreyi milisaniye olarak döndürür ve programı durdurmaz. Fikir şudur: <i>"Son işlemden bu yana yeterli süre geçti mi? Geçtiyse işlemi yap, geçmediyse başka işlerine devam et."</i></p>
+<div class="formula">if (millis() − öncekiZaman ≥ aralık) { öncekiZaman = millis(); işlemi yap; }</div>
+<div><div class="codebox"><span class="lbl">millis_iki_led.ino</span><pre class="code">// İki LED'i birbirinden bağımsız hızlarda, delay() kullanmadan yakıp söndürme
+const int LED1 = 8, LED2 = 9;
+const unsigned long ARALIK1 = 500;    // LED1: 500 ms'de bir durum değiştirir
+const unsigned long ARALIK2 = 1300;   // LED2: 1300 ms'de bir durum değiştirir
+unsigned long onceki1 = 0, onceki2 = 0;
+bool durum1 = false, durum2 = false;
+
+void setup() {
+  pinMode(LED1, OUTPUT);
+  pinMode(LED2, OUTPUT);
+}
+
+void loop() {
+  unsigned long simdi = millis();     // Şu anki zaman (ms)
+
+  if (simdi - onceki1 &gt;= ARALIK1) {   // LED1'in zamanı geldi mi?
+    onceki1 = simdi;
+    durum1 = !durum1;
+    digitalWrite(LED1, durum1);
+  }
+  if (simdi - onceki2 &gt;= ARALIK2) {   // LED2'nin zamanı geldi mi?
+    onceki2 = simdi;
+    durum2 = !durum2;
+    digitalWrite(LED2, durum2);
+  }
+  // Burada başka işler (buton okuma vb.) beklemeden yapılabilir
+}</pre></div></div>
+<div class="sim"><h4>🔬 Simülasyon: millis_iki_led.ino</h4>
+<div class="grid2"><div><label>ARALIK1 = <span id="mA1v">500</span> ms</label><input type="range" id="mA1" min="100" max="2000" step="100" value="500">
+<label>ARALIK2 = <span id="mA2v">1300</span> ms</label><input type="range" id="mA2" min="100" max="2000" step="100" value="1300"></div><div>
+<svg viewBox="0 0 300 80" width="300"><rect width="300" height="80" rx="10" fill="#0e7c86"/>
+ <circle id="mL1" cx="60" cy="35" r="16" fill="#5a1a1a"/><circle id="mL2" cx="140" cy="35" r="16" fill="#163d1e"/>
+ <text x="60" y="70" text-anchor="middle" font-size="10" fill="#fff">LED1 (8)</text><text x="140" y="70" text-anchor="middle" font-size="10" fill="#fff">LED2 (9)</text>
+ <text id="mMs" x="240" y="40" text-anchor="middle" font-size="13" font-family="Consolas" fill="#ff0">0</text><text x="240" y="58" text-anchor="middle" font-size="9" fill="#fff">millis()</text></svg>
+<div class="out" id="mOut"></div></div></div></div>
+<table class="tbl"><tr><th>Fonksiyon</th><th>Açıklama</th></tr>
+<tr><td><code>millis()</code></td><td>Açılıştan beri geçen ms. Dönüş tipi <code>unsigned long</code>; ≈ 49,7 günde bir taşar ve sıfırdan başlar. <code>simdi - onceki &gt;= ARALIK</code> biçimindeki çıkarma, taşma anında da doğru çalışır.</td></tr>
+<tr><td><code>micros()</code></td><td>Mikrosaniye cinsinden süre (≈ 70 dakikada taşar).</td></tr></table>
+
+</section>
+
+<section class="card quiz" id="quiz"><h2><span class="num">11</span>Kendini Test Et</h2>
+<div class="q" data-answer="c"><p>1) <code>pinMode(8, OUTPUT); digitalWrite(8, HIGH);</code> satırlarından sonra pin 8 ile GND arasında yaklaşık kaç volt ölçülür?</p><button class="opt" data-k="a">a) 0 V</button><button class="opt" data-k="b">b) 3,3 V</button><button class="opt" data-k="c">c) 5 V</button><div class="fb">✓ Arduino UNO 5 V lojik ile çalışır; HIGH çıkış ≈ 5 V'tur (yük altında biraz düşebilir).</div></div>
+<div class="q" data-answer="a"><p>2) <code>int x = 32767; x++;</code> işleminden sonra UNO'da x'in değeri nedir?</p><button class="opt" data-k="a">a) −32768</button><button class="opt" data-k="b">b) 32768</button><button class="opt" data-k="c">c) 0</button><div class="fb">✓ UNO'da int 16 bittir; en büyük değer 32767'dir. Bir artırılınca taşar ve en küçük değere (−32768) sarar.</div></div>
+<div class="q" data-answer="b"><p>3) <code>if (sayac = 5) { … }</code> satırındaki hata nedir?</p><button class="opt" data-k="a">a) Noktalı virgül eksik</button><button class="opt" data-k="b">b) = atamadır; karşılaştırma için == yazılmalıdır</button><button class="opt" data-k="c">c) if içinde sayı kullanılamaz</button><div class="fb">✓ = sayaca 5 atar ve sonuç (5) sıfırdan farklı olduğundan koşul daima doğru olur. Karşılaştırma == ile yapılır.</div></div>
+<div class="q" data-answer="b"><p>4) x = 7 iken <code>(x &gt; 3 &amp;&amp; x &lt; 7)</code> ifadesinin sonucu nedir?</p><button class="opt" data-k="a">a) true</button><button class="opt" data-k="b">b) false</button><button class="opt" data-k="c">c) Derleme hatası</button><div class="fb">✓ x &gt; 3 doğru, ancak x &lt; 7 yanlıştır (7, 7'den küçük değildir). VE (&amp;&amp;) için ikisinin de doğru olması gerekir.</div></div>
+<div class="q" data-answer="c"><p>5) <code>millis()</code> fonksiyonunun dönüş değerini saklamak için en uygun tip hangisidir?</p><button class="opt" data-k="a">a) int</button><button class="opt" data-k="b">b) float</button><button class="opt" data-k="c">c) unsigned long</button><div class="fb">✓ millis() unsigned long döndürür. int kullanılırsa 32,7 saniye sonra taşar ve zamanlama bozulur.</div></div>
+</section>
+
+<section class="card" id="odev"><h2><span class="num">12</span>Ödev ve Özet</h2>
+
+<h3>Ödev</h3><ol>
+<li>Trafik lambasına bir <b>yaya lambası</b> ekleyin (pin 9: yaya kırmızı, pin 8: yaya yeşil). Taşıtlara kırmızı yanarken yayalara yeşil yansın, diğer durumlarda yaya kırmızısı yansın.</li>
+<li>Dört LED'i (pin 8–11) bir <code>sira</code> sayacı ve <code>if – else if</code> yapısı kullanarak soldan sağa sırayla yakın (her adımda yalnızca bir LED yansın). <i>for döngüsünü 5. haftada göreceğiz; bu ödevi döngüsüz çözün.</i></li>
+<li><code>sayac_led.ino</code> programını, sayaç 3'ün katı olduğunda (<code>%</code> kullanarak) tüm LED'leri yakacak şekilde değiştirin.</li>
+<li>Trafik lambası programını <code>delay()</code> kullanmadan, <code>millis()</code> ile yeniden yazın.</li></ol>
+<details><summary>4. ödev için ipucu (tıklayın)</summary>
+<p>Lambanın hangi aşamada olduğunu bir <code>durum</code> değişkeninde tutun; süre dolunca bir sonraki duruma geçin:</p>
+<div class="codebox"><span class="lbl">trafik_millis_ipucu.ino</span><pre class="code">const int KIRMIZI = 12, SARI = 11, YESIL = 10;
+int durum = 0;                    // 0: kırmızı, 1: kırmızı+sarı, 2: yeşil, 3: sarı
+unsigned long oncekiZaman = 0;
+unsigned long sure = 5000;        // İçinde bulunulan durumun süresi
+
+void lambalar(int k, int s, int y) {
+  digitalWrite(KIRMIZI, k); digitalWrite(SARI, s); digitalWrite(YESIL, y);
+}
+
+void setup() {
+  pinMode(KIRMIZI, OUTPUT); pinMode(SARI, OUTPUT); pinMode(YESIL, OUTPUT);
+  lambalar(HIGH, LOW, LOW);       // Kırmızı ile başla
+}
+
+void loop() {
+  if (millis() - oncekiZaman &gt;= sure) {
+    oncekiZaman = millis();
+    durum++;
+    if (durum &gt; 3) durum = 0;
+
+    if (durum == 0)      { lambalar(HIGH, LOW, LOW);  sure = 5000; }
+    else if (durum == 1) { lambalar(HIGH, HIGH, LOW); sure = 2000; }
+    else if (durum == 2) { lambalar(LOW, LOW, HIGH);  sure = 5000; }
+    else                 { lambalar(LOW, HIGH, LOW);  sure = 2000; }
+  }
+  // Program burada beklemez; ileride buton okuma buraya eklenebilir
+}</pre></div></details>
+<h3>Özet</h3><ul>
+<li><code>pinMode(pin, OUTPUT)</code> pini çıkış yapar; <code>digitalWrite(pin, HIGH/LOW)</code> pine 5 V / 0 V verir.</li>
+<li>LED'ler her zaman seri dirençle bağlanır; pin başına ≤ 20 mA önerilir.</li>
+<li>Veri tipinin aralığını aşan değişken taşar; zaman için <code>unsigned long</code>, ondalık için <code>float</code> kullanılır.</li>
+<li><code>==</code> karşılaştırma, <code>=</code> atamadır. <code>&amp;&amp;</code> VE, <code>||</code> VEYA, <code>!</code> DEĞİL.</li>
+<li><code>if – else if – else</code> zincirinde yalnızca ilk doğru koşulun bloğu çalışır.</li>
+<li><code>delay()</code> programı durdurur; <code>millis()</code> ile beklemeden zamanlama yapılır.</li></ul>
+
+</section>
+
+</main>
+<footer>Arduino ile Programlama · Ders Notları · 3. Hafta<br>Kaynaklar: C. Taşdemir – <i>Arduino</i>; G. Döktaş – <i>Arduino Eğitim Kitabı</i>; E. Delebe – <i>Projeler ile Arduino</i></footer>
+<script>
+(function(){
+ const KW=['void','if','else','for','while','do','return','switch','case','break','default','const','true','false','#include','#define'];
+ const TY=['int','float','long','unsigned','byte','bool','boolean','char','double','String','word'];
+ const CST=['HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP','LED_BUILTIN','A0','A1','A2','A3','A4','A5'];
+ const FN=['pinMode','digitalWrite','digitalRead','analogRead','analogWrite','delay','delayMicroseconds','millis','micros','setup','loop','map','constrain','pulseIn','tone','noTone','Serial','begin','print','println','attach','write','read','available','random'];
+ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+ function hl(src){
+  let out='',i=0;
+  const re=/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(#?[A-Za-z_][A-Za-z0-9_]*)|(\b\d+(?:\.\d+)?\b)/g;let m,last=0;
+  while((m=re.exec(src))){out+=esc(src.slice(last,m.index));
+   if(m[1])out+='<span class="com">'+esc(m[1])+'</span>';
+   else if(m[2])out+='<span class="str">'+esc(m[2])+'</span>';
+   else if(m[3]){const w=m[3];let c=KW.includes(w)?'kw':TY.includes(w)?'ty':CST.includes(w)?'cst':FN.includes(w)?'fn':'';out+=c?'<span class="'+c+'">'+esc(w)+'</span>':esc(w)}
+   else if(m[4])out+='<span class="num">'+m[4]+'</span>';
+   last=re.lastIndex}
+  return out+esc(src.slice(last))}
+ document.querySelectorAll('pre.code').forEach(p=>{const raw=p.textContent;p.innerHTML=hl(raw);
+  const b=document.createElement('button');b.className='copybtn';b.textContent='Kopyala';
+  b.onclick=()=>{navigator.clipboard.writeText(raw).then(()=>{b.textContent='Kopyalandı ✓';setTimeout(()=>b.textContent='Kopyala',1500)})};
+  p.parentElement.appendChild(b)});
+ document.querySelectorAll('.quiz .q').forEach(q=>{const ans=q.dataset.answer;const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{q.querySelectorAll('.opt').forEach(x=>x.classList.remove('ok','no'));
+   if(o.dataset.k===ans){o.classList.add('ok');if(fb)fb.style.display='block'}else{o.classList.add('no')}})});
+ document.querySelectorAll('.quiz .fb').forEach(f=>f.style.display='none');
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+function led(id,on){const e=$(id);if(!e)return;e.setAttribute('fill',on?e.dataset.on:e.dataset.off);e.style.filter=on?`drop-shadow(0 0 7px ${e.dataset.on})`:'none'}
+function pin(pre,p,on){led(pre+'L'+p,on);const f=$(pre+'F'+p);if(f)f.style.display=on?'':'none'}
+function log(id,txt,max){const l=$(id);l.textContent+=txt+'\n';if(l.textContent.length>(max||4000))l.textContent=l.textContent.slice(-2500);l.scrollTop=1e9}
+// ---- taşma
+let ov=32767;const R={byte:[0,255],int:[-32768,32767],uint:[0,65535]};
+function wrap(v,t){const [lo,hi]=R[t],n=hi-lo+1;return ((v-lo)%n+n)%n+lo}
+function ovShow(note){const t=$('ovType').value;const bits=t==='byte'?8:16;let u=ov<0?ov+(1<<bits):ov;
+ const b=u.toString(2).padStart(bits,'0').replace(/(.{4})/g,'$1 ').trim();
+ $('ovOut').innerHTML=`değer = <b>${ov}</b><br>bellekte: ${b}<br>aralık: ${R[t][0]} … ${R[t][1]}`+(note?`<br><span style="color:#e74c3c">⚠ ${note}</span>`:'')}
+function ovAdd(d){const t=$('ovType').value;const raw=ov+d,w=wrap(raw,t);ov=w;ovShow(raw!==w?`Taşma! ${raw} bu tipe sığmaz, değer ${w} oldu.`:'')}
+$('ovP').onclick=()=>ovAdd(1);$('ovM').onclick=()=>ovAdd(-1);$('ovP1000').onclick=()=>ovAdd(1000);
+$('ovMax').onclick=()=>{ov=R[$('ovType').value][1];ovShow()};$('ovType').onchange=()=>{ov=wrap(ov,$('ovType').value);ovShow()};ovShow();
+// ---- uygulama 1/2
+let aMode=1,aOn=false,aSira=true,aMs=0,aTimer=null;
+function aStep(){const t=+$('aT').value;
+ if(aMode===1){aOn=!aOn;pin('a',8,aOn);pin('a',9,false);log('aLog',`[${aMs} ms] digitalWrite(LED_PIN, ${aOn?'HIGH':'LOW'});  delay(${t});`)}
+ else{pin('a',8,aSira);pin('a',9,!aSira);log('aLog',`[${aMs} ms] if (sira) → ${aSira?'DOĞRU: LED1 HIGH, LED2 LOW':'YANLIŞ (else): LED1 LOW, LED2 HIGH'};  sira = !sira;  delay(${t});`);aSira=!aSira}
+ aMs+=t;aTimer=setTimeout(aStep,t)}
+function aStart(m){aMode=m;clearTimeout(aTimer);aMs=0;aOn=false;aSira=true;$('aLog').textContent='';if(m===2){$('aT').value=500}$('aTv').textContent=$('aT').value;aStep()}
+$('aT').oninput=()=>$('aTv').textContent=$('aT').value;
+$('aM1').onclick=()=>aStart(1);$('aM2').onclick=()=>aStart(2);aStart(1);
+// ---- trafik lambası
+const ST=[['KIRMIZI',5000,[1,0,0]],['KIRMIZI+SARI',2000,[1,1,0]],['YESIL',5000,[0,0,1]],['SARI',2000,[0,1,0]]];
+const COL={tlR:['#ff3b3b','#5a1a1a'],tlY:['#ffd31a','#5a4a00'],tlG:['#3cdc5a','#163d1e']};
+let tS=0,tEl=0,tRun=true,carX=-60,tPrev=null;
+function tApply(){const s=ST[tS];[['tlR',12],['tlY',11],['tlG',10]].forEach(([id,p],i)=>{const on=s[2][i];$(id).setAttribute('fill',COL[id][on?0:1]);$(id).style.filter=on?`drop-shadow(0 0 8px ${COL[id][0]})`:'none';pin('t',p,on)});
+ $('tlTxt').textContent=s[0];log('tlSer',s[0])}
+function tTick(){const dt=50*(+$('tlS').value);if(!tRun)return;tEl+=dt;
+ if(tEl>=ST[tS][1]){tEl=0;tS=(tS+1)%4;tApply()}
+ const s=ST[tS];$('tlBar').setAttribute('width',200*tEl/s[1]);$('tlRem').textContent='kalan: '+((s[1]-tEl)/1000).toFixed(1).replace('.',',')+' s  (delay('+s[1]+'))';
+ // araç: ön tampon = carX+54, durma çizgisi x=248
+ const front=carX+54,green=s[2][2]===1,mustStop=!green&&front<=246&&front>150;let v=0.06*dt;
+ if(mustStop&&front+v>246)v=Math.max(0,246-front);
+ carX+=v;if(carX>370)carX=-60;$('car').setAttribute('transform',`translate(${carX} 0)`)}
+$('tlS').oninput=()=>$('tlSv').textContent=$('tlS').value;
+$('tlRun').onclick=()=>{tRun=!tRun;$('tlRun').textContent=tRun?'⏸ Duraklat':'▶ Devam'};
+$('tlRst').onclick=()=>{tS=0;tEl=0;carX=-60;$('tlSer').textContent='';tApply()};
+tApply();setInterval(tTick,50);
+// ---- sayaç
+let cnt=0,cAuto=null;
+function cStep(){const C={cG:['#3cdc5a','#163d1e'],cY:['#ffd31a','#5a4a00'],cR:['#ff3b3b','#5a1a1a'],cL:['#ffb300','#5a4a00']};
+ const g=cnt<3,y=!g&&cnt<=6,r=!g&&!y,ev=cnt%2===0;
+ [['cG',g],['cY',y],['cR',r],['cL',ev]].forEach(([id,on])=>{$(id).setAttribute('fill',C[id][on?0:1]);$(id).style.filter=on?`drop-shadow(0 0 7px ${C[id][0]})`:'none'});
+ $('cNum').textContent=cnt;[['cl1',g],['cl2',y],['cl3',r],['cl4',ev]].forEach(([id,on])=>$(id).classList.toggle('on',on));
+ log('cSer','sayac = '+cnt);cnt++;if(cnt>9)cnt=0}
+$('cStep').onclick=cStep;$('cRun').onclick=()=>{if(cAuto){clearInterval(cAuto);cAuto=null;$('cRun').textContent='▶ Otomatik'}else{cAuto=setInterval(cStep,1000);$('cRun').textContent='⏸ Durdur'}};
+cStep();cAuto=setInterval(cStep,1000);$('cRun').textContent='⏸ Durdur';
+// ---- millis
+let ms=0,o1=0,o2=0,d1=false,d2=false;
+function mTick(){ms+=20;const A1=+$('mA1').value,A2=+$('mA2').value;$('mA1v').textContent=A1;$('mA2v').textContent=A2;
+ if(ms-o1>=A1){o1=ms;d1=!d1;$('mL1').setAttribute('fill',d1?'#ff3b3b':'#5a1a1a');$('mL1').style.filter=d1?'drop-shadow(0 0 7px #ff3b3b)':'none'}
+ if(ms-o2>=A2){o2=ms;d2=!d2;$('mL2').setAttribute('fill',d2?'#3cdc5a':'#163d1e');$('mL2').style.filter=d2?'drop-shadow(0 0 7px #3cdc5a)':'none'}
+ $('mMs').textContent=ms;
+ $('mOut').innerHTML=`simdi − onceki1 = ${ms-o1} ms ${ms-o1>=A1?'≥':'&lt;'} ${A1}<br>simdi − onceki2 = ${ms-o2} ms ${ms-o2>=A2?'≥':'&lt;'} ${A2}<br><span style="color:#5b6b7d">loop() hiç durmadan dönüyor; her LED yalnızca kendi süresi dolunca değişiyor.</span>`}
+setInterval(mTick,20);
+})();
+</script>
+</body></html>

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>13. Hafta – LCD Ekran ve İvme Sensörü | Arduino ile Programlama</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#1d2733;--muted:#5b6b7d;--teal:#00979d;--teal2:#00b3b9;--accent:#e67e22;--red:#e74c3c;--green:#27ae60;--code:#0f1b26;--border:#dde5ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+header.top{background:linear-gradient(135deg,#006468,#00979d 60%,#00b3b9);color:#fff;padding:28px 20px 34px;position:relative;overflow:hidden}
+header.top::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px),repeating-linear-gradient(0deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px);pointer-events:none}
+.wrap{max-width:1050px;margin:0 auto;padding:0 18px}
+.badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:3px 12px;border-radius:20px;font-size:.85em;letter-spacing:.5px}
+header.top h1{margin:10px 0 6px;font-size:2em}
+header.top p{margin:0;opacity:.92}
+nav.weeknav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;position:relative;z-index:1}
+nav.weeknav a{color:#fff;text-decoration:none;background:rgba(0,0,0,.18);padding:6px 12px;border-radius:6px;font-size:.9em}
+nav.weeknav a:hover{background:rgba(0,0,0,.35)}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;margin:22px 0}
+.toc ol{margin:6px 0;columns:2}
+.toc a{color:var(--teal);text-decoration:none}
+section.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin:22px 0;box-shadow:0 2px 8px rgba(20,40,60,.05);animation:fadeUp .6s ease both}
+section.card h2{margin-top:0;color:#006468;border-bottom:2px solid #e3f3f3;padding-bottom:8px}
+section.card h2 .num{display:inline-block;background:var(--teal);color:#fff;border-radius:50%;width:32px;height:32px;text-align:center;line-height:32px;margin-right:8px;font-size:.8em}
+h3{color:#0b4f6c}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.goals li{margin:4px 0}
+.note,.warn,.tip{border-radius:8px;padding:12px 16px;margin:14px 0;border-left:5px solid}
+.note{background:#eaf6ff;border-color:#2e86de}.warn{background:#fff3e6;border-color:var(--accent)}.tip{background:#eafaf1;border-color:var(--green)}
+.note::before{content:"ℹ️ Not: ";font-weight:600}.warn::before{content:"⚠️ Dikkat: ";font-weight:600}.tip::before{content:"💡 İpucu: ";font-weight:600}
+.formula{font-family:Cambria,"Times New Roman",serif;font-size:1.5em;text-align:center;background:#f7fbfb;border:1px dashed var(--teal);border-radius:8px;padding:12px;margin:14px 0}
+table.tbl{border-collapse:collapse;width:100%;margin:12px 0;font-size:.95em}
+table.tbl th,table.tbl td{border:1px solid var(--border);padding:7px 10px;text-align:left}
+table.tbl th{background:#e9f6f6;color:#064d50}
+table.tbl tr:nth-child(even) td{background:#fafcfd}
+.codebox{position:relative;margin:14px 0}
+.codebox .lbl{background:#1f3344;color:#9fd7da;font-size:.8em;padding:4px 12px;border-radius:8px 8px 0 0;display:inline-block;font-family:Consolas,monospace}
+pre.code{background:var(--code);color:#d7e3ee;padding:16px 18px;border-radius:0 8px 8px 8px;overflow:auto;font-family:Consolas,"Courier New",monospace;font-size:.92em;line-height:1.5;margin:0}
+pre.code .kw{color:#c792ea}.code .ty{color:#82aaff}.code .fn{color:#f78c6c}.code .num{color:#f7c56c}.code .str{color:#c3e88d}.code .com{color:#6b8299;font-style:italic}.code .cst{color:#ff5370}
+.copybtn{position:absolute;top:30px;right:8px;background:#2b4459;color:#cfe;border:0;border-radius:5px;padding:4px 10px;cursor:pointer;font-size:.8em}
+.copybtn:hover{background:var(--teal)}
+.figure{text-align:center;margin:16px 0}
+.figure svg{max-width:100%;height:auto}
+.figure .cap{font-size:.88em;color:var(--muted);margin-top:6px}
+.sim{background:#f3fafa;border:1px solid #bfe3e4;border-radius:10px;padding:16px;margin:16px 0}
+.sim h4{margin:0 0 10px;color:#006468}
+.sim label{display:block;margin:8px 0 2px;font-weight:600;font-size:.92em}
+.sim input[type=range]{width:100%;accent-color:var(--teal)}
+.sim .out{font-family:Consolas,monospace;background:#fff;border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-top:10px}
+.serial{background:#0b1620;color:#7CFC9a;font-family:Consolas,monospace;border-radius:6px;padding:10px;height:140px;overflow:auto;font-size:.88em;white-space:pre}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:.92em;margin:4px 4px 4px 0}
+.btn:hover{background:#007a7f}.btn.alt{background:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.toc ol{columns:1}}
+/* animations */
+.flow{stroke-dasharray:6 10;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+.glow{filter:drop-shadow(0 0 6px #ff4d4d)}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.spin{transform-origin:center;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* quiz */
+.quiz .q{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0}
+.quiz .q p{margin:0 0 8px;font-weight:600}
+.quiz .opt{display:block;width:100%;text-align:left;background:#f7f9fb;border:1px solid var(--border);border-radius:6px;padding:7px 10px;margin:4px 0;cursor:pointer;font-size:.95em}
+.quiz .opt:hover{background:#eef6f6}
+.quiz .opt.ok{background:#d9f5e3;border-color:var(--green)}
+.quiz .opt.no{background:#fde2df;border-color:var(--red)}
+.quiz .fb{font-size:.9em;margin-top:6px;color:var(--muted)}
+details{background:#fbfcfd;border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin:10px 0}
+details summary{cursor:pointer;font-weight:600;color:#0b4f6c}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding:8px 0 8px 46px;margin:6px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:32px;height:32px;border-radius:50%;background:var(--teal);color:#fff;text-align:center;line-height:32px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:30px 10px 40px}
+.pill{display:inline-block;background:#e3f3f3;color:#064d50;border-radius:12px;padding:2px 10px;font-size:.85em;margin:2px}
+</style></head><body>
+<header class="top"><div class="wrap">
+<span class="badge">ARDUİNO İLE PROGRAMLAMA · 13. HAFTA</span>
+<h1>LCD Ekran ve İvme Sensörü</h1><p>16×2 karakter LCD (HD44780), paralel ve I²C bağlantı, LiquidCrystal_I2C kütüphanesi; MPU6050 ivme sensörü ve eğim açısı hesabı</p>
+<nav class="weeknav"><a href="index.html">☰ Tüm Haftalar</a><a href="hafta12.html">← 12. Hafta</a><a href="hafta14.html">14. Hafta →</a></nav>
+</div></header>
+<main class="wrap">
+<div class="toc"><strong>Bu haftanın içeriği</strong><ol><li><a href="#hedef">Haftanın Hedefleri</a></li><li><a href="#lcd">Karakter LCD (HD44780)</a></li><li><a href="#paralel">Paralel Bağlantı: LiquidCrystal</a></li><li><a href="#i2c">I²C ve PCF8574 Modülü</a></li><li><a href="#kutuphane">LiquidCrystal_I2C Kütüphanesi</a></li><li><a href="#devre">Devre Şeması</a></li><li><a href="#uyg1">Uygulama 1: Merhaba Dünya, Kayan Yazı</a></li><li><a href="#uyg2">Uygulama 2: Sıcaklık LCD'de</a></li><li><a href="#ivme">İvme Sensörü: MPU6050</a></li><li><a href="#uyg3">Uygulama 3: Eğim Açıları LCD'de</a></li><li><a href="#quiz">Kendini Test Et</a></li><li><a href="#odev">Ödev ve Özet</a></li></ol></div>
+<style>
+.grid2>*{min-width:0}
+.dot{fill:#111}
+.lcdwrap{display:inline-block;background:#1e7a3c;padding:14px 18px;border-radius:8px;border:2px solid #145c2c;box-shadow:0 3px 8px rgba(0,0,0,.25)}
+.lcd{display:grid;grid-template-columns:repeat(16,1fr);gap:3px;background:#2b55c9;padding:8px;border-radius:4px;transition:background .3s}
+.lcd.off{background:#1c2f66}
+.lcd .c{width:24px;height:36px;display:flex;align-items:center;justify-content:center;font-family:Consolas,"MS Gothic",monospace;font-size:24px;color:#eef6ff;background:rgba(255,255,255,.07);border-radius:1px;position:relative}
+.lcd.off .c{color:#8796c0}
+.lcd .c.cur::after{content:"";position:absolute;left:3px;right:3px;bottom:2px;height:3px;background:#eef6ff}
+.lcd.small .c{width:18px;height:28px;font-size:18px}
+.ctl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0}
+.ctl input[type=text]{flex:1;min-width:160px;padding:6px 8px;border:1px solid #bfe3e4;border-radius:6px;font-family:Consolas,monospace}
+.ctl input[type=number],.ctl select{width:64px;padding:5px;border:1px solid #bfe3e4;border-radius:6px}
+.btn.sm{padding:5px 10px;font-size:.85em}
+.i2c{stroke-dasharray:3 9;animation:flow .8s linear infinite}
+</style><section class="card" id="hedef"><h2><span class="num">1</span>Haftanın Hedefleri</h2>
+<ul class="goals">
+<li>HD44780 tabanlı 16×2 karakter LCD'nin pinlerini ve çalışma mantığını (DDRAM, imleç, kaydırma) açıklayabilmek</li>
+<li>LCD'yi paralel (<code>LiquidCrystal</code>) ve I²C modülüyle (<code>LiquidCrystal_I2C</code>) bağlayabilmek</li>
+<li>I²C veri yolunu (SDA/SCL, adres) tanımak; I²C tarayıcıyla cihaz adresini bulabilmek</li>
+<li><code>init()</code>, <code>backlight()</code>, <code>setCursor()</code>, <code>print()</code>, <code>clear()</code>, <code>scrollDisplayLeft()</code> fonksiyonlarını kullanabilmek</li>
+<li>MPU6050 ivme sensörünün eksenlerini, g birimini ve ham veriyi yorumlayabilmek</li>
+<li>İvme verisinden eğim (pitch/roll) açılarını hesaplayıp LCD'de gösterebilmek</li>
+</ul>
+</section>
+<section class="card" id="lcd"><h2><span class="num">2</span>Karakter LCD (HD44780) Tanıyalım</h2>
+<p>Arduino projelerinde en çok kullanılan ekran, <b>16 sütun × 2 satır</b> karakter gösterebilen <b>16×2 LCD</b>'dir. Ekranın arkasında <b>HD44780</b> (veya uyumlu) bir denetleyici bulunur. Denetleyici, gönderilen karakter kodlarını kendi içindeki karakter tablosundan (CGROM) <b>5×8 noktalık</b> desenlere çevirerek ekrana basar.</p>
+<div class="figure"><svg viewBox="0 0 520 210" width="560"><rect x="40" y="40" width="440" height="140.8" rx="6" fill="#1e7a3c" stroke="#145c2c" stroke-width="2"/><rect x="78" y="70.976" width="364" height="78.84800000000001" rx="4" fill="#111"/><rect x="88" y="78.016" width="344" height="64.76800000000001" fill="#2b55c9"/><rect x="92.0" y="80.832" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="101.0" y="102.65599999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">M</text><rect x="113.0" y="80.832" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="122.0" y="102.65599999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">e</text><rect x="134.0" y="80.832" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="143.0" y="102.65599999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">r</text><rect x="155.0" y="80.832" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="164.0" y="102.65599999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">h</text><rect x="176.0" y="80.832" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="185.0" y="102.65599999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">a</text><rect x="197.0" y="80.832" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="206.0" y="102.65599999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">b</text><rect x="218.0" y="80.832" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="227.0" y="102.65599999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">a</text><rect x="239.0" y="80.832" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><rect x="260.0" y="80.832" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="269.0" y="102.65599999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">D</text><rect x="281.0" y="80.832" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="290.0" y="102.65599999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">u</text><rect x="302.0" y="80.832" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="311.0" y="102.65599999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">n</text><rect x="323.0" y="80.832" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="332.0" y="102.65599999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">y</text><rect x="344.0" y="80.832" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="353.0" y="102.65599999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">a</text><rect x="365.0" y="80.832" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="374.0" y="102.65599999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">!</text><rect x="386.0" y="80.832" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><rect x="407.0" y="80.832" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><rect x="92.0" y="111.80799999999999" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="101.0" y="133.632" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">1</text><rect x="113.0" y="111.80799999999999" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="122.0" y="133.632" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">6</text><rect x="134.0" y="111.80799999999999" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="143.0" y="133.632" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">x</text><rect x="155.0" y="111.80799999999999" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="164.0" y="133.632" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">2</text><rect x="176.0" y="111.80799999999999" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><rect x="197.0" y="111.80799999999999" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="206.0" y="133.632" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">H</text><rect x="218.0" y="111.80799999999999" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="227.0" y="133.632" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">D</text><rect x="239.0" y="111.80799999999999" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="248.0" y="133.632" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">4</text><rect x="260.0" y="111.80799999999999" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="269.0" y="133.632" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">4</text><rect x="281.0" y="111.80799999999999" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="290.0" y="133.632" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">7</text><rect x="302.0" y="111.80799999999999" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="311.0" y="133.632" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">8</text><rect x="323.0" y="111.80799999999999" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><text x="332.0" y="133.632" text-anchor="middle" font-family="Consolas,monospace" font-size="21.1" fill="#eef6ff">0</text><rect x="344.0" y="111.80799999999999" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><rect x="365.0" y="111.80799999999999" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><rect x="386.0" y="111.80799999999999" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><rect x="407.0" y="111.80799999999999" width="18.0" height="26.752000000000002" fill="#ffffff" opacity=".07"/><circle cx="54" cy="52" r="5" fill="#f4f3ec"/><circle cx="466" cy="52" r="5" fill="#f4f3ec"/><circle cx="54" cy="168.8" r="5" fill="#f4f3ec"/><circle cx="466" cy="168.8" r="5" fill="#f4f3ec"/><rect x="67" y="36" width="6" height="10" fill="#c9a227"/><text x="70" y="30" text-anchor="middle" font-size="7">1</text><text x="72" y="20" font-size="6.5" transform="rotate(-60 72 20)">VSS</text><rect x="83" y="36" width="6" height="10" fill="#c9a227"/><text x="86" y="30" text-anchor="middle" font-size="7">2</text><text x="88" y="20" font-size="6.5" transform="rotate(-60 88 20)">VDD</text><rect x="99" y="36" width="6" height="10" fill="#c9a227"/><text x="102" y="30" text-anchor="middle" font-size="7">3</text><text x="104" y="20" font-size="6.5" transform="rotate(-60 104 20)">V0</text><rect x="115" y="36" width="6" height="10" fill="#c9a227"/><text x="118" y="30" text-anchor="middle" font-size="7">4</text><text x="120" y="20" font-size="6.5" transform="rotate(-60 120 20)">RS</text><rect x="131" y="36" width="6" height="10" fill="#c9a227"/><text x="134" y="30" text-anchor="middle" font-size="7">5</text><text x="136" y="20" font-size="6.5" transform="rotate(-60 136 20)">RW</text><rect x="147" y="36" width="6" height="10" fill="#c9a227"/><text x="150" y="30" text-anchor="middle" font-size="7">6</text><text x="152" y="20" font-size="6.5" transform="rotate(-60 152 20)">E</text><rect x="163" y="36" width="6" height="10" fill="#c9a227"/><text x="166" y="30" text-anchor="middle" font-size="7">7</text><text x="168" y="20" font-size="6.5" transform="rotate(-60 168 20)">D0</text><rect x="179" y="36" width="6" height="10" fill="#c9a227"/><text x="182" y="30" text-anchor="middle" font-size="7">8</text><text x="184" y="20" font-size="6.5" transform="rotate(-60 184 20)">D1</text><rect x="195" y="36" width="6" height="10" fill="#c9a227"/><text x="198" y="30" text-anchor="middle" font-size="7">9</text><text x="200" y="20" font-size="6.5" transform="rotate(-60 200 20)">D2</text><rect x="211" y="36" width="6" height="10" fill="#c9a227"/><text x="214" y="30" text-anchor="middle" font-size="7">10</text><text x="216" y="20" font-size="6.5" transform="rotate(-60 216 20)">D3</text><rect x="227" y="36" width="6" height="10" fill="#c9a227"/><text x="230" y="30" text-anchor="middle" font-size="7">11</text><text x="232" y="20" font-size="6.5" transform="rotate(-60 232 20)">D4</text><rect x="243" y="36" width="6" height="10" fill="#c9a227"/><text x="246" y="30" text-anchor="middle" font-size="7">12</text><text x="248" y="20" font-size="6.5" transform="rotate(-60 248 20)">D5</text><rect x="259" y="36" width="6" height="10" fill="#c9a227"/><text x="262" y="30" text-anchor="middle" font-size="7">13</text><text x="264" y="20" font-size="6.5" transform="rotate(-60 264 20)">D6</text><rect x="275" y="36" width="6" height="10" fill="#c9a227"/><text x="278" y="30" text-anchor="middle" font-size="7">14</text><text x="280" y="20" font-size="6.5" transform="rotate(-60 280 20)">D7</text><rect x="291" y="36" width="6" height="10" fill="#c9a227"/><text x="294" y="30" text-anchor="middle" font-size="7">15</text><text x="296" y="20" font-size="6.5" transform="rotate(-60 296 20)">A</text><rect x="307" y="36" width="6" height="10" fill="#c9a227"/><text x="310" y="30" text-anchor="middle" font-size="7">16</text><text x="312" y="20" font-size="6.5" transform="rotate(-60 312 20)">K</text><text x="260" y="200" text-anchor="middle" font-size="11" fill="#5b6b7d">2 satır × 16 sütun, her karakter 5×8 noktadan oluşur</text></svg><div class="cap">Şekil 1. 16×2 karakter LCD ve 16 pinli arabirimi</div></div>
+<table class="tbl"><tr><th>Pin</th><th>Ad</th><th>Görevi</th><th>Pin</th><th>Ad</th><th>Görevi</th></tr>
+<tr><td>1</td><td>VSS</td><td>GND</td><td>7–10</td><td>D0–D3</td><td>Veri (4 bit modda kullanılmaz)</td></tr>
+<tr><td>2</td><td>VDD</td><td>+5 V</td><td>11–14</td><td>D4–D7</td><td>Veri (4 bit modda kullanılır)</td></tr>
+<tr><td>3</td><td>V0</td><td>Kontrast (10 kΩ pot orta ucu)</td><td>15</td><td>A</td><td>Arka ışık + (220 Ω üzerinden 5 V)</td></tr>
+<tr><td>4</td><td>RS</td><td>0: komut, 1: karakter verisi</td><td>16</td><td>K</td><td>Arka ışık − (GND)</td></tr>
+<tr><td>5</td><td>RW</td><td>0: yazma (GND'ye bağlanır)</td><td></td><td></td><td></td></tr>
+<tr><td>6</td><td>E</td><td>Enable: düşen kenarda veri okunur</td><td></td><td></td><td></td></tr></table>
+<div class="note">HD44780'in her satır için <b>40 karakterlik</b> bir bellek alanı (DDRAM) vardır; ekranda bunun yalnızca 16'sı görünür. <code>scrollDisplayLeft()</code> bu 40 karakterlik pencereyi kaydırır. 16'dan uzun bir metin yazdığınızda karakterler görünmeyen 17–40. sütunlara gider; aşağıdaki simülasyonda deneyebilirsiniz.</div>
+<div class="warn">LCD'nin karakter tablosunda <b>ç, ğ, ı, ö, ş, ü</b> gibi Türkçe harfler yoktur. Bu nedenle LCD'ye yazılan metinlerde "Sicaklik", "Dunya" gibi yazımlar kullanılır ya da harfler <code>createChar()</code> ile özel karakter olarak tanımlanır (Ödev 2).</div>
+</section>
+<section class="card" id="paralel"><h2><span class="num">3</span>Paralel Bağlantı: LiquidCrystal Kütüphanesi</h2>
+<p>I²C modülü olmayan bir LCD, <b>4 bit modunda</b> 6 dijital pinle sürülebilir. Bu yöntem çok kablo gerektirir ama ek donanım istemez. <code>LiquidCrystal.h</code> kütüphanesi Arduino IDE ile birlikte gelir.</p>
+<div class="grid2"><table class="tbl"><tr><th>LCD pini</th><th>Bağlantı</th></tr>
+<tr><td>VSS, RW, K</td><td>GND</td></tr><tr><td>VDD</td><td>5V</td></tr><tr><td>V0</td><td>10 kΩ potansiyometre orta ucu (uçlar 5V–GND)</td></tr>
+<tr><td>RS / E</td><td>D12 / D11</td></tr><tr><td>D4 / D5 / D6 / D7</td><td>D5 / D4 / D3 / D2</td></tr><tr><td>A</td><td>220 Ω üzerinden 5V</td></tr></table>
+<div><div class="codebox"><span class="lbl">lcd_paralel.ino</span><pre class="code">// Paralel bağlantı (I2C modülü olmadan) – LiquidCrystal.h IDE ile birlikte gelir
+#include &lt;LiquidCrystal.h&gt;
+
+//                RS  E  D4 D5 D6 D7
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+void setup() {
+  lcd.begin(16, 2);          // 16 sütun, 2 satır
+  lcd.print("Merhaba Dunya!");
+}
+
+void loop() { }</pre></div></div></div>
+<div class="tip">Ekranda yalnızca dolu kutucuklar görünüyor ya da hiçbir şey görünmüyorsa önce <b>kontrast potansiyometresini</b> çevirin. Bu, LCD sorunlarının en sık nedenidir (I²C modüllerinde de arkadaki mavi trimpot kontrastı ayarlar).</div>
+</section>
+<section class="card" id="i2c"><h2><span class="num">4</span>I²C Haberleşme ve PCF8574 LCD Modülü</h2>
+<p><b>I²C</b> (Inter-Integrated Circuit), yalnızca iki hat ile birçok cihazın haberleşmesini sağlayan seri bir veri yoludur: <b>SDA</b> (veri) ve <b>SCL</b> (saat). Arduino <b>master</b> (yönetici) olarak, her cihaza kendine özgü <b>7 bitlik adresi</b> ile seslenir. UNO'da SDA = <b>A4</b>, SCL = <b>A5</b> pinleridir (R3 kartlarda AREF yanındaki SDA/SCL pinleri de aynı hatlardır).</p>
+<div class="figure"><svg viewBox="0 0 640 230" width="660"><line x1="60" y1="70" x2="610" y2="70" stroke="#16a085" stroke-width="3"/><line x1="60" y1="70" x2="610" y2="70" stroke="#fff" stroke-width="2" class="i2c"/><line x1="60" y1="100" x2="610" y2="100" stroke="#8e44ad" stroke-width="3"/><line x1="60" y1="100" x2="610" y2="100" stroke="#fff" stroke-width="2" class="i2c" style="animation-duration:.4s"/><text x="616" y="74" font-size="12" fill="#16a085">SDA</text><text x="616" y="104" font-size="12" fill="#8e44ad">SCL</text><rect x="70" y="20" width="16" height="30" fill="#e8cfa6" stroke="#a5835a"/><rect x="100" y="20" width="16" height="30" fill="#e8cfa6" stroke="#a5835a"/><line x1="78" y1="50" x2="78" y2="70" stroke="#555"/><line x1="108" y1="50" x2="108" y2="100" stroke="#555"/><line x1="70" y1="14" x2="116" y2="14" stroke="#d63031" stroke-width="2"/><text x="125" y="34" font-size="10">çekme (pull-up) dirençleri (4,7 kΩ; modüllerde hazır)</text><text x="60" y="10" font-size="9" fill="#d63031">+5V</text><line x1="110" y1="70" x2="110" y2="140" stroke="#16a085" stroke-width="2"/><line x1="130" y1="100" x2="130" y2="140" stroke="#8e44ad" stroke-width="2"/><circle cx="110" cy="70" r="3.5" class="dot"/><circle cx="130" cy="100" r="3.5" class="dot"/><rect x="80" y="140" width="130" height="50" rx="7" fill="#00979d"/><text x="145.0" y="162" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">Arduino UNO</text><text x="145.0" y="178" text-anchor="middle" font-size="9" fill="#fff">MASTER (yönetici)</text><text x="145.0" y="208" text-anchor="middle" font-size="10">A4 = SDA · A5 = SCL</text><line x1="290" y1="70" x2="290" y2="140" stroke="#16a085" stroke-width="2"/><line x1="310" y1="100" x2="310" y2="140" stroke="#8e44ad" stroke-width="2"/><circle cx="290" cy="70" r="3.5" class="dot"/><circle cx="310" cy="100" r="3.5" class="dot"/><rect x="260" y="140" width="130" height="50" rx="7" fill="#1e7a3c"/><text x="325.0" y="162" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">LCD (PCF8574)</text><text x="325.0" y="178" text-anchor="middle" font-size="9" fill="#fff">adres 0x27 / 0x3F</text><line x1="450" y1="70" x2="450" y2="140" stroke="#16a085" stroke-width="2"/><line x1="470" y1="100" x2="470" y2="140" stroke="#8e44ad" stroke-width="2"/><circle cx="450" cy="70" r="3.5" class="dot"/><circle cx="470" cy="100" r="3.5" class="dot"/><rect x="420" y="140" width="130" height="50" rx="7" fill="#2e4a9e"/><text x="485.0" y="162" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">MPU6050</text><text x="485.0" y="178" text-anchor="middle" font-size="9" fill="#fff">adres 0x68 / 0x69</text><line x1="590" y1="70" x2="590" y2="140" stroke="#16a085" stroke-width="2"/><line x1="610" y1="100" x2="610" y2="140" stroke="#8e44ad" stroke-width="2"/><circle cx="590" cy="70" r="3.5" class="dot"/><circle cx="610" cy="100" r="3.5" class="dot"/><rect x="560" y="140" width="70" height="50" rx="7" fill="#7f8c8d"/><text x="595.0" y="162" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">…</text><text x="595.0" y="178" text-anchor="middle" font-size="9" fill="#fff">en fazla 127 adres</text></svg><div class="cap">Şekil 2. I²C veri yolu: tüm cihazlar aynı iki hatta (SDA veri, SCL saat) paralel bağlanır; master her cihaza 7 bitlik adresiyle seslenir.</div></div>
+<p>LCD'nin arkasına lehimlenen <b>PCF8574</b> tabanlı modül, I²C'den gelen baytı 8 paralel çıkışa çevirerek LCD'nin RS, E, D4–D7 ve arka ışık hatlarını sürer. Böylece LCD yalnızca <b>4 kabloyla</b> (GND, VCC, SDA, SCL) bağlanır.</p>
+<div class="grid2"><table class="tbl"><tr><th>Modül yongası</th><th>Varsayılan adres</th></tr><tr><td>PCF8574T</td><td><b>0x27</b> (A0–A2 köprüleri açık)</td></tr><tr><td>PCF8574AT</td><td><b>0x3F</b></td></tr><tr><td>MPU6050 (AD0 = GND)</td><td>0x68 (AD0 = 5V/3,3V: 0x69)</td></tr></table>
+<div><div class="codebox"><span class="lbl">i2c_tarayici.ino</span><pre class="code">// I2C tarayıcı: hattaki cihazların adreslerini Seri Monitöre yazar
+#include &lt;Wire.h&gt;
+
+void setup() {
+  Serial.begin(9600);
+  Wire.begin();
+  Serial.println("I2C taranıyor...");
+  byte bulunan = 0;
+  for (byte adres = 1; adres &lt; 127; adres++) {
+    Wire.beginTransmission(adres);
+    if (Wire.endTransmission() == 0) {     // 0 = cihaz yanıt verdi (ACK)
+      Serial.print("Cihaz bulundu: 0x");
+      if (adres &lt; 16) Serial.print("0");
+      Serial.println(adres, HEX);
+      bulunan++;
+    }
+  }
+  if (bulunan == 0) Serial.println("Hiç cihaz bulunamadı. Kabloları kontrol edin.");
+}
+
+void loop() { }</pre></div></div></div>
+</section>
+<section class="card" id="kutuphane"><h2><span class="num">5</span>LiquidCrystal_I2C Kütüphanesi</h2>
+<ol class="steps"><li>Arduino IDE'de <b>Araçlar → Kütüphaneleri Yönet…</b> (veya soldaki kütüphane simgesi) açın.</li>
+<li>Arama kutusuna <b>LiquidCrystal I2C</b> yazın ve <b>Frank de Brabander</b> tarafından yayımlanan kütüphaneyi <b>Kur</b>'a basın.</li>
+<li>Programın başına <code>#include &lt;Wire.h&gt;</code> ve <code>#include &lt;LiquidCrystal_I2C.h&gt;</code> ekleyin (<code>Wire.h</code> IDE ile birlikte gelir).</li></ol>
+<table class="tbl"><tr><th>Fonksiyon</th><th>Görevi</th></tr>
+<tr><td><code>LiquidCrystal_I2C lcd(0x27, 16, 2);</code></td><td>Adresi, sütun ve satır sayısını belirterek LCD nesnesi oluşturur.</td></tr>
+<tr><td><code>lcd.init()</code></td><td>LCD'yi başlatır (bazı kütüphane sürümlerinde <code>lcd.begin()</code>). Paralel <code>LiquidCrystal</code>'da karşılığı <code>lcd.begin(16, 2)</code>'dir.</td></tr>
+<tr><td><code>lcd.backlight()</code> / <code>lcd.noBacklight()</code></td><td>Arka ışığı açar / kapatır.</td></tr>
+<tr><td><code>lcd.setCursor(sütun, satır)</code></td><td>İmleci konumlandırır; numaralandırma <b>0'dan</b> başlar: (0,0) sol üst, (15,1) sağ alt.</td></tr>
+<tr><td><code>lcd.print(x)</code> / <code>lcd.print(x, 1)</code></td><td>Metin veya sayı yazar, imleci ilerletir; ondalık basamak sayısı verilebilir.</td></tr>
+<tr><td><code>lcd.write(byte(n))</code></td><td>Kodu n olan tek karakteri (ör. özel karakter) yazar.</td></tr>
+<tr><td><code>lcd.clear()</code> / <code>lcd.home()</code></td><td>Ekranı temizleyip imleci (0,0)'a alır / yalnızca imleci (0,0)'a alır. <code>clear()</code> yaklaşık 2 ms sürer; döngüde sık kullanmak titremeye yol açar.</td></tr>
+<tr><td><code>lcd.scrollDisplayLeft()</code> / <code>Right()</code></td><td>Tüm ekranı bir sütun sola / sağa kaydırır.</td></tr>
+<tr><td><code>lcd.cursor()</code> / <code>lcd.blink()</code></td><td>Alt çizgi imleci / yanıp sönen blok imleci gösterir (<code>noCursor()</code>, <code>noBlink()</code> ile gizlenir).</td></tr>
+<tr><td><code>lcd.createChar(n, dizi)</code></td><td>0–7 numaralı konumlara 5×8 özel karakter tanımlar.</td></tr></table>
+</section>
+<section class="card" id="devre"><h2><span class="num">6</span>Devre Şeması</h2>
+<div class="figure"><svg viewBox="0 0 900 495" width="900"><rect x="380" y="2" width="514" height="28" rx="4" fill="#f4f3ec" stroke="#cfcfc4"/><line x1="386" y1="10" x2="890" y2="10" stroke="#d63031" stroke-width="2"/><line x1="386" y1="22" x2="884" y2="22" stroke="#2e6bd6" stroke-width="2"/><text x="600" y="8" font-size="7" fill="#d63031">+5V</text><text x="630" y="29" font-size="7" fill="#2e6bd6">GND</text>
+<g class="uno">
+<rect x="60" y="240" width="340" height="170" rx="10" fill="#0e7c86" stroke="#064d50" stroke-width="2.5"/>
+<rect x="46" y="258" width="46" height="36" rx="3" fill="#b8c2cc" stroke="#556"/>
+<text x="69" y="280" text-anchor="middle" font-size="9">USB</text>
+<rect x="50" y="348" width="38" height="32" rx="3" fill="#222"/>
+<text x="69" y="368" text-anchor="middle" font-size="7" fill="#fff">DC</text>
+<rect x="210" y="332" width="150" height="28" rx="3" fill="#1b1b1b"/>
+<text x="285" y="350" text-anchor="middle" font-size="10" fill="#ccc">ATmega328P</text>
+<text x="150" y="326" font-size="15" font-weight="700" fill="#fff">ARDUINO UNO</text>
+<rect x="148" y="245" width="224" height="14" fill="#111"/>
+<rect x="152" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="158" y="264" font-size="7.5" fill="#fff" transform="rotate(90 158 264)">GND</text>
+<rect x="166" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="172" y="264" font-size="7.5" fill="#fff" transform="rotate(90 172 264)">13</text>
+<rect x="180" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="186" y="264" font-size="7.5" fill="#fff" transform="rotate(90 186 264)">12</text>
+<rect x="194" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="200" y="264" font-size="7.5" fill="#fff" transform="rotate(90 200 264)">~11</text>
+<rect x="208" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="214" y="264" font-size="7.5" fill="#fff" transform="rotate(90 214 264)">~10</text>
+<rect x="222" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="228" y="264" font-size="7.5" fill="#fff" transform="rotate(90 228 264)">~9</text>
+<rect x="236" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="242" y="264" font-size="7.5" fill="#fff" transform="rotate(90 242 264)">8</text>
+<rect x="264" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="270" y="264" font-size="7.5" fill="#fff" transform="rotate(90 270 264)">7</text>
+<rect x="278" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="284" y="264" font-size="7.5" fill="#fff" transform="rotate(90 284 264)">~6</text>
+<rect x="292" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="298" y="264" font-size="7.5" fill="#fff" transform="rotate(90 298 264)">~5</text>
+<rect x="306" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="312" y="264" font-size="7.5" fill="#fff" transform="rotate(90 312 264)">4</text>
+<rect x="320" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="326" y="264" font-size="7.5" fill="#fff" transform="rotate(90 326 264)">~3</text>
+<rect x="334" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="340" y="264" font-size="7.5" fill="#fff" transform="rotate(90 340 264)">2</text>
+<rect x="348" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="354" y="264" font-size="7.5" fill="#fff" transform="rotate(90 354 264)">1</text>
+<rect x="362" y="249" width="6" height="6" fill="#c9a227"/>
+<text x="368" y="264" font-size="7.5" fill="#fff" transform="rotate(90 368 264)">0</text>
+<rect x="163" y="391" width="196" height="14" fill="#111"/>
+<rect x="167" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="173" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 173 388)">IOREF</text>
+<rect x="181" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="187" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 187 388)">RES</text>
+<rect x="195" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="201" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 201 388)">3V3</text>
+<rect x="209" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="215" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 215 388)">5V</text>
+<rect x="223" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="229" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 229 388)">GND</text>
+<rect x="237" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="243" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 243 388)">GND</text>
+<rect x="251" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="257" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 257 388)">VIN</text>
+<rect x="279" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="285" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 285 388)">A0</text>
+<rect x="293" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="299" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 299 388)">A1</text>
+<rect x="307" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="313" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 313 388)">A2</text>
+<rect x="321" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="327" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 327 388)">A3</text>
+<rect x="335" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="341" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 341 388)">A4</text>
+<rect x="349" y="395" width="6" height="6" fill="#c9a227"/>
+<text x="355" y="388" font-size="7.5" fill="#fff" text-anchor="end" transform="rotate(90 355 388)">A5</text>
+</g>
+<rect x="452" y="38" width="420" height="134.4" rx="6" fill="#1e7a3c" stroke="#145c2c" stroke-width="2"/><rect x="490" y="67.568" width="344" height="75.26400000000001" rx="4" fill="#111"/><rect x="500" y="74.28800000000001" width="324" height="61.824000000000005" fill="#2b55c9"/><rect x="504.0" y="76.976" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="512.375" y="97.80799999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">P</text><rect x="523.75" y="76.976" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="532.125" y="97.80799999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">i</text><rect x="543.5" y="76.976" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="551.875" y="97.80799999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">t</text><rect x="563.25" y="76.976" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="571.625" y="97.80799999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">c</text><rect x="583.0" y="76.976" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="591.375" y="97.80799999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">h</text><rect x="602.75" y="76.976" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="611.125" y="97.80799999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">:</text><rect x="622.5" y="76.976" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="630.875" y="97.80799999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">-</text><rect x="642.25" y="76.976" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="650.625" y="97.80799999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">1</text><rect x="662.0" y="76.976" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="670.375" y="97.80799999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">2</text><rect x="681.75" y="76.976" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="690.125" y="97.80799999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">.</text><rect x="701.5" y="76.976" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="709.875" y="97.80799999999999" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">4</text><rect x="721.25" y="76.976" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><rect x="741.0" y="76.976" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><rect x="760.75" y="76.976" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><rect x="780.5" y="76.976" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><rect x="800.25" y="76.976" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><rect x="504.0" y="106.544" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="512.375" y="127.376" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">R</text><rect x="523.75" y="106.544" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="532.125" y="127.376" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">o</text><rect x="543.5" y="106.544" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="551.875" y="127.376" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">l</text><rect x="563.25" y="106.544" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="571.625" y="127.376" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">l</text><rect x="583.0" y="106.544" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><rect x="602.75" y="106.544" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="611.125" y="127.376" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">:</text><rect x="622.5" y="106.544" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="630.875" y="127.376" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">5</text><rect x="642.25" y="106.544" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="650.625" y="127.376" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">.</text><rect x="662.0" y="106.544" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><text x="670.375" y="127.376" text-anchor="middle" font-family="Consolas,monospace" font-size="20.2" fill="#eef6ff">0</text><rect x="681.75" y="106.544" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><rect x="701.5" y="106.544" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><rect x="721.25" y="106.544" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><rect x="741.0" y="106.544" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><rect x="760.75" y="106.544" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><rect x="780.5" y="106.544" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><rect x="800.25" y="106.544" width="16.75" height="25.536" fill="#ffffff" opacity=".07"/><circle cx="466" cy="50" r="5" fill="#f4f3ec"/><circle cx="858" cy="50" r="5" fill="#f4f3ec"/><circle cx="466" cy="160.4" r="5" fill="#f4f3ec"/><circle cx="858" cy="160.4" r="5" fill="#f4f3ec"/>
+<rect x="440" y="44" width="16" height="50" fill="#222"/>
+<rect x="440" y="48" width="12" height="4" fill="#c9a227"/><text x="474" y="53" font-size="7" fill="#fff">GND</text>
+<rect x="440" y="60" width="12" height="4" fill="#c9a227"/><text x="474" y="65" font-size="7" fill="#fff">VCC</text>
+<rect x="440" y="72" width="12" height="4" fill="#c9a227"/><text x="474" y="77" font-size="7" fill="#fff">SCL</text>
+<rect x="440" y="84" width="12" height="4" fill="#c9a227"/><text x="474" y="89" font-size="7" fill="#fff">SDA</text>
+<text x="660" y="190" text-anchor="middle" font-size="10">16×2 LCD + I²C modülü (PCF8574, 0x27)</text>
+<path d="M212 398 V455 H18 V10 H390" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M212 398 V455 H18 V10 H390" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" /><circle cx="390" cy="10" r="3.2" class="dot"/>
+<path d="M155 252 V22 H390" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M155 252 V22 H390" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" /><circle cx="390" cy="22" r="3.2" class="dot"/>
+<path d="M440 50 H416 V22" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="416" cy="22" r="3.2" class="dot"/>
+<path d="M440 62 H408 V10" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="408" cy="10" r="3.2" class="dot"/>
+<path d="M352 398 V410 H420 V74 H440" fill="none" stroke="#8e44ad" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M352 398 V410 H420 V74 H440" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<path d="M338 398 V425 H432 V86 H440" fill="none" stroke="#16a085" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M338 398 V425 H432 V86 H440" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<rect x="560" y="252" width="130" height="80" rx="5" fill="#2e4a9e" stroke="#1b2f6b" stroke-width="2"/><rect x="611.0" y="278.0" width="28" height="28" fill="#111"/><text x="625.0" y="295.0" text-anchor="middle" font-size="6" fill="#ccc">MPU6050</text><text x="568" y="324" font-size="8" fill="#fff">GY-521</text><line x1="660" y1="318" x2="682" y2="318" stroke="#ff6b6b" stroke-width="2"/><text x="684" y="322" font-size="9" fill="#ffb3b3">X</text><line x1="660" y1="318" x2="660" y2="298" stroke="#7bed9f" stroke-width="2"/><text x="657" y="296" font-size="9" fill="#b8f5c8">Y</text><circle cx="660" cy="318" r="4" fill="none" stroke="#74b9ff" stroke-width="1.5"/><circle cx="660" cy="318" r="1.3" fill="#74b9ff"/><text x="646" y="330" font-size="9" fill="#a8d4ff">Z</text>
+<rect x="570" y="244" width="4" height="8" fill="#c9a227"/><text x="572" y="262" font-size="6" fill="#fff" text-anchor="middle">INT</text>
+<rect x="584" y="244" width="4" height="8" fill="#c9a227"/><text x="586" y="262" font-size="6" fill="#fff" text-anchor="middle">AD0</text>
+<rect x="598" y="244" width="4" height="8" fill="#c9a227"/><text x="600" y="262" font-size="6" fill="#fff" text-anchor="middle">XCL</text>
+<rect x="612" y="244" width="4" height="8" fill="#c9a227"/><text x="614" y="262" font-size="6" fill="#fff" text-anchor="middle">XDA</text>
+<rect x="626" y="244" width="4" height="8" fill="#c9a227"/><text x="628" y="262" font-size="6" fill="#fff" text-anchor="middle">SDA</text>
+<rect x="640" y="244" width="4" height="8" fill="#c9a227"/><text x="642" y="262" font-size="6" fill="#fff" text-anchor="middle">SCL</text>
+<rect x="654" y="244" width="4" height="8" fill="#c9a227"/><text x="656" y="262" font-size="6" fill="#fff" text-anchor="middle">GND</text>
+<rect x="668" y="244" width="4" height="8" fill="#c9a227"/><text x="670" y="262" font-size="6" fill="#fff" text-anchor="middle">VCC</text>
+<path d="M642 244 V212 H420" fill="none" stroke="#8e44ad" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M642 244 V212 H420" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" /><circle cx="420" cy="212" r="3.2" class="dot"/>
+<path d="M628 244 V220 H432" fill="none" stroke="#16a085" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M628 244 V220 H432" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" /><circle cx="432" cy="220" r="3.2" class="dot"/>
+<path d="M656 244 V228 H880 V22" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="880" cy="22" r="3.2" class="dot"/>
+<path d="M670 244 V236 H888 V10" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="888" cy="10" r="3.2" class="dot"/>
+<text x="625" y="348" text-anchor="middle" font-size="10">MPU6050 (GY-521, 0x68)</text>
+<path d="M266 450 h32 v-14 a16 12 0 0 0 -32 0z" fill="#333"/><text x="282" y="447" text-anchor="middle" font-size="7" fill="#fff">LM35</text>
+<line x1="270" y1="428" x2="270" y2="414" stroke="#999" stroke-width="2"/>
+<line x1="282" y1="428" x2="282" y2="414" stroke="#999" stroke-width="2"/>
+<line x1="294" y1="428" x2="294" y2="414" stroke="#999" stroke-width="2"/>
+<path d="M282 414 V398" fill="none" stroke="#e67e22" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M282 414 V398" fill="none" stroke="#fff" stroke-width="1.6" opacity=".85" class="flow" />
+<path d="M270 414 V406 H212" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="212" cy="406" r="3.2" class="dot"/>
+<line x1="200" y1="482" x2="380" y2="482" stroke="#2e6bd6" stroke-width="2"/><text x="384" y="485" font-size="8" fill="#2e6bd6">GND</text>
+<path d="M226 398 V482" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="226" cy="482" r="3.2" class="dot"/>
+<path d="M294 414 V408 H312 V482" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="312" cy="482" r="3.2" class="dot"/>
+<text x="318" y="446" font-size="9">LM35: +Vs · Vout→A0 · GND</text></svg><div class="cap">Şekil 4. LCD (I²C) ve MPU6050 aynı I²C hattını paylaşır: SDA → A4, SCL → A5. LM35 çıkışı A0'a bağlıdır. Siyah noktalar bağlantı noktalarıdır; noktasız kesişimler birbirine bağlı değildir.</div></div>
+<table class="tbl"><tr><th>Eleman</th><th>Bağlantı</th></tr><tr><td>I²C LCD modülü</td><td>GND → GND, VCC → 5V, SDA → A4, SCL → A5</td></tr>
+<tr><td>MPU6050 (GY-521)</td><td>VCC → 5V (kart üzerinde 3,3 V regülatör var), GND → GND, SDA → A4, SCL → A5, AD0 boş (0x68)</td></tr>
+<tr><td>LM35</td><td>Düz yüz size bakarken soldan: +Vs → 5V, Vout → A0, GND → GND</td></tr></table>
+</section>
+<section class="card" id="uyg1"><h2><span class="num">7</span>Uygulama 1: Merhaba Dünya ve Kayan Yazı</h2>
+<div class="codebox"><span class="lbl">lcd_merhaba.ino</span><pre class="code">// Hafta 13 – Uygulama 1: I2C LCD'de Merhaba Dünya ve kayan yazı
+#include &lt;Wire.h&gt;
+#include &lt;LiquidCrystal_I2C.h&gt;   // Kütüphane Yöneticisi: "LiquidCrystal I2C" (Frank de Brabander)
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);   // adres, sütun, satır (çalışmazsa 0x3F deneyin)
+
+void setup() {
+  lcd.init();                 // LCD'yi başlat
+  lcd.backlight();            // arka ışığı aç
+  lcd.setCursor(0, 0);        // 0. sütun, 0. satır (sol üst)
+  lcd.print("Merhaba Dunya!");
+  lcd.setCursor(0, 1);        // 0. sütun, 1. satır (alt satır)
+  lcd.print("Arduino UNO");
+  delay(2000);
+}
+
+void loop() {
+  lcd.scrollDisplayLeft();    // tüm ekran içeriğini bir sütun sola kaydır
+  delay(400);
+}</pre></div>
+<div class="sim"><h4>🔬 Simülasyon: Sanal 16×2 LCD — metin yazın, imleci konumlandırın</h4>
+<div style="text-align:center;margin:8px 0 14px"><div class="lcdwrap"><div class="lcd" id="lcd1"></div></div></div>
+<div class="ctl"><input type="text" id="txt" value="Merhaba Dunya!" maxlength="40"><span>sütun</span><input type="number" id="col" min="0" max="15" value="0"><span>satır</span><select id="row"><option>0</option><option>1</option></select></div>
+<div class="ctl"><button class="btn sm" id="bSetPrint">setCursor + print</button><button class="btn sm" id="bPrint">print (imleç konumuna)</button><button class="btn sm" id="bDeg">print((char)223)</button>
+<button class="btn sm alt" id="bClear">clear()</button><button class="btn sm" id="bHome">home()</button></div>
+<div class="ctl"><button class="btn sm" id="bL">scrollDisplayLeft()</button><button class="btn sm" id="bR">scrollDisplayRight()</button><button class="btn sm" id="bAuto">▶ Uygulama 1'i çalıştır</button>
+<button class="btn sm" id="bCur">cursor()</button><button class="btn sm" id="bBl">noBacklight()</button></div>
+<div class="grid2"><div class="out" id="lcdInfo"></div><div class="serial" id="lcdLog" style="height:120px"></div></div>
+<p style="font-size:.88em;color:#5b6b7d">Türkçe bir harf (ör. "ş") yazmayı deneyin: Arduino metni UTF-8 olarak 2 bayt gönderir, LCD bu baytları kendi tablosundaki (Japonca katakana) karakterler olarak gösterir. 16'dan uzun metinlerin görünmeyen DDRAM alanına gittiğini kaydırma ile görebilirsiniz.</p></div>
+</section>
+<section class="card" id="uyg2"><h2><span class="num">8</span>Uygulama 2: Sıcaklığı LCD'de Gösterme</h2>
+<div class="grid2"><div><div class="codebox"><span class="lbl">lcd_sicaklik.ino</span><pre class="code">// Hafta 13 – Uygulama 2: LM35 sıcaklığını LCD'de gösterme
+#include &lt;Wire.h&gt;
+#include &lt;LiquidCrystal_I2C.h&gt;
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+const int lm35Pin = A0;
+
+void setup() {
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(0, 0);
+  lcd.print("Sicaklik:");          // LCD'de Türkçe karakter yoktur
+}
+
+void loop() {
+  int ham = analogRead(lm35Pin);        // 0 – 1023
+  float volt = ham * 5.0 / 1023.0;      // V
+  float sicaklik = volt * 100.0;        // LM35: 10 mV/°C
+
+  lcd.setCursor(0, 1);
+  lcd.print(sicaklik, 1);               // 1 ondalık basamak
+  lcd.print((char)223);                 // derece işareti (karakter kodu 223)
+  lcd.print("C   ");                    // önceki uzun değerin artıklarını sil
+
+  lcd.setCursor(10, 1);
+  lcd.print(ham);                       // ham ADC değeri
+  lcd.print("   ");
+  delay(500);
+}</pre></div></div>
+<div class="sim"><h4>🔬 LM35 + LCD simülasyonu</h4>
+<label>Ortam sıcaklığı = <span id="tV">24,0</span> °C</label><input type="range" id="tS" min="0" max="100" step="0.5" value="24">
+<div style="text-align:center;margin:10px 0"><div class="lcdwrap"><div class="lcd small" id="lcd2"></div></div></div>
+<div class="out" id="tOut"></div></div></div>
+<div class="note">LM35'in çıkışı 10 mV/°C'dir: 25 °C'de 0,25 V. 5 V referansla 1 ADC adımı 4,9 mV ≈ <b>0,49 °C</b>'ye karşılık gelir; bu yüzden gösterilen değer yaklaşık yarım derecelik adımlarla değişir. <code>(char)223</code>, HD44780 tablosunda derece işaretine benzeyen karakterin kodudur.</div>
+<div class="tip">Sayı kısaldığında (ör. 100,0 → 99,5) eski son hane ekranda kalır. Bu yüzden sayıdan sonra birkaç boşluk yazmak, döngüde <code>clear()</code> kullanmaktan daha iyidir (titreme olmaz).</div>
+</section>
+<section class="card" id="ivme"><h2><span class="num">9</span>İvme Sensörü: MPU6050</h2>
+<p><b>İvmeölçer</b> (accelerometer), bir cismin maruz kaldığı ivmeyi ölçen sensördür. Birimi genellikle <b>g</b>'dir (1 g ≈ 9,81 m/s²). <b>MPU6050</b>, tek yonga üzerinde <b>3 eksenli ivmeölçer</b> ve <b>3 eksenli jiroskop</b> barındıran bir <b>MEMS</b> (mikro-elektromekanik sistem) sensörüdür; içindeki mikroskobik kütle ivmeyle yer değiştirir ve bu, kapasitans değişimi olarak ölçülür. Veriler 16 bit ADC ile sayısallaştırılıp I²C üzerinden okunur.</p>
+<div class="grid2"><div class="figure"><svg viewBox="0 0 520 240" width="540"><defs><marker id="ax13" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8z" fill="context-stroke"/></marker></defs><polygon points="110,150 300,150 360,95 170,95" fill="#2e4a9e" stroke="#1b2f6b" stroke-width="2"/><polygon points="110,150 300,150 300,160 110,160" fill="#1b2f6b"/><polygon points="300,150 360,95 360,105 300,160" fill="#16245a"/><rect x="215" y="112" width="22" height="18" fill="#111" transform="skewX(-40) translate(98 0)"/><line x1="235" y1="122" x2="345" y2="122" stroke="#e74c3c" stroke-width="3" marker-end="url(#ax13)"/><text x="350" y="126" font-size="13" fill="#e74c3c" font-weight="700">X</text><line x1="235" y1="122" x2="285" y2="78" stroke="#27ae60" stroke-width="3" marker-end="url(#ax13)"/><text x="290" y="74" font-size="13" fill="#27ae60" font-weight="700">Y</text><line x1="235" y1="122" x2="235" y2="30" stroke="#2e86de" stroke-width="3" marker-end="url(#ax13)"/><text x="242" y="34" font-size="13" fill="#2e86de" font-weight="700">Z</text><path d="M330 135 a14 8 0 1 0 0 -24" fill="none" stroke="#e74c3c" stroke-width="2" marker-end="url(#ax13)"/><text x="372" y="150" font-size="11" fill="#e74c3c">roll (X etrafında)</text><path d="M270 70 a8 12 0 1 0 22 -6" fill="none" stroke="#27ae60" stroke-width="2" marker-end="url(#ax13)"/><text x="300" y="52" font-size="11" fill="#27ae60">pitch (Y etrafında)</text><path d="M222 40 a14 6 0 1 0 26 0" fill="none" stroke="#2e86de" stroke-width="2" marker-end="url(#ax13)"/><text x="140" y="30" font-size="11" fill="#2e86de">yaw (Z etrafında)</text><line x1="440" y1="70" x2="440" y2="200" stroke="#555" stroke-width="3" marker-end="url(#ax13)" class="pulse"/><text x="450" y="140" font-size="12">g ≈ 9,81 m/s²</text><text x="40" y="200" font-size="11" fill="#5b6b7d">Masada dururken: ax ≈ 0 g, ay ≈ 0 g, az ≈ +1 g</text><text x="40" y="218" font-size="11" fill="#5b6b7d">(ivmeölçer yerçekimine karşı koyan kuvveti ölçer)</text></svg><div class="cap">Şekil 5. GY-521 kartı üzerindeki MPU6050 eksenleri ve dönme açıları</div></div><div>
+<table class="tbl"><tr><th>Özellik</th><th>Değer</th></tr><tr><td>Besleme (GY-521)</td><td>3,3–5 V (kartta regülatör)</td></tr><tr><td>Haberleşme</td><td>I²C, adres 0x68 / 0x69</td></tr>
+<tr><td>İvme ölçüm aralığı</td><td>±2 / ±4 / ±8 / ±16 g</td></tr><tr><td>Duyarlılık (±2 g)</td><td><b>16384 LSB/g</b></td></tr><tr><td>Jiroskop aralığı</td><td>±250 … ±2000 °/s</td></tr><tr><td>Ek</td><td>dahili sıcaklık sensörü</td></tr></table>
+<table class="tbl"><tr><th>Kayıt (register)</th><th>Görevi</th></tr><tr><td>0x6B PWR_MGMT_1</td><td>0 yazılınca sensör uyanır</td></tr><tr><td>0x1C ACCEL_CONFIG</td><td>ölçüm aralığı (varsayılan ±2 g)</td></tr>
+<tr><td>0x3B – 0x40</td><td>ACCEL X, Y, Z (her biri 2 bayt)</td></tr><tr><td>0x41 – 0x42</td><td>sıcaklık: T = ham/340 + 36,53 °C</td></tr><tr><td>0x43 – 0x48</td><td>GYRO X, Y, Z</td></tr><tr><td>0x75 WHO_AM_I</td><td>0x68 döndürür</td></tr></table></div></div>
+<h3>İvmeden eğim açısına</h3>
+<p>Sensör hareketsizken ölçtüğü tek ivme <b>yerçekimidir</b>. Kart eğildikçe 1 g'lik yerçekimi vektörü eksenlere farklı oranlarda dağılır. Roll açısı φ (X ekseni etrafında) ve pitch açısı θ (Y ekseni etrafında) için:</p>
+<div class="formula">a<sub>x</sub> = −sin θ &nbsp;·&nbsp; a<sub>y</sub> = sin φ · cos θ &nbsp;·&nbsp; a<sub>z</sub> = cos φ · cos θ</div>
+<div class="formula">roll φ = atan2(a<sub>y</sub>, a<sub>z</sub>) &nbsp;&nbsp;&nbsp; pitch θ = atan2(−a<sub>x</sub>, √(a<sub>y</sub>² + a<sub>z</sub>²))</div>
+<p><code>atan2(y, x)</code> fonksiyonu sonucu radyan olarak −π…+π aralığında verir; dereceye çevirmek için <b>180/π</b> ile çarpılır. Ham değer g'ye <b>ham / 16384</b> ile çevrilir (±2 g aralığında).</p>
+<div class="warn">İvmeölçer yalnızca <b>yerçekimine göre</b> eğimi ölçer: <b>yaw</b> (Z ekseni etrafında, yatay düzlemde dönme) açısı ivmeden bulunamaz; bunun için jiroskop veya pusula (manyetometre) gerekir. Ayrıca sensör hareket halindeyken (sallanırken) ölçülen ivme yerçekimine eklenir ve açı hesabı bozulur. Pratikte ivmeölçer ile jiroskop <i>tamamlayıcı filtre</i> veya Kalman filtresiyle birleştirilir.</div>
+<div class="note">Kayıtları kendimiz okuyacağımız için ek kütüphane gerekmez. Dilerseniz Kütüphane Yöneticisi'nden <b>"Adafruit MPU6050"</b> (Adafruit Unified Sensor ve BusIO bağımlılıklarıyla birlikte) ya da <b>"MPU6050"</b> (Electronic Cats) kütüphanelerini kurabilirsiniz.</div>
+</section>
+<section class="card" id="uyg3"><h2><span class="num">10</span>Uygulama 3: Eğim Açılarını LCD'de Gösterme</h2>
+<div class="codebox"><span class="lbl">mpu6050_egim_lcd.ino</span><pre class="code">// Hafta 13 – Uygulama 3: MPU6050 ile eğim açılarını LCD'de gösterme
+// Ek kütüphane gerekmez: MPU6050 kayıtları Wire.h ile doğrudan okunur
+#include &lt;Wire.h&gt;
+#include &lt;LiquidCrystal_I2C.h&gt;
+
+const int MPU = 0x68;                 // AD0 = LOW iken adres
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+// I2C'den gelen iki baytı (yüksek, düşük) işaretli 16 bit sayıya çevirir
+int16_t oku16() {
+  uint8_t yuksek = Wire.read();
+  uint8_t dusuk = Wire.read();
+  return (int16_t)(((uint16_t)yuksek &lt;&lt; 8) | dusuk);
+}
+
+void setup() {
+  Serial.begin(9600);
+  Wire.begin();
+  Wire.beginTransmission(MPU);
+  Wire.write(0x6B);                   // PWR_MGMT_1 kaydı
+  Wire.write(0);                      // 0 yaz: uyku modundan çıkar
+  Wire.endTransmission(true);
+  // ACCEL_CONFIG varsayılanı ±2 g -&gt; 16384 LSB/g
+  lcd.init();
+  lcd.backlight();
+}
+
+void loop() {
+  Wire.beginTransmission(MPU);
+  Wire.write(0x3B);                   // ACCEL_XOUT_H kaydından başla
+  Wire.endTransmission(false);        // hattı bırakmadan yeniden başlat
+  Wire.requestFrom(MPU, 6, true);     // 6 bayt: X, Y, Z (her biri H + L)
+  int16_t axHam = oku16();
+  int16_t ayHam = oku16();
+  int16_t azHam = oku16();
+
+  float ax = axHam / 16384.0;         // g cinsinden
+  float ay = ayHam / 16384.0;
+  float az = azHam / 16384.0;
+
+  float roll  = atan2(ay, az) * 180.0 / PI;                     // X ekseni etrafında
+  float pitch = atan2(-ax, sqrt(ay * ay + az * az)) * 180.0 / PI; // Y ekseni etrafında
+
+  lcd.setCursor(0, 0);
+  lcd.print("Pitch:");
+  lcd.print(pitch, 1);
+  lcd.print((char)223);
+  lcd.print("    ");
+  lcd.setCursor(0, 1);
+  lcd.print("Roll :");
+  lcd.print(roll, 1);
+  lcd.print((char)223);
+  lcd.print("    ");
+
+  Serial.print("ax="); Serial.print(ax, 2);
+  Serial.print(" ay="); Serial.print(ay, 2);
+  Serial.print(" az="); Serial.print(az, 2);
+  Serial.print(" | pitch="); Serial.print(pitch, 1);
+  Serial.print(" roll="); Serial.println(roll, 1);
+  delay(200);
+}</pre></div>
+<div class="sim"><h4>🔬 Simülasyon: Kartı eğin (sürükleyin veya kaydırıcıları kullanın)</h4>
+<div class="grid2"><div>
+<svg id="tiltSvg" viewBox="0 0 400 300" width="100%" style="cursor:grab;touch-action:none">
+<rect x="0" y="0" width="400" height="300" fill="#f8fbff"/>
+<polygon id="tBoard" fill="#2e4a9e" stroke="#1b2f6b" stroke-width="2"/>
+<polygon id="tChip" fill="#111"/>
+<line id="tX" stroke="#e74c3c" stroke-width="3"/><line id="tY" stroke="#27ae60" stroke-width="3"/><line id="tZ" stroke="#2e86de" stroke-width="3"/>
+<text id="tXl" font-size="13" fill="#e74c3c" font-weight="700">X</text><text id="tYl" font-size="13" fill="#27ae60" font-weight="700">Y</text><text id="tZl" font-size="13" fill="#2e86de" font-weight="700">Z</text>
+<line x1="365" y1="40" x2="365" y2="120" stroke="#555" stroke-width="3"/><path d="M359 112 L365 124 L371 112z" fill="#555"/><text x="352" y="138" font-size="11">g</text>
+<g transform="translate(10,290)"><rect x="0" y="-62" width="132" height="58" rx="5" fill="#fff" stroke="#ccc"/><text x="6" y="-48" font-size="10" font-family="Consolas">ax = <tspan id="vax"></tspan> g</text><text x="6" y="-34" font-size="10" font-family="Consolas">ay = <tspan id="vay"></tspan> g</text><text x="6" y="-20" font-size="10" font-family="Consolas">az = <tspan id="vaz"></tspan> g</text></g>
+</svg></div><div>
+<label>Pitch θ (Y ekseni etrafında) = <span id="pV">0</span>°</label><input type="range" id="pS" min="-90" max="90" value="0">
+<label>Roll φ (X ekseni etrafında) = <span id="rV">0</span>°</label><input type="range" id="rS" min="-180" max="180" value="0">
+<button class="btn sm" id="tZero">Düz konuma al</button><button class="btn sm alt" id="tShake">Salla (hareket ivmesi ekle)</button>
+<div style="text-align:center;margin:10px 0"><div class="lcdwrap"><div class="lcd small" id="lcd3"></div></div></div>
+<div class="out" id="tiltOut"></div></div></div>
+<div class="serial" id="tiltSer" style="height:100px"></div></div>
+</section>
+<section class="card quiz" id="quiz"><h2><span class="num">11</span>Kendini Test Et</h2>
+<p>Doğru seçeneği bulduğunuzda kısa bir açıklama görüntülenir.</p><div class="q" data-answer="a"><p>1) Arduino UNO'da I²C hatları hangi pinlerdir?</p><button class="opt" data-k="a">a) SDA = A4, SCL = A5</button><button class="opt" data-k="b">b) SDA = D0, SCL = D1</button><button class="opt" data-k="c">c) SDA = D11, SCL = D13</button><div class="fb">✓ UNO'da I²C donanımı A4 (SDA) ve A5 (SCL) pinlerine bağlıdır; D0/D1 seri port (UART), D11/D13 SPI hatlarıdır.</div></div>
+<div class="q" data-answer="b"><p>2) I²C LCD programı yüklendi, arka ışık yanıyor ama yazı görünmüyor. İlk ne yapılmalı?</p><button class="opt" data-k="a">a) Kartı değiştirmek</button><button class="opt" data-k="b">b) Kontrast trimpotunu çevirmek ve I²C tarayıcıyla adresi (0x27/0x3F) doğrulamak</button><button class="opt" data-k="c">c) delay() sürelerini artırmak</button><div class="fb">✓ En sık iki neden yanlış kontrast ayarı ve modülün 0x27 yerine 0x3F adresli olmasıdır.</div></div>
+<div class="q" data-answer="b"><p>3) <code>lcd.setCursor(5, 1);</code> imleci nereye götürür?</p><button class="opt" data-k="a">a) 5. satır, 1. sütun</button><button class="opt" data-k="b">b) 6. sütun, alt satır</button><button class="opt" data-k="c">c) 5. sütun, üst satır</button><div class="fb">✓ Sıra (sütun, satır)'dır ve sayım 0'dan başlar: sütun 5 = 6. sütun, satır 1 = ikinci (alt) satır.</div></div>
+<div class="q" data-answer="c"><p>4) MPU6050 ±2 g aralığında, düz bir masada dururken Z ekseninin ham değeri yaklaşık kaçtır?</p><button class="opt" data-k="a">a) 0</button><button class="opt" data-k="b">b) 1023</button><button class="opt" data-k="c">c) 16384</button><div class="fb">✓ Duyarlılık 16384 LSB/g'dir ve masada Z ekseni +1 g ölçer: ≈ 16384 (ham/16384 = 1 g).</div></div>
+<div class="q" data-answer="c"><p>5) Yalnızca ivmeölçer verisiyle hangi açı hesaplanamaz?</p><button class="opt" data-k="a">a) Roll</button><button class="opt" data-k="b">b) Pitch</button><button class="opt" data-k="c">c) Yaw</button><div class="fb">✓ Yaw, yerçekimi vektörüne dik düzlemde dönmedir; bu dönüşte yerçekiminin eksenlere dağılımı değişmez. Jiroskop veya manyetometre gerekir.</div></div>
+</section>
+<section class="card" id="odev"><h2><span class="num">12</span>Ödev ve Özet</h2>
+<h3>Ödev</h3><ol>
+<li>LCD'nin üst satırında "Sure:" yazısı, alt satırında <code>millis()</code> ile hesaplanan geçen süreyi <b>dd:ss</b> (dakika:saniye) biçiminde gösteren bir kronometre yapın.</li>
+<li><code>createChar()</code> ile <b>ş, ı, ğ, ç</b> harflerini tanımlayıp LCD'ye "Işık" ve "Sıcaklık" kelimelerini doğru yazın.</li>
+<li>MPU6050 ile bir <b>dijital su terazisi</b> yapın: roll açısını LCD'nin üst satırında bir "kabarcık" karakterinin konumuyla (0–15. sütun), alt satırda sayısal olarak gösterin.</li>
+<li>11. haftadaki HC-SR04 mesafe ölçeri LCD'ye taşıyın; alt satırda mesafeyle orantılı bir çubuk grafik (█ karakterleri: <code>lcd.write(255)</code>) çizin.</li></ol>
+<details><summary>2. ödev için ipucu (tıklayın)</summary><div class="codebox"><span class="lbl">ozel_karakter_ipucu.ino</span><pre class="code">// İpucu: createChar ile Türkçe karakter tanımlama (5x8 nokta, her satır 5 bit)
+byte sHarfi[8] = { B00000, B01111, B10000, B01110, B00001, B11110, B00100, B01000 }; // ş
+byte iHarfi[8] = { B00000, B00000, B01100, B00100, B00100, B00100, B01110, B00000 }; // ı
+
+void setup() {
+  lcd.init();
+  lcd.backlight();
+  lcd.createChar(0, sHarfi);   // CGRAM 0. konuma ş
+  lcd.createChar(1, iHarfi);   // CGRAM 1. konuma ı
+  lcd.setCursor(0, 0);         // createChar'dan sonra mutlaka setCursor/home çağırın
+  lcd.print("I");              // büyük I (noktasız) ASCII'de vardır
+  lcd.write(byte(0));          // ş
+  lcd.write(byte(1));          // ı
+  lcd.print("k");              // ekranda: "Işık"
+}</pre></div></details>
+<h3>Özet</h3><ul>
+<li>16×2 LCD, HD44780 denetleyicisiyle çalışır; satır başına 40 karakterlik DDRAM'in 16'sı görünür.</li>
+<li>Paralel bağlantı 6 pin (<code>LiquidCrystal</code>, <code>begin(16,2)</code>), I²C modülü yalnızca SDA/SCL (A4/A5) kullanır (<code>LiquidCrystal_I2C</code>, Kütüphane Yöneticisi'nden kurulur).</li>
+<li>Adres genellikle 0x27 veya 0x3F'dir; emin değilseniz I²C tarayıcı çalıştırın. Kontrast trimpotunu unutmayın.</li>
+<li><code>setCursor(sütun, satır)</code> 0'dan sayar; <code>clear()</code> yerine boşlukla üzerine yazmak titremeyi önler.</li>
+<li>MPU6050: 3 eksen ivme + 3 eksen jiroskop, I²C 0x68; ±2 g'de 16384 LSB/g.</li>
+<li>roll = atan2(ay, az), pitch = atan2(−ax, √(ay²+az²)); yaw ivmeden bulunamaz.</li></ul>
+</section>
+
+</main>
+<footer>Arduino ile Programlama · Ders Notları · 13. Hafta<br>Kaynaklar: C. Taşdemir – <i>Arduino</i>; G. Döktaş – <i>Arduino Eğitim Kitabı</i>; E. Delebe – <i>Projeler ile Arduino</i></footer>
+<script>
+(function(){
+ const KW=['void','if','else','for','while','do','return','switch','case','break','default','const','true','false','#include','#define'];
+ const TY=['int','float','long','unsigned','byte','bool','boolean','char','double','String','word'];
+ const CST=['HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP','LED_BUILTIN','A0','A1','A2','A3','A4','A5'];
+ const FN=['pinMode','digitalWrite','digitalRead','analogRead','analogWrite','delay','delayMicroseconds','millis','micros','setup','loop','map','constrain','pulseIn','tone','noTone','Serial','begin','print','println','attach','write','read','available','random'];
+ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+ function hl(src){
+  let out='',i=0;
+  const re=/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(#?[A-Za-z_][A-Za-z0-9_]*)|(\b\d+(?:\.\d+)?\b)/g;let m,last=0;
+  while((m=re.exec(src))){out+=esc(src.slice(last,m.index));
+   if(m[1])out+='<span class="com">'+esc(m[1])+'</span>';
+   else if(m[2])out+='<span class="str">'+esc(m[2])+'</span>';
+   else if(m[3]){const w=m[3];let c=KW.includes(w)?'kw':TY.includes(w)?'ty':CST.includes(w)?'cst':FN.includes(w)?'fn':'';out+=c?'<span class="'+c+'">'+esc(w)+'</span>':esc(w)}
+   else if(m[4])out+='<span class="num">'+m[4]+'</span>';
+   last=re.lastIndex}
+  return out+esc(src.slice(last))}
+ document.querySelectorAll('pre.code').forEach(p=>{const raw=p.textContent;p.innerHTML=hl(raw);
+  const b=document.createElement('button');b.className='copybtn';b.textContent='Kopyala';
+  b.onclick=()=>{navigator.clipboard.writeText(raw).then(()=>{b.textContent='Kopyalandı ✓';setTimeout(()=>b.textContent='Kopyala',1500)})};
+  p.parentElement.appendChild(b)});
+ document.querySelectorAll('.quiz .q').forEach(q=>{const ans=q.dataset.answer;const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{q.querySelectorAll('.opt').forEach(x=>x.classList.remove('ok','no'));
+   if(o.dataset.k===ans){o.classList.add('ok');if(fb)fb.style.display='block'}else{o.classList.add('no')}})});
+ document.querySelectorAll('.quiz .fb').forEach(f=>f.style.display='none');
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+// ---------- HD44780 sanal LCD modeli ----------
+const A00HI={0xE0:'α',0xE1:'ä',0xE2:'β',0xE3:'ε',0xE4:'μ',0xE5:'σ',0xE6:'ρ',0xE7:'g',0xE8:'√',0xE9:'⁻',0xEA:'j',0xEB:'ˣ',0xEC:'¢',0xED:'£',0xEE:'ñ',0xEF:'ö',
+ 0xF0:'p',0xF1:'q',0xF2:'θ',0xF3:'∞',0xF4:'Ω',0xF5:'ü',0xF6:'Σ',0xF7:'π',0xF8:'x̄',0xF9:'y',0xFA:'千',0xFB:'万',0xFC:'円',0xFD:'÷',0xFE:' ',0xFF:'█'};
+function glyph(b){if(b===0x5C)return '¥';if(b===0x7E)return '→';if(b===0x7F)return '←';if(b>=0x20&&b<0x7E)return String.fromCharCode(b);
+ if(b>=0xA1&&b<=0xDF)return String.fromCharCode(0xFF61+(b-0xA1));if(b>=0xE0)return A00HI[b];return ' '}
+function utf8(s){return Array.from(new TextEncoder().encode(s))}
+class LCD{constructor(el){this.el=el;this.cells=[];for(let i=0;i<32;i++){const c=document.createElement('div');c.className='c';el.appendChild(c);this.cells.push(c)}
+  this.ram=new Array(80).fill(0x20);this.addr=0;this.shift=0;this.cur=false;this.bl=true;this.render()}
+ clear(){this.ram.fill(0x20);this.addr=0;this.shift=0;this.render()}
+ home(){this.addr=0;this.shift=0;this.render()}
+ setCursor(c,r){this.addr=(r?40:0)+Math.min(39,c);this.render()}
+ writeByte(b){this.ram[this.addr]=b;this.addr=(this.addr+1)%80;}
+ print(s){utf8(String(s)).forEach(b=>this.writeByte(b));this.render()}
+ printBytes(a){a.forEach(b=>this.writeByte(b));this.render()}
+ scroll(d){this.shift=(this.shift+d+40)%40;this.render()}
+ backlight(on){this.bl=on;this.el.classList.toggle('off',!on)}
+ render(){for(let r=0;r<2;r++)for(let c=0;c<16;c++){const col=(c+this.shift)%40,i=r*40+col;const el=this.cells[r*16+c];el.textContent=glyph(this.ram[i]);
+   el.classList.toggle('cur',this.cur&&this.addr===i)}}}
+window.__LCD=LCD;
+// ---------- Simülasyon 1 ----------
+const L1=new LCD($('lcd1'));const log=$('lcdLog');
+function lg(t){log.textContent+=t+'\n';const a=log.textContent.split('\n');if(a.length>60)log.textContent=a.slice(-60).join('\n');log.scrollTop=1e9}
+function esc(s){return s.replace(/\\/g,'\\\\').replace(/"/g,'\\"')}
+function info(){const r=L1.addr>=40?1:0,c=L1.addr%40;$('lcdInfo').innerHTML=`İmleç (DDRAM): sütun <b>${c}</b>, satır <b>${r}</b>${c>15?' <span style="color:#e67e22">(görünmeyen alan)</span>':''}<br>Kaydırma: ${L1.shift} sütun · Arka ışık: ${L1.bl?'açık':'kapalı'}`}
+function setup1(){L1.clear();lg('lcd.init();');lg('lcd.backlight();');L1.backlight(true);L1.setCursor(0,0);L1.print('Merhaba Dunya!');L1.setCursor(0,1);L1.print('Arduino UNO');
+ lg('lcd.setCursor(0, 0); lcd.print("Merhaba Dunya!");');lg('lcd.setCursor(0, 1); lcd.print("Arduino UNO");');info()}
+$('bSetPrint').onclick=()=>{const c=Math.max(0,Math.min(15,+$('col').value||0)),r=+$('row').value,t=$('txt').value;L1.setCursor(c,r);L1.print(t);lg(`lcd.setCursor(${c}, ${r});`);lg(`lcd.print("${esc(t)}");`);
+ if(/[^\x00-\x7f]/.test(t))lg('// Uyarı: ASCII dışı karakter -> UTF-8 baytları LCD tablosunda farklı görünür');info()};
+$('bPrint').onclick=()=>{const t=$('txt').value;L1.print(t);lg(`lcd.print("${esc(t)}");`);info()};
+$('bDeg').onclick=()=>{L1.printBytes([223]);lg('lcd.print((char)223);');info()};
+$('bClear').onclick=()=>{L1.clear();lg('lcd.clear();');info()};
+$('bHome').onclick=()=>{L1.home();lg('lcd.home();');info()};
+$('bL').onclick=()=>{L1.scroll(1);lg('lcd.scrollDisplayLeft();');info()};
+$('bR').onclick=()=>{L1.scroll(-1);lg('lcd.scrollDisplayRight();');info()};
+$('bCur').onclick=()=>{L1.cur=!L1.cur;L1.render();lg(L1.cur?'lcd.cursor();':'lcd.noCursor();');$('bCur').textContent=L1.cur?'noCursor()':'cursor()';info()};
+$('bBl').onclick=()=>{L1.backlight(!L1.bl);lg(L1.bl?'lcd.backlight();':'lcd.noBacklight();');$('bBl').textContent=L1.bl?'noBacklight()':'backlight()';info()};
+let auto=null,autoN=0;
+$('bAuto').onclick=()=>{if(auto){clearInterval(auto);clearTimeout(auto);auto=null;$('bAuto').textContent="▶ Uygulama 1'i çalıştır";return}
+ setup1();lg('delay(2000);');$('bAuto').textContent='■ Durdur';
+ auto=setTimeout(()=>{auto=setInterval(()=>{L1.scroll(1);if(autoN++%5===0)lg('lcd.scrollDisplayLeft(); delay(400);');info()},400)},2000)};
+setup1();
+// ---------- Simülasyon 2: LM35 ----------
+const L2=new LCD($('lcd2'));L2.setCursor(0,0);L2.print('Sicaklik:');
+function fmt(v,d){return v.toFixed(d)}
+function upd2(){const T=+$('tS').value;$('tV').textContent=T.toFixed(1).replace('.',',');
+ const ham=Math.min(1023,Math.round(T*0.01/5*1023)),volt=ham*5/1023,t=volt*100;
+ L2.setCursor(0,1);L2.print(fmt(t,1));L2.printBytes([223]);L2.print('C   ');L2.setCursor(10,1);L2.print(String(ham));L2.print('   ');
+ $('tOut').innerHTML=`Vout = ${(T*10).toFixed(0)} mV → analogRead = <b>${ham}</b><br>volt = ${ham}·5/1023 = ${volt.toFixed(3)} V → sıcaklık = <b>${t.toFixed(1)} °C</b>`}
+$('tS').oninput=upd2;upd2();
+// ---------- Simülasyon 3: eğim ----------
+const L3=new LCD($('lcd3'));let P=0,R=0,shake=0;const sv=$('tiltSvg');
+const E=32*Math.PI/180;function proj(v){return [200+v[0]*1.0, 165-(v[2]*Math.cos(E)+v[1]*Math.sin(E))]}
+function rot(v,th,ph){ // R = Ry(th)*Rx(ph)
+ const [x,y,z]=v;const c=Math.cos(ph),s=Math.sin(ph);const y1=c*y-s*z,z1=s*y+c*z;const ct=Math.cos(th),st=Math.sin(th);return [ct*x+st*z1,y1,-st*x+ct*z1]}
+function pts(arr,th,ph){return arr.map(p=>proj(rot(p,th,ph)).map(n=>n.toFixed(1)).join(',')).join(' ')}
+function draw(){const th=P*Math.PI/180,ph=R*Math.PI/180;
+ $('tBoard').setAttribute('points',pts([[-110,-70,0],[110,-70,0],[110,70,0],[-110,70,0]],th,ph));
+ $('tChip').setAttribute('points',pts([[-18,-18,0.5],[18,-18,0.5],[18,18,0.5],[-18,18,0.5]],th,ph));
+ const o=proj(rot([0,0,0],th,ph));[['tX',[95,0,0]],['tY',[0,95,0]],['tZ',[0,0,95]]].forEach(([id,v])=>{const p=proj(rot(v,th,ph));const l=$(id);
+  l.setAttribute('x1',o[0]);l.setAttribute('y1',o[1]);l.setAttribute('x2',p[0]);l.setAttribute('y2',p[1]);const t=$(id+'l');t.setAttribute('x',p[0]+4);t.setAttribute('y',p[1]-4)})}
+function accel(){const th=P*Math.PI/180,ph=R*Math.PI/180;let ax=-Math.sin(th),ay=Math.sin(ph)*Math.cos(th),az=Math.cos(ph)*Math.cos(th);
+ const n=()=>(Math.random()-0.5)*0.01;ax+=n()+(shake?(Math.random()-0.5)*shake:0);ay+=n()+(shake?(Math.random()-0.5)*shake:0);az+=n()+(shake?(Math.random()-0.5)*shake:0);
+ const raw=[ax,ay,az].map(v=>Math.max(-32768,Math.min(32767,Math.round(v*16384))));return raw}
+function step(){const raw=accel();const [ax,ay,az]=raw.map(v=>v/16384);
+ const roll=Math.atan2(ay,az)*180/Math.PI,pitch=Math.atan2(-ax,Math.sqrt(ay*ay+az*az))*180/Math.PI;
+ $('vax').textContent=(ax>=0?'+':'')+ax.toFixed(2);$('vay').textContent=(ay>=0?'+':'')+ay.toFixed(2);$('vaz').textContent=(az>=0?'+':'')+az.toFixed(2);
+ L3.setCursor(0,0);L3.print('Pitch:'+pitch.toFixed(1));L3.printBytes([223]);L3.print('    ');L3.setCursor(0,1);L3.print('Roll :'+roll.toFixed(1));L3.printBytes([223]);L3.print('    ');
+ $('tiltOut').innerHTML=`Ham: AX=${raw[0]} AY=${raw[1]} AZ=${raw[2]}<br>roll = atan2(${ay.toFixed(2)}, ${az.toFixed(2)}) = <b>${roll.toFixed(1)}°</b><br>pitch = atan2(${(-ax).toFixed(2)}, √(ay²+az²)) = <b>${pitch.toFixed(1)}°</b>`+(Math.abs(P)>80?'<br><span style="color:#e67e22">Pitch ±90°\'a yaklaştıkça ay ve az sıfıra gider; roll hesaplaması belirsizleşir.</span>':'')+(shake?'<br><span style="color:#e74c3c">Hareket ivmesi açı hesabını bozuyor!</span>':'');
+ const s=$('tiltSer');s.textContent+=`ax=${ax.toFixed(2)} ay=${ay.toFixed(2)} az=${az.toFixed(2)} | pitch=${pitch.toFixed(1)} roll=${roll.toFixed(1)}\n`;const L=s.textContent.split('\n');if(L.length>40)s.textContent=L.slice(-40).join('\n');s.scrollTop=1e9;
+ if(shake>0)shake=Math.max(0,shake-0.08)}
+function setPR(p,r){P=Math.max(-90,Math.min(90,Math.round(p)));R=Math.max(-180,Math.min(180,Math.round(r)));$('pS').value=P;$('rS').value=R;$('pV').textContent=P;$('rV').textContent=R;draw()}
+$('pS').oninput=e=>setPR(+e.target.value,R);$('rS').oninput=e=>setPR(P,+e.target.value);
+$('tZero').onclick=()=>setPR(0,0);$('tShake').onclick=()=>{shake=1.2};
+let dr=null;sv.addEventListener('pointerdown',e=>{dr={x:e.clientX,y:e.clientY,p:P,r:R};sv.setPointerCapture(e.pointerId)});
+sv.addEventListener('pointermove',e=>{if(!dr)return;setPR(dr.p-(e.clientX-dr.x)*0.5,dr.r+(e.clientY-dr.y)*0.5)});
+sv.addEventListener('pointerup',()=>dr=null);
+setPR(-12,5);step();setInterval(step,200);
+})();
+</script>
+</body></html>

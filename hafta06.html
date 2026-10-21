@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6. Hafta – Analog Okuma ve Fotosensör (LDR) – LED | Arduino ile Programlama</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#1d2733;--muted:#5b6b7d;--teal:#00979d;--teal2:#00b3b9;--accent:#e67e22;--red:#e74c3c;--green:#27ae60;--code:#0f1b26;--border:#dde5ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+header.top{background:linear-gradient(135deg,#006468,#00979d 60%,#00b3b9);color:#fff;padding:28px 20px 34px;position:relative;overflow:hidden}
+header.top::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px),repeating-linear-gradient(0deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px);pointer-events:none}
+.wrap{max-width:1050px;margin:0 auto;padding:0 18px}
+.badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:3px 12px;border-radius:20px;font-size:.85em;letter-spacing:.5px}
+header.top h1{margin:10px 0 6px;font-size:2em}
+header.top p{margin:0;opacity:.92}
+nav.weeknav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;position:relative;z-index:1}
+nav.weeknav a{color:#fff;text-decoration:none;background:rgba(0,0,0,.18);padding:6px 12px;border-radius:6px;font-size:.9em}
+nav.weeknav a:hover{background:rgba(0,0,0,.35)}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;margin:22px 0}
+.toc ol{margin:6px 0;columns:2}
+.toc a{color:var(--teal);text-decoration:none}
+section.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin:22px 0;box-shadow:0 2px 8px rgba(20,40,60,.05);animation:fadeUp .6s ease both}
+section.card h2{margin-top:0;color:#006468;border-bottom:2px solid #e3f3f3;padding-bottom:8px}
+section.card h2 .num{display:inline-block;background:var(--teal);color:#fff;border-radius:50%;width:32px;height:32px;text-align:center;line-height:32px;margin-right:8px;font-size:.8em}
+h3{color:#0b4f6c}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.goals li{margin:4px 0}
+.note,.warn,.tip{border-radius:8px;padding:12px 16px;margin:14px 0;border-left:5px solid}
+.note{background:#eaf6ff;border-color:#2e86de}.warn{background:#fff3e6;border-color:var(--accent)}.tip{background:#eafaf1;border-color:var(--green)}
+.note::before{content:"ℹ️ Not: ";font-weight:600}.warn::before{content:"⚠️ Dikkat: ";font-weight:600}.tip::before{content:"💡 İpucu: ";font-weight:600}
+.formula{font-family:Cambria,"Times New Roman",serif;font-size:1.5em;text-align:center;background:#f7fbfb;border:1px dashed var(--teal);border-radius:8px;padding:12px;margin:14px 0}
+table.tbl{border-collapse:collapse;width:100%;margin:12px 0;font-size:.95em}
+table.tbl th,table.tbl td{border:1px solid var(--border);padding:7px 10px;text-align:left}
+table.tbl th{background:#e9f6f6;color:#064d50}
+table.tbl tr:nth-child(even) td{background:#fafcfd}
+.codebox{position:relative;margin:14px 0}
+.codebox .lbl{background:#1f3344;color:#9fd7da;font-size:.8em;padding:4px 12px;border-radius:8px 8px 0 0;display:inline-block;font-family:Consolas,monospace}
+pre.code{background:var(--code);color:#d7e3ee;padding:16px 18px;border-radius:0 8px 8px 8px;overflow:auto;font-family:Consolas,"Courier New",monospace;font-size:.92em;line-height:1.5;margin:0}
+pre.code .kw{color:#c792ea}.code .ty{color:#82aaff}.code .fn{color:#f78c6c}.code .num{color:#f7c56c}.code .str{color:#c3e88d}.code .com{color:#6b8299;font-style:italic}.code .cst{color:#ff5370}
+.copybtn{position:absolute;top:30px;right:8px;background:#2b4459;color:#cfe;border:0;border-radius:5px;padding:4px 10px;cursor:pointer;font-size:.8em}
+.copybtn:hover{background:var(--teal)}
+.figure{text-align:center;margin:16px 0}
+.figure svg{max-width:100%;height:auto}
+.figure .cap{font-size:.88em;color:var(--muted);margin-top:6px}
+.sim{background:#f3fafa;border:1px solid #bfe3e4;border-radius:10px;padding:16px;margin:16px 0}
+.sim h4{margin:0 0 10px;color:#006468}
+.sim label{display:block;margin:8px 0 2px;font-weight:600;font-size:.92em}
+.sim input[type=range]{width:100%;accent-color:var(--teal)}
+.sim .out{font-family:Consolas,monospace;background:#fff;border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-top:10px}
+.serial{background:#0b1620;color:#7CFC9a;font-family:Consolas,monospace;border-radius:6px;padding:10px;height:140px;overflow:auto;font-size:.88em;white-space:pre}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:.92em;margin:4px 4px 4px 0}
+.btn:hover{background:#007a7f}.btn.alt{background:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.toc ol{columns:1}}
+/* animations */
+.flow{stroke-dasharray:6 10;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+.glow{filter:drop-shadow(0 0 6px #ff4d4d)}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.spin{transform-origin:center;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* quiz */
+.quiz .q{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0}
+.quiz .q p{margin:0 0 8px;font-weight:600}
+.quiz .opt{display:block;width:100%;text-align:left;background:#f7f9fb;border:1px solid var(--border);border-radius:6px;padding:7px 10px;margin:4px 0;cursor:pointer;font-size:.95em}
+.quiz .opt:hover{background:#eef6f6}
+.quiz .opt.ok{background:#d9f5e3;border-color:var(--green)}
+.quiz .opt.no{background:#fde2df;border-color:var(--red)}
+.quiz .fb{font-size:.9em;margin-top:6px;color:var(--muted)}
+details{background:#fbfcfd;border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin:10px 0}
+details summary{cursor:pointer;font-weight:600;color:#0b4f6c}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding:8px 0 8px 46px;margin:6px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:32px;height:32px;border-radius:50%;background:var(--teal);color:#fff;text-align:center;line-height:32px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:30px 10px 40px}
+.pill{display:inline-block;background:#e3f3f3;color:#064d50;border-radius:12px;padding:2px 10px;font-size:.85em;margin:2px}
+</style></head><body>
+<header class="top"><div class="wrap">
+<span class="badge">ARDUİNO İLE PROGRAMLAMA · 6. HAFTA</span>
+<h1>Analog Okuma ve Fotosensör (LDR) – LED</h1><p>Analog/dijital sinyal, 10 bit ADC, analogRead(), Seri Monitör ve Seri Çizici, LDR ile gerilim bölücü ve otomatik gece lambası</p>
+<nav class="weeknav"><a href="index.html">☰ Tüm Haftalar</a><a href="hafta05.html">← 5. Hafta</a><a href="hafta07.html">7. Hafta →</a></nav>
+</div></header>
+<main class="wrap">
+<div class="toc"><strong>Bu haftanın içeriği</strong><ol><li><a href="#hedef">Haftanın Hedefleri</a></li><li><a href="#sinyal">Analog ve Dijital Sinyal</a></li><li><a href="#adc">ADC: Analog-Dijital Dönüştürücü ve Çözünürlük</a></li><li><a href="#seri">analogRead() ve Seri Haberleşme: Seri Monitör ve Seri Çizici</a></li><li><a href="#ldr">Fotosensör: LDR (Işığa Bağımlı Direnç)</a></li><li><a href="#bolucu">LDR ile Gerilim Bölücü</a></li><li><a href="#devre">Devre Şeması: LDR + 10 kΩ ve LED</a></li><li><a href="#olcer">Uygulama 1: Işık Ölçer ve Seri Çizici</a></li><li><a href="#gece">Uygulama 2: Otomatik Gece Lambası</a></li><li><a href="#sim">Simülasyon: Gece Lambası</a></li><li><a href="#quiz">Kendini Test Et</a></li><li><a href="#odev">Ödev ve Özet</a></li></ol></div>
+<style>
+.bitbox{display:flex;gap:3px;justify-content:center;margin:8px 0}
+.bitbox span{width:30px;height:30px;line-height:30px;text-align:center;border-radius:4px;font-family:Consolas,monospace;background:#dfe7ee;color:#567}
+.bitbox span.on{background:#00979d;color:#fff}
+.bigval{font-family:Consolas,monospace;font-size:1.8em;text-align:center;color:#006468;font-weight:700}
+</style>
+
+<section class="card" id="hedef"><h2><span class="num">1</span>Haftanın Hedefleri</h2>
+<ul class="goals">
+<li><b>Analog</b> ve <b>dijital</b> sinyal arasındaki farkı açıklayabilmek</li>
+<li>Arduino UNO'daki <b>10 bitlik ADC</b>'nin çalışmasını, 0–1023 aralığını ve ≈ 4,9 mV çözünürlüğü yorumlayabilmek</li>
+<li><code>analogRead()</code> fonksiyonuyla A0–A5 pinlerinden gerilim okuyabilmek</li>
+<li><b>Seri Monitör</b> ve <b>Seri Çizici (Serial Plotter)</b> ile sensör verisini izleyebilmek</li>
+<li><b>LDR (fotosensör)</b>'nin yapısını ve ışığa bağlı direnç değişimini açıklayabilmek</li>
+<li>LDR ve 10 kΩ ile <b>gerilim bölücü</b> kurup if-else ile <b>otomatik gece lambası</b> yapabilmek</li></ul>
+<div class="note">Gerekli malzemeler: Arduino UNO, breadboard, 1 adet LDR (ör. GL5528), 1 adet 10 kΩ direnç, 1 adet LED, 1 adet 220 Ω direnç, jumper kablolar. 2. haftadaki gerilim bölücü formülü bu hafta yeniden kullanılacaktır.</div>
+</section>
+
+<section class="card" id="sinyal"><h2><span class="num">2</span>Analog ve Dijital Sinyal</h2>
+<p>Şimdiye kadar kullandığımız <code>digitalRead()</code> ve <code>digitalWrite()</code> yalnızca iki durumla çalışıyordu: <b>LOW (0 V)</b> ve <b>HIGH (5 V)</b>. Oysa doğadaki büyüklüklerin çoğu (sıcaklık, ışık şiddeti, ses, basınç) <b>sürekli</b> değişir ve iki değerle ifade edilemez. Bu tür büyüklükleri temsil eden sinyallere <b>analog sinyal</b> denir.</p>
+<div class="figure"><svg viewBox="0 0 640 210" width="640">
+<rect x="5" y="5" width="305" height="200" rx="8" fill="#fff" stroke="#bfe3e4"/>
+<rect x="330" y="5" width="305" height="200" rx="8" fill="#fff" stroke="#bfe3e4"/>
+<text x="157" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="#006468">Analog sinyal (sürekli)</text>
+<text x="482" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="#006468">Dijital sinyal (iki seviye)</text>
+<line x1="30" y1="170" x2="295" y2="170" stroke="#999"/><line x1="30" y1="40" x2="30" y2="170" stroke="#999"/>
+<line x1="355" y1="170" x2="620" y2="170" stroke="#999"/><line x1="355" y1="40" x2="355" y2="170" stroke="#999"/>
+<text x="24" y="58" font-size="10" text-anchor="end">5V</text><text x="24" y="172" font-size="10" text-anchor="end">0V</text>
+<text x="349" y="58" font-size="10" text-anchor="end">5V</text><text x="349" y="172" font-size="10" text-anchor="end">0V</text>
+<path id="sigA" d="M30 105 C55 45 80 45 105 105 S155 165 180 105 S230 45 255 105 S285 150 295 130" fill="none" stroke="#2e86de" stroke-width="3"/>
+<path id="sigD" d="M355 165 H395 V55 H455 V165 H480 V55 H560 V165 H620" fill="none" stroke="#e67e22" stroke-width="3"/>
+<circle r="6" fill="#e74c3c"><animateMotion dur="4s" repeatCount="indefinite"><mpath href="#sigA"/></animateMotion></circle>
+<circle r="6" fill="#e74c3c"><animateMotion dur="4s" repeatCount="indefinite"><mpath href="#sigD"/></animateMotion></circle>
+<text x="157" y="192" text-anchor="middle" font-size="11" fill="#5b6b7d">0–5 V arasında sonsuz sayıda değer alabilir</text>
+<text x="482" y="192" text-anchor="middle" font-size="11" fill="#5b6b7d">Yalnızca LOW (0 V) veya HIGH (5 V)</text>
+</svg><div class="cap">Şekil 1. Analog sinyal sürekli bir aralıkta, dijital sinyal ise iki seviyede değer alır (kırmızı nokta sinyal üzerinde ilerler).</div></div>
+<table class="tbl"><tr><th>Özellik</th><th>Dijital giriş</th><th>Analog giriş</th></tr>
+<tr><td>Fonksiyon</td><td><code>digitalRead(pin)</code></td><td><code>analogRead(pin)</code></td></tr>
+<tr><td>Dönen değer</td><td>LOW (0) ya da HIGH (1)</td><td>0 ile 1023 arasında bir tam sayı</td></tr>
+<tr><td>UNO pinleri</td><td>D0–D13 (A0–A5 de kullanılabilir)</td><td>Yalnızca A0–A5</td></tr>
+<tr><td>Örnek eleman</td><td>Buton, anahtar, PIR hareket sensörü</td><td>LDR, potansiyometre, LM35 sıcaklık sensörü</td></tr></table>
+<div class="note">Dijital girişte 5 V beslemede yaklaşık <b>3 V'un üzeri HIGH</b>, <b>1,5 V'un altı LOW</b> kabul edilir; aradaki gerilimler belirsizdir. Analog girişte ise her gerilim değeri ayrı bir sayıya karşılık gelir.</div>
+</section>
+
+<section class="card" id="adc"><h2><span class="num">3</span>ADC: Analog-Dijital Dönüştürücü ve Çözünürlük</h2>
+<p>Mikrodenetleyici yalnızca sayılarla çalışabildiği için analog gerilimi bir sayıya çevirmesi gerekir. Bu işi yapan birime <b>ADC (Analog-to-Digital Converter)</b> denir. ATmega328P'de <b>10 bitlik</b> bir ADC bulunur ve 6 analog giriş (A0–A5) bu tek ADC'yi sırayla paylaşır.</p>
+<div class="grid2"><div>
+<div class="formula">2<sup>10</sup> = 1024 seviye &nbsp;→&nbsp; 0 … 1023</div>
+<div class="formula">Çözünürlük = 5 V / 1024 ≈ 4,88 mV</div>
+<div class="formula">N = ⌊ V<sub>giriş</sub> · 1024 / 5 ⌋ &nbsp;&nbsp; V ≈ N · 5 / 1024</div>
+<p>Yani okunan değer 1 arttığında giriş gerilimi yaklaşık <b>4,9 mV</b> artmıştır. 4,9 mV'tan küçük değişimler ADC tarafından ayırt edilemez; bu sınırlamaya <b>nicemleme (kuantalama) hatası</b> denir.</p></div>
+<div class="figure"><svg viewBox="0 0 400 230" width="400"><rect x="1" y="1" width="398" height="228" rx="8" fill="#fff" stroke="#bfe3e4"/><line x1="50" y1="200" x2="380" y2="200" stroke="#999"/><line x1="50" y1="20" x2="50" y2="200" stroke="#999"/><line x1="50" y1="200" x2="370" y2="40" stroke="#2e86de" stroke-width="2" stroke-dasharray="5 4"/><text x="44" y="203" font-size="9" text-anchor="end" font-family="Consolas">000</text><text x="44" y="183" font-size="9" text-anchor="end" font-family="Consolas">001</text><text x="44" y="163" font-size="9" text-anchor="end" font-family="Consolas">010</text><text x="44" y="143" font-size="9" text-anchor="end" font-family="Consolas">011</text><text x="44" y="123" font-size="9" text-anchor="end" font-family="Consolas">100</text><text x="44" y="103" font-size="9" text-anchor="end" font-family="Consolas">101</text><text x="44" y="83" font-size="9" text-anchor="end" font-family="Consolas">110</text><text x="44" y="63" font-size="9" text-anchor="end" font-family="Consolas">111</text><polyline points="50,200 90,200 90,180 130,180 130,160 170,160 170,140 210,140 210,120 250,120 250,100 290,100 290,80 330,80 330,60 370,60" fill="none" stroke="#e67e22" stroke-width="3"/><text x="215" y="218" text-anchor="middle" font-size="11" fill="#5b6b7d">Giriş gerilimi (0 → 5 V)</text><text x="250" y="70" font-size="11" fill="#2e86de">gerçek gerilim</text><text x="250" y="160" font-size="11" fill="#e67e22">ADC çıkışı (basamak)</text><text x="60" y="34" font-size="11" fill="#333">3 bit örneği: 2³ = 8 basamak</text></svg><div class="cap">Şekil 2. Nicemleme: sürekli gerilim basamaklı bir sayıya dönüşür (anlaşılırlık için 3 bit çizilmiştir; UNO'da 1024 basamak vardır).</div></div></div>
+<table class="tbl"><tr><th>Giriş gerilimi</th><th>0 V</th><th>1 V</th><th>2,5 V</th><th>3,3 V</th><th>5 V</th></tr>
+<tr><td>analogRead()</td><td>0</td><td>204</td><td>512</td><td>675</td><td>1023</td></tr></table>
+<div class="sim"><h4>🔬 Simülasyon: ADC – gerilimi sayıya çevirme</h4>
+<div class="grid2"><div>
+<label>A0 pinine uygulanan gerilim = <span id="aVv">2,50</span> V</label><input type="range" id="aV" min="0" max="5" step="0.01" value="2.5">
+<div class="bigval" id="aN">512</div>
+<div class="bitbox" id="aBits"></div>
+<div class="out" id="aOut"></div></div>
+<div class="figure" style="margin:0"><svg viewBox="0 0 330 220" width="330" id="aSvg">
+<rect x="1" y="1" width="328" height="218" rx="8" fill="#fff" stroke="#bfe3e4"/>
+<text x="165" y="20" text-anchor="middle" font-size="12" font-weight="700" fill="#006468">Seçili değerin çevresi (büyütülmüş)</text>
+<line x1="40" y1="190" x2="310" y2="190" stroke="#999"/><line x1="40" y1="30" x2="40" y2="190" stroke="#999"/>
+<polyline id="aStair" fill="none" stroke="#e67e22" stroke-width="3"/>
+<line id="aLine" stroke="#2e86de" stroke-width="2" stroke-dasharray="5 4"/>
+<circle id="aDot" r="6" fill="#e74c3c"/>
+<g id="aLbl"></g>
+<text x="175" y="210" text-anchor="middle" font-size="10" fill="#5b6b7d">gerilim (her basamak ≈ 4,88 mV)</text>
+</svg></div></div></div>
+<div class="tip">Ölçümde referans, varsayılan olarak kartın 5 V beslemesidir (USB'den beslenirken bu 4,8–5,1 V arasında değişebilir). <code>analogReference()</code> ile farklı bir referans seçilebilir; bu konuya sıcaklık sensörü haftasında döneceğiz. Bir ADC dönüşümü yaklaşık <b>100 µs</b> sürer, yani saniyede yaklaşık 10 000 okuma yapılabilir.</div>
+</section>
+
+<section class="card" id="seri"><h2><span class="num">4</span>analogRead() ve Seri Haberleşme: Seri Monitör ve Seri Çizici</h2>
+<p><code>analogRead(pin)</code>, verilen analog pindeki gerilimi okuyup 0–1023 arasında bir <code>int</code> değer döndürür. Analog pinler varsayılan olarak giriştir; bu nedenle <code>pinMode()</code> ile ayarlamaya gerek yoktur. Okunan değeri görmek için <b>seri haberleşme</b> kullanılır: Arduino, USB kablosu üzerinden bilgisayara metin gönderir.</p>
+<ol class="steps">
+<li><code>setup()</code> içinde <code>Serial.begin(9600);</code> yazılır. 9600, saniyedeki bit sayısıdır (<b>baud hızı</b>).</li>
+<li>Kod yüklendikten sonra IDE'de <b>Araçlar → Seri Port Ekranı</b> (veya sağ üstteki büyüteç simgesi, Ctrl+Shift+M) açılır.</li>
+<li>Seri Monitör'ün sağ altındaki baud hızı da <b>9600</b> seçilmelidir; aksi hâlde anlamsız karakterler görülür.</li>
+<li>Değerleri grafik olarak görmek için <b>Araçlar → Seri Çizici</b> (Serial Plotter, Ctrl+Shift+L) açılır. Seri Monitör ile Seri Çizici aynı anda açılamaz; biri kapatılmalıdır.</li></ol>
+<table class="tbl"><tr><th>Fonksiyon</th><th>Örnek</th><th>Görevi</th></tr>
+<tr><td><code>analogRead(pin)</code></td><td><code>int d = analogRead(A0);</code></td><td>A0–A5 pinindeki gerilimi 0–1023 arası sayı olarak okur</td></tr>
+<tr><td><code>Serial.begin(hız)</code></td><td><code>Serial.begin(9600);</code></td><td>Seri haberleşmeyi belirtilen baud hızında başlatır</td></tr>
+<tr><td><code>Serial.print(x)</code></td><td><code>Serial.print("Deger: ");</code></td><td>Metin ya da sayıyı yazdırır, satır sonu eklemez</td></tr>
+<tr><td><code>Serial.println(x)</code></td><td><code>Serial.println(d);</code></td><td>Yazdırır ve yeni satıra geçer</td></tr>
+<tr><td>Seri Çizici biçimi</td><td><code>Isik:523,Esik:300</code></td><td>Her satır bir zaman noktasıdır; virgülle ayrılan “etiket:değer” çiftleri ayrı çizgiler olarak çizilir</td></tr></table>
+<div class="warn">Dijital pin 0 (RX) ve 1 (TX) seri haberleşme için kullanılır. <code>Serial</code> kullanılan projelerde bu iki pine LED ya da buton bağlamayın; aksi hâlde program yükleme ve seri iletişim bozulabilir.</div>
+</section>
+
+<section class="card" id="ldr"><h2><span class="num">5</span>Fotosensör: LDR (Işığa Bağımlı Direnç)</h2>
+<p><b>LDR (Light Dependent Resistor)</b> ya da <b>fotodirenç</b>, direnci üzerine düşen ışık şiddetine göre değişen pasif bir elemandır. Yüzeyindeki zikzak şeklindeki iz <b>kadmiyum sülfür (CdS)</b> adlı yarı iletken malzemeden yapılır. Işık fotonları bu malzemedeki elektronlara enerji verir; serbest kalan yük taşıyıcıları arttıkça direnç <b>azalır</b>.</p>
+<div class="figure"><svg viewBox="0 0 640 250" width="640"><rect x="1" y="1" width="250" height="248" rx="8" fill="#fff" stroke="#bfe3e4"/><circle cx="125" cy="110" r="62" fill="#c98b3a" stroke="#7a5230" stroke-width="3"/><circle cx="125" cy="110" r="52" fill="#e8b960"/><path d="M85 80 H165 v10 H85 v10 H165 v10 H85 v10 H165 v10 H85 v10 H165" fill="none" stroke="#8a3b12" stroke-width="5"/><rect x="75" y="72" width="8" height="76" fill="#d9d9d9" stroke="#777"/><rect x="167" y="72" width="8" height="76" fill="#d9d9d9" stroke="#777"/><line x1="105" y1="172" x2="105" y2="235" stroke="#999" stroke-width="4"/><line x1="145" y1="172" x2="145" y2="235" stroke="#999" stroke-width="4"/><g class="pulse" style="transform-box:fill-box;transform-origin:center"><circle cx="215" cy="35" r="14" fill="#ffd54f"/><path d="M200 48 L175 70 M212 52 L195 80 M190 40 L165 55" stroke="#f1c40f" stroke-width="3"/></g><text x="125" y="22" text-anchor="middle" font-size="12" font-weight="700">LDR (üstten görünüş)</text><text x="60" y="200" font-size="10" fill="#8a3b12">CdS iz</text><text x="190" y="200" font-size="10">2 bacak</text><text x="190" y="213" font-size="10">(kutupsuz)</text><rect x="270" y="1" width="368" height="248" rx="8" fill="#fff" stroke="#bfe3e4"/><line x1="320" y1="215" x2="620" y2="215" stroke="#999"/><line x1="320" y1="215" x2="320" y2="25" stroke="#999"/><text x="320" y="228" font-size="9" text-anchor="middle">0,1</text><line x1="320" y1="215" x2="320" y2="25" stroke="#eee"/><text x="380" y="228" font-size="9" text-anchor="middle">1</text><line x1="380" y1="215" x2="380" y2="25" stroke="#eee"/><text x="440" y="228" font-size="9" text-anchor="middle">10</text><line x1="440" y1="215" x2="440" y2="25" stroke="#eee"/><text x="500" y="228" font-size="9" text-anchor="middle">100</text><line x1="500" y1="215" x2="500" y2="25" stroke="#eee"/><text x="560" y="228" font-size="9" text-anchor="middle">1k</text><line x1="560" y1="215" x2="560" y2="25" stroke="#eee"/><text x="620" y="228" font-size="9" text-anchor="middle">10k</text><line x1="620" y1="215" x2="620" y2="25" stroke="#eee"/><text x="316" y="218" font-size="9" text-anchor="end">100 Ω</text><text x="316" y="170" font-size="9" text-anchor="end">1 kΩ</text><text x="316" y="123" font-size="9" text-anchor="end">10 kΩ</text><text x="316" y="76" font-size="9" text-anchor="end">100 kΩ</text><text x="316" y="28" font-size="9" text-anchor="end">1 MΩ</text><polyline points="320.0,54.6 326.0,57.5 332.0,60.3 338.0,63.2 344.0,66.0 350.0,68.9 356.0,71.7 362.0,74.6 368.0,77.4 374.0,80.3 380.0,83.1 386.0,86.0 392.0,88.8 398.0,91.7 404.0,94.5 410.0,97.4 416.0,100.2 422.0,103.1 428.0,105.9 434.0,108.8 440.0,111.6 446.0,114.5 452.0,117.3 458.0,120.2 464.0,123.0 470.0,125.9 476.0,128.7 482.0,131.6 488.0,134.4 494.0,137.3 500.0,140.1 506.0,143.0 512.0,145.8 518.0,148.7 524.0,151.5 530.0,154.4 536.0,157.2 542.0,160.1 548.0,162.9 554.0,165.8 560.0,168.6 566.0,171.5 572.0,174.3 578.0,177.2 584.0,180.0 590.0,182.9 596.0,185.7 602.0,188.6 608.0,191.4 614.0,194.3 620.0,197.1" fill="none" stroke="#e67e22" stroke-width="3"/><circle cx="440.0" cy="111.6" r="5" fill="#00979d"/><text x="448.0" y="105.6" font-size="10" fill="#00979d">10 lx → 15 kΩ</text><text x="470" y="244" text-anchor="middle" font-size="11">Aydınlık şiddeti (lüks, logaritmik)</text><text x="290" y="120" text-anchor="middle" font-size="11" transform="rotate(-90 290 120)">Direnç (log)</text><text x="470" y="18" text-anchor="middle" font-size="12" font-weight="700">Işık arttıkça direnç azalır</text></svg><div class="cap">Şekil 3. LDR'nin yapısı ve tipik direnç–aydınlık eğrisi (GL5528 benzeri bir LDR için yaklaşık değerler)</div></div>
+<div class="grid2"><div><table class="tbl"><tr><th>Parametre (GL5528)</th><th>Tipik değer</th></tr>
+<tr><td>Aydınlık direnci (10 lx)</td><td>10–20 kΩ</td></tr><tr><td>Karanlık direnci</td><td>≥ 1 MΩ</td></tr>
+<tr><td>Tepe hassasiyet dalga boyu</td><td>≈ 540 nm (yeşil)</td></tr><tr><td>Tepki süresi (yükselme / düşme)</td><td>≈ 20 ms / 30 ms</td></tr>
+<tr><td>Kutup</td><td>Yok – iki bacak da aynıdır</td></tr></table></div>
+<div><h3>Nerelerde kullanılır?</h3><ul><li>Sokak lambalarının otomatik açılması</li><li>Telefon ekranı parlaklık ayarı</li><li>Gece lambası, alarm (ışık kesilince uyarı)</li><li>Güneş takip sistemleri</li></ul>
+<div class="note">Arduino doğrudan <b>direnç</b> ölçemez, yalnızca <b>gerilim</b> ölçebilir. Bu yüzden LDR'nin direnç değişimini bir gerilim değişimine çevirmemiz gerekir: <b>gerilim bölücü</b>.</div></div></div>
+</section>
+
+<section class="card" id="bolucu"><h2><span class="num">6</span>LDR ile Gerilim Bölücü</h2>
+<p>2. haftada gördüğümüz gerilim bölücüde, seri bağlı iki direncin ortak noktasındaki gerilim, dirençlerin oranına bağlıdır. LDR'yi üst (+5 V tarafı), 10 kΩ'luk sabit direnci alt (GND tarafı) kola yerleştirip orta noktayı A0'a bağlarız:</p>
+<div class="formula">V<sub>A0</sub> = 5 V · R<sub>sabit</sub> / (R<sub>LDR</sub> + R<sub>sabit</sub>) = 5 · 10 kΩ / (R<sub>LDR</sub> + 10 kΩ)</div>
+<div class="grid2"><div><table class="tbl"><tr><th>Ortam</th><th>R<sub>LDR</sub></th><th>V<sub>çıkış</sub> (A0)</th><th>analogRead()</th></tr><tr><td>Zifiri karanlık (≈1 MΩ)</td><td>1 MΩ</td><td>0,05 V</td><td>10</td></tr><tr><td>Gece (0,1 lx)</td><td>240 kΩ</td><td>0,20 V</td><td>40</td></tr><tr><td>Çok loş (1 lx)</td><td>60 kΩ</td><td>0,71 V</td><td>146</td></tr><tr><td>Loş oda (10 lx)</td><td>15 kΩ</td><td>2,00 V</td><td>409</td></tr><tr><td>Aydınlık oda (100 lx)</td><td>4 kΩ</td><td>3,62 V</td><td>742</td></tr><tr><td>Çok aydınlık (1000 lx)</td><td>950 Ω</td><td>4,57 V</td><td>935</td></tr><tr><td>Güneş ışığı (10 000 lx)</td><td>240 Ω</td><td>4,88 V</td><td>1000</td></tr></table></div>
+<div><h3>Çözümlü örnek</h3><p>Loş bir odada R<sub>LDR</sub> = 15 kΩ olsun:</p>
+<p>V<sub>A0</sub> = 5 · 10 / (15 + 10) = <b>2,00 V</b></p><p>analogRead = ⌊2,00 · 1024 / 5⌋ = <b>409</b></p>
+<div class="tip">Bu bağlantıda <b>ışık arttıkça okunan değer artar</b>. LDR ile 10 kΩ'un yerleri değiştirilirse ilişki tersine döner: ışık arttıkça değer azalır. Programdaki if koşulunu bağlantıya göre yazmalısınız.</div>
+<p>Sabit direnç olarak 10 kΩ seçilmesinin nedeni, LDR'nin oda ışığındaki direncine (10–20 kΩ) yakın olmasıdır. Bu sayede en çok kullanılan ortamlarda çıkış gerilimi ölçeğin ortasında kalır ve <b>hassasiyet en yüksek</b> olur.</p></div></div>
+</section>
+
+<section class="card" id="devre"><h2><span class="num">7</span>Devre Şeması: LDR + 10 kΩ ve LED</h2>
+<div class="figure"><svg viewBox="0 0 760 425" width="760"><defs><pattern id="holes6" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="7" cy="7" r="1.6" fill="#c9c9bf"/></pattern></defs><rect x="10" y="20" width="230" height="375" rx="12" fill="#0e7c86" stroke="#064d50" stroke-width="3"/><text x="80" y="210" fill="#fff" font-size="18" font-weight="700" text-anchor="middle" transform="rotate(-90 80 210)">ARDUINO UNO</text><rect x="208" y="40" width="24" height="340" fill="#111"/><rect x="265" y="20" width="490" height="375" rx="8" fill="#f4f4ee" stroke="#c8c8bd"/><rect x="300" y="30" width="420" height="355" fill="url(#holes6)"/><line x1="285" y1="30" x2="285" y2="385" stroke="#e74c3c" stroke-width="3"/><line x1="735" y1="30" x2="735" y2="385" stroke="#2e86de" stroke-width="3"/><text x="279" y="140" font-size="11" fill="#e74c3c" text-anchor="middle" transform="rotate(-90 279 140)">+5V hattı</text><text x="748" y="300" font-size="11" fill="#2e86de" text-anchor="middle" transform="rotate(-90 748 300)">GND hattı</text><rect x="215" y="75" width="10" height="10" fill="#c9a227"/><text x="202" y="84" fill="#fff" font-size="12" text-anchor="end" font-family="Consolas">D9</text><rect x="215" y="245" width="10" height="10" fill="#c9a227"/><text x="202" y="254" fill="#fff" font-size="12" text-anchor="end" font-family="Consolas">5V</text><rect x="215" y="295" width="10" height="10" fill="#c9a227"/><text x="202" y="304" fill="#fff" font-size="12" text-anchor="end" font-family="Consolas">A0</text><rect x="215" y="340" width="10" height="10" fill="#c9a227"/><text x="202" y="349" fill="#fff" font-size="12" text-anchor="end" font-family="Consolas">GND</text><path d="M225 250 H285" stroke="#e74c3c" stroke-width="4"/><path d="M225 345 H250 V410 H735 V385" stroke="#222" stroke-width="4" fill="none"/><path d="M225 300 H470 V205" stroke="#f1c40f" stroke-width="4" fill="none"/><path d="M285 200 H350 M410 200 H500 M580 200 H735" stroke="#888" stroke-width="2.5"/><circle cx="380" cy="200" r="26" fill="#fffdf2" stroke="#333" stroke-width="2"/><polyline points="360.0,200.0 365.0,206.0 370.0,194.0 375.0,206.0 380.0,194.0 385.0,206.0 390.0,194.0 395.0,206.0 400.0,200.0" fill="none" stroke="#333" stroke-width="2"/><g class="pulse" style="transform-box:fill-box;transform-origin:center"><path d="M350 154 l14 14 M368 148 l14 14" stroke="#e67e22" stroke-width="2.5"/><path d="M364 168 l0 -7 l-7 0z M382 162 l0 -7 l-7 0z" fill="#e67e22"/></g><text x="380" y="245" text-anchor="middle" font-size="11">LDR</text><rect x="500" y="193" width="80" height="14" rx="6" fill="#e8cfa6" stroke="#a5835a"/><rect x="512" y="193" width="5" height="14" fill="#7b3f00"/><rect x="522" y="193" width="5" height="14" fill="#000"/><rect x="532" y="193" width="5" height="14" fill="#f80"/><rect x="562" y="193" width="5" height="14" fill="#c9a227"/><text x="540" y="228" text-anchor="middle" font-size="11">10 kΩ</text><circle cx="470" cy="200" r="5" fill="#333"/><text x="476" y="190" font-size="11" fill="#b7950b">V<tspan font-size="8" dy="2">çıkış</tspan></text><path d="M225 80 H400 M460 80 H505 M535 80 H735" stroke="#888" stroke-width="2.5"/><path d="M225 80 H400" stroke="#27ae60" stroke-width="4"/><rect x="400" y="73" width="60" height="14" rx="6" fill="#e8cfa6" stroke="#a5835a"/><rect x="410" y="73" width="5" height="14" fill="#d00"/><rect x="419" y="73" width="5" height="14" fill="#d00"/><rect x="428" y="73" width="5" height="14" fill="#7b3f00"/><rect x="448" y="73" width="5" height="14" fill="#c9a227"/><text x="430" y="66" text-anchor="middle" font-size="11">220 Ω</text><circle cx="520" cy="80" r="13" fill="#ffe14d" stroke="#333" class="blink" style="filter:drop-shadow(0 0 7px #ffd000)"/><text x="520" y="110" text-anchor="middle" font-size="11">LED (sarı)</text><path d="M225 250 H285 V200 H735 V410 H250 V345 H225" stroke="#ffe066" stroke-width="2" fill="none" class="flow"/><path d="M225 80 H735" stroke="#ffe066" stroke-width="2" fill="none" class="flow"/><text x="300" y="322" font-size="11" fill="#7d6608">A0 hattı: yalnızca gerilim ölçülür, akım ≈ 0</text></svg><div class="cap">Şekil 4. Gerilim bölücü (5 V → LDR → düğüm → 10 kΩ → GND) ile orta noktanın A0'a, LED'in de 220 Ω üzerinden D9'a bağlanması. Sarı çizgiler akımın yolunu gösterir.</div></div>
+<table class="tbl"><tr><th>Bağlantı</th><th>Nereden</th><th>Nereye</th></tr>
+<tr><td>Kırmızı kablo</td><td>Arduino 5V</td><td>Breadboard + hattı</td></tr>
+<tr><td>Siyah kablo</td><td>Arduino GND</td><td>Breadboard – (GND) hattı</td></tr>
+<tr><td>LDR</td><td>+ hattı</td><td>Orta düğüm</td></tr>
+<tr><td>10 kΩ (kahverengi-siyah-turuncu)</td><td>Orta düğüm</td><td>GND hattı</td></tr>
+<tr><td>Sarı kablo</td><td>Orta düğüm</td><td>Arduino A0</td></tr>
+<tr><td>Yeşil kablo → 220 Ω → LED</td><td>Arduino D9</td><td>LED anodu; katot GND hattına</td></tr></table>
+<div class="note">Analog giriş pininin iç direnci çok yüksektir (yaklaşık 100 MΩ). Bu nedenle A0 kablosundan neredeyse hiç akım geçmez ve gerilim bölücünün çıkışı bozulmaz. Akım, yalnızca 5 V → LDR → 10 kΩ → GND yolunu izler.</div>
+</section>
+
+<section class="card" id="olcer"><h2><span class="num">8</span>Uygulama 1: Işık Ölçer ve Seri Çizici</h2>
+<p>İlk programda LDR değerini okuyup Seri Monitör'e yazdırıyoruz. Elinizle LDR'nin üzerini kapatıp açtığınızda değerin nasıl değiştiğini gözlemleyin; bu gözlem gece lambası için eşik değeri seçerken kullanılacaktır.</p>
+<div class="grid2"><div><div class="codebox"><span class="lbl">IsikOlcer.ino</span><pre class="code">// LDR ile ışık seviyesi ölçme
+const int LDR_PIN = A0;      // gerilim bölücünün orta noktası
+
+void setup() {
+  Serial.begin(9600);        // Seri Monitör: 9600 baud
+}
+
+void loop() {
+  int isik = analogRead(LDR_PIN);   // 0 (karanlık) ... 1023 (aydınlık)
+  Serial.println(isik);             // değeri yazdır, alt satıra geç
+  delay(200);                       // saniyede 5 ölçüm
+}</pre></div></div><div><div class="codebox"><span class="lbl">IsikCizici.ino (Seri Çizici için)</span><pre class="code">// Seri Çizici'de iki çizgi: ışık değeri ve sabit eşik
+const int LDR_PIN = A0;
+const int ESIK = 300;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int isik = analogRead(LDR_PIN);
+  Serial.print("Isik:");     // etiket:değer biçimi
+  Serial.print(isik);
+  Serial.print(",");         // çizgileri virgül ayırır
+  Serial.print("Esik:");
+  Serial.println(ESIK);      // satır sonu = bir zaman noktası
+  delay(50);
+}</pre></div></div></div>
+<div class="tip">Seri Monitör'de görülen değerler ölçümden ölçüme ±1–3 birim oynayabilir. Bu, ADC'nin nicemleme hatası ve ortamdaki elektriksel gürültüden kaynaklanır ve normaldir. Floresan lambalar altında 50 Hz'lik titreşim nedeniyle oynama daha belirgin olabilir.</div>
+</section>
+
+<section class="card" id="gece"><h2><span class="num">9</span>Uygulama 2: Otomatik Gece Lambası</h2>
+<p>Ortam karardığında LED'i kendiliğinden yakan bir gece lambası yapacağız. Önceki uygulamada odanızın karanlık ve aydınlık değerlerini not edin; <b>eşik değeri</b> bu ikisinin arasında seçilir. Okunan değer eşiğin altına düştüğünde if koşulu doğru olur ve LED yanar.</p>
+<div class="grid2"><div><div class="codebox"><span class="lbl">GeceLambasi.ino</span><pre class="code">// LDR ile otomatik gece lambası
+const int LDR_PIN = A0;
+const int LED_PIN = 9;
+const int ESIK = 300;   // bu değerin altı "karanlık" kabul edilir
+
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int isik = analogRead(LDR_PIN);   // ışık seviyesini oku
+
+  Serial.print("LDR = ");
+  Serial.print(isik);
+
+  if (isik &lt; ESIK) {                // karanlık mı?
+    digitalWrite(LED_PIN, HIGH);    // evet: LED'i yak
+    Serial.println("  -&gt; LED ACIK");
+  } else {
+    digitalWrite(LED_PIN, LOW);     // hayır: LED'i söndür
+    Serial.println("  -&gt; LED KAPALI");
+  }
+  delay(500);
+}</pre></div></div><div>
+<div class="figure"><svg viewBox="0 0 300 330" width="300">
+<defs><marker id="ar6" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8z" fill="#333"/></marker></defs>
+<rect x="85" y="10" width="130" height="36" rx="18" fill="#00979d"/><text x="150" y="33" text-anchor="middle" fill="#fff" font-size="12">loop() başı</text>
+<path d="M150 46 V68" stroke="#333" stroke-width="2" marker-end="url(#ar6)"/>
+<rect x="65" y="70" width="170" height="36" rx="6" fill="#e8f1fb" stroke="#2e86de" stroke-width="2"/><text x="150" y="93" text-anchor="middle" font-size="12">isik = analogRead(A0)</text>
+<path d="M150 106 V128" stroke="#333" stroke-width="2" marker-end="url(#ar6)"/>
+<polygon points="150,130 225,165 150,200 75,165" fill="#fff6e0" stroke="#e67e22" stroke-width="2"/><text x="150" y="169" text-anchor="middle" font-size="12">isik &lt; ESIK ?</text>
+<path d="M75 165 H40 V230" stroke="#333" stroke-width="2" fill="none" marker-end="url(#ar6)"/><text x="45" y="158" font-size="11" fill="#27ae60">evet</text>
+<path d="M225 165 H260 V230" stroke="#333" stroke-width="2" fill="none" marker-end="url(#ar6)"/><text x="232" y="158" font-size="11" fill="#e74c3c">hayır</text>
+<rect x="5" y="232" width="110" height="36" rx="6" fill="#fff8d6" stroke="#f1c40f" stroke-width="2"/><text x="60" y="255" text-anchor="middle" font-size="11">LED HIGH</text>
+<rect x="185" y="232" width="110" height="36" rx="6" fill="#eee" stroke="#999" stroke-width="2"/><text x="240" y="255" text-anchor="middle" font-size="11">LED LOW</text>
+<path d="M60 268 V300 H240 V268 M150 300 V318" stroke="#333" stroke-width="2" fill="none"/>
+<path d="M60 268 V300 H150 V318" stroke="#f1c40f" stroke-width="3" fill="none" class="flow"/>
+<text x="150" y="328" text-anchor="middle" font-size="10" fill="#5b6b7d">delay(500) → başa dön</text></svg>
+<div class="cap">Şekil 5. Gece lambası programının akış diyagramı</div></div></div></div>
+<details><summary>İleri düzey: Histerezis ile titremeyi önleme (tıklayın)</summary>
+<p>Işık seviyesi tam eşik değerinin çevresinde olduğunda gürültü nedeniyle okunan değer 299–301 arasında gidip gelir ve LED titrer. Çözüm, açma ve kapama için <b>iki ayrı eşik</b> kullanmaktır (<b>histerezis</b>): LED 280'in altında yanar, ancak 320'nin üzerine çıkınca söner.</p><div class="codebox"><span class="lbl">GeceLambasiHisterezis.ino</span><pre class="code">const int LDR_PIN = A0;
+const int LED_PIN = 9;
+const int ACMA_ESIGI = 280;     // bunun altında LED yanar
+const int KAPAMA_ESIGI = 320;   // bunun üstünde LED söner
+bool ledAcik = false;
+
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
+  int isik = analogRead(LDR_PIN);
+  if (!ledAcik &amp;&amp; isik &lt; ACMA_ESIGI) {
+    ledAcik = true;
+  } else if (ledAcik &amp;&amp; isik &gt; KAPAMA_ESIGI) {
+    ledAcik = false;
+  }
+  // 280-320 arasında önceki durum korunur
+  digitalWrite(LED_PIN, ledAcik ? HIGH : LOW);
+  delay(100);
+}</pre></div></details>
+</section>
+
+<section class="card" id="sim"><h2><span class="num">10</span>Simülasyon: Gece Lambası</h2>
+<p>Aşağıdaki simülasyon, <code>GeceLambasi.ino</code> programını ve gerilim bölücüyü birlikte modeller. <b>Işık seviyesi</b> kaydırıcısını değiştirdiğinizde LDR direnci (tipik GL5528 eğrisi), A0 gerilimi, <code>analogRead()</code> değeri ve LED durumu hesaplanır; Seri Monitör ve Seri Çizici her 500 ms'de güncellenir.</p>
+<div class="sim"><h4>🔬 Simülasyon: LDR – gerilim bölücü – analogRead – LED</h4>
+<div class="grid2"><div>
+<label>Işık seviyesi: <span id="nLv">Loş oda</span></label><input type="range" id="nL" min="0" max="100" value="40">
+<label>ESIK = <span id="nTv">300</span></label><input type="range" id="nT" min="50" max="1000" step="10" value="300">
+<label style="font-weight:400"><input type="checkbox" id="nH"> Histerezis kullan (açma: ESIK − 20, kapama: ESIK + 20)</label>
+<label style="font-weight:400"><input type="checkbox" id="nNoise" checked> Ölçüm gürültüsü (±2)</label>
+<div class="out" id="nOut"></div>
+<div class="serial" id="nSer" style="height:120px"></div></div>
+<div><div class="figure" style="margin:0"><svg viewBox="0 0 330 300" width="330">
+<rect x="1" y="1" width="328" height="298" rx="10" fill="#fff" stroke="#bfe3e4"/>
+<g id="gLamp"><circle cx="40" cy="55" r="18" fill="#ffd54f"/><path d="M58 60 L88 80 M55 72 L82 95 M50 40 L95 65" stroke="#f1c40f" stroke-width="3"/></g>
+<text x="40" y="95" text-anchor="middle" font-size="10">ortam ışığı</text>
+<text x="120" y="22" font-size="12" font-weight="700" fill="#e74c3c">+5 V</text>
+<path d="M130 28 V60 M130 120 V170 M130 220 V262" stroke="#555" stroke-width="2.5"/>
+<path id="nFlow" d="M130 28 V262" stroke="#ffe066" stroke-width="2" fill="none" class="flow"/>
+<g id="ldrBody"><circle cx="130" cy="90" r="26" fill="#fffdf2" stroke="#333" stroke-width="2"/>
+<polyline points="122,64 122,70 138,74 122,80 138,86 122,92 138,98 122,104 138,110 138,116" fill="none" stroke="#333" stroke-width="2"/></g>
+<text x="162" y="86" font-size="11">LDR</text><text id="tR" x="162" y="102" font-size="11" font-family="Consolas" fill="#e67e22">15 kΩ</text>
+<circle cx="130" cy="145" r="4" fill="#333"/><path d="M130 145 H200" stroke="#f1c40f" stroke-width="3"/>
+<rect x="200" y="132" width="50" height="26" rx="4" fill="#0b1620"/><text x="225" y="149" text-anchor="middle" font-size="11" fill="#7CFC9a" font-family="Consolas">A0</text>
+<text id="tV" x="200" y="178" font-size="11" font-family="Consolas" fill="#b7950b">2,00 V</text>
+<rect x="120" y="170" width="20" height="50" rx="5" fill="#e8cfa6" stroke="#a5835a"/>
+<rect x="120" y="180" width="20" height="5" fill="#7b3f00"/><rect x="120" y="189" width="20" height="5" fill="#000"/><rect x="120" y="198" width="20" height="5" fill="#f80"/>
+<text x="95" y="200" font-size="11" text-anchor="end">10 kΩ</text>
+<path d="M110 262 H150 M116 270 H144 M123 278 H137" stroke="#333" stroke-width="2.5"/><text x="160" y="275" font-size="11">GND</text>
+<text x="280" y="210" text-anchor="middle" font-size="11">D9 → LED</text>
+<circle id="nLed" cx="280" cy="245" r="20" fill="#5a4a00" stroke="#333"/>
+<text id="nLedT" x="280" y="285" text-anchor="middle" font-size="11" font-family="Consolas">LOW</text>
+</svg></div>
+<svg viewBox="0 0 330 130" width="330" id="plot"><rect x="1" y="1" width="328" height="128" rx="6" fill="#0b1620"/>
+<text x="8" y="14" font-size="10" fill="#9fd7da">Seri Çizici</text><text x="322" y="14" font-size="10" fill="#7CFC9a" text-anchor="end">— Isik</text><text x="272" y="14" font-size="10" fill="#ff6b6b" text-anchor="end">— Esik</text>
+<line id="pT" x1="30" x2="325" stroke="#ff6b6b" stroke-width="1.5" stroke-dasharray="4 3"/>
+<polyline id="pL" fill="none" stroke="#7CFC9a" stroke-width="2"/>
+<text x="26" y="24" font-size="9" fill="#789" text-anchor="end">1023</text><text x="26" y="124" font-size="9" fill="#789" text-anchor="end">0</text></svg></div></div></div>
+</section>
+
+<section class="card quiz" id="quiz"><h2><span class="num">11</span>Kendini Test Et</h2>
+<div class="q" data-answer="b"><p>1) Arduino UNO'nun 10 bitlik ADC'si kaç farklı değer üretebilir?</p><button class="opt" data-k="a">a) 1000</button><button class="opt" data-k="b">b) 1024</button><button class="opt" data-k="c">c) 256</button><div class="fb">✓ 2<sup>10</sup> = 1024 farklı değer: 0'dan 1023'e kadar. 256 (2<sup>8</sup>) analogWrite'ın aralığıdır.</div></div>
+<div class="q" data-answer="a"><p>2) analogRead() 512 değerini döndürdüyse A0 pinindeki gerilim yaklaşık kaç volttur?</p><button class="opt" data-k="a">a) 2,5 V</button><button class="opt" data-k="b">b) 5,12 V</button><button class="opt" data-k="c">c) 1,0 V</button><div class="fb">✓ V ≈ N · 5 / 1024 = 512 · 5 / 1024 = 2,5 V.</div></div>
+<div class="q" data-answer="c"><p>3) Ortam karardığında LDR'nin direnci nasıl değişir?</p><button class="opt" data-k="a">a) Azalır</button><button class="opt" data-k="b">b) Değişmez</button><button class="opt" data-k="c">c) Artar (karanlıkta MΩ seviyesine çıkar)</button><div class="fb">✓ Işık azalınca CdS içindeki serbest yük taşıyıcıları azalır, direnç artar. Tam karanlıkta ≥ 1 MΩ olur.</div></div>
+<div class="q" data-answer="a"><p>4) 5 V → LDR → A0 → 10 kΩ → GND bağlantısında R<sub>LDR</sub> = 40 kΩ ise analogRead() yaklaşık kaç okur?</p><button class="opt" data-k="a">a) 204</button><button class="opt" data-k="b">b) 819</button><button class="opt" data-k="c">c) 512</button><div class="fb">✓ V = 5 · 10 / (40 + 10) = 1,0 V; N = ⌊1,0 · 1024 / 5⌋ = 204.</div></div>
+<div class="q" data-answer="b"><p>5) Seri Monitör'de anlamsız karakterler (ör. ⸮⸮x) görülüyorsa en olası neden nedir?</p><button class="opt" data-k="a">a) LDR ters takılmıştır</button><button class="opt" data-k="b">b) Seri Monitör'deki baud hızı Serial.begin() ile aynı değildir</button><button class="opt" data-k="c">c) analogRead() yanlış pin okumaktadır</button><div class="fb">✓ Gönderen ve alan taraf aynı baud hızında olmalıdır. Serial.begin(9600) kullanıldıysa Seri Monitör de 9600 baud seçilmelidir. LDR'nin zaten kutbu yoktur.</div></div>
+</section>
+
+<section class="card" id="odev"><h2><span class="num">12</span>Ödev ve Özet</h2>
+<h3>Ödev</h3><ol>
+<li>LDR ile 10 kΩ'un yerlerini değiştirin (10 kΩ üstte, LDR altta). Karanlık ve aydınlıkta okunan değerleri tablo hâlinde kaydedin ve <code>GeceLambasi.ino</code>'daki if koşulunu bu yeni bağlantıya göre düzenleyin.</li>
+<li>3 LED (kırmızı, sarı, yeşil) kullanarak ışık seviyesini <b>karanlık / loş / aydınlık</b> olarak gösteren bir program yazın (if – else if – else).</li>
+<li><code>IsikCizici.ino</code>'yu çalıştırıp Seri Çizici'de elinizle LDR'yi yavaşça kapatın. Ekran görüntüsünü alarak eşik çizgisinin kesildiği anları işaretleyin.</li>
+<li><b>Kalibrasyon:</b> Programın ilk 5 saniyesinde ölçülen en küçük ve en büyük değeri bulup eşiği bu ikisinin ortalaması olarak otomatik belirleyen bir gece lambası yazın.</li></ol>
+<details><summary>2. ödev için ipucu (tıklayın)</summary><div class="codebox"><span class="lbl">uc_seviye_ipucu.ino</span><pre class="code">const int KIRMIZI = 4, SARI = 5, YESIL = 6;
+
+void setup() {
+  pinMode(KIRMIZI, OUTPUT);
+  pinMode(SARI, OUTPUT);
+  pinMode(YESIL, OUTPUT);
+}
+
+void loop() {
+  int isik = analogRead(A0);
+  digitalWrite(KIRMIZI, LOW);
+  digitalWrite(SARI, LOW);
+  digitalWrite(YESIL, LOW);
+  if (isik &lt; 300) {
+    digitalWrite(KIRMIZI, HIGH);      // karanlık
+  } else if (isik &lt; 700) {
+    digitalWrite(SARI, HIGH);         // loş
+  } else {
+    digitalWrite(YESIL, HIGH);        // aydınlık
+  }
+  delay(200);
+}</pre></div></details>
+<h3>Özet</h3><ul>
+<li>Analog sinyal sürekli, dijital sinyal iki seviyelidir; analog girişler A0–A5'tir.</li>
+<li>UNO'nun ADC'si 10 bittir: 0–1023 arası 1024 seviye, çözünürlük 5 V / 1024 ≈ 4,88 mV.</li>
+<li><code>analogRead()</code> pinMode gerektirmez; değeri <code>Serial.println()</code> ile Seri Monitör'de, “etiket:değer” biçimiyle Seri Çizici'de izleriz.</li>
+<li>LDR'nin direnci ışıkla azalır (karanlıkta ≥ 1 MΩ, oda ışığında 10–20 kΩ).</li>
+<li>Arduino direnç değil gerilim ölçer; LDR + 10 kΩ gerilim bölücü: V<sub>A0</sub> = 5 · 10k / (R<sub>LDR</sub> + 10k).</li>
+<li>Gece lambası: <code>if (isik &lt; ESIK)</code> LED yanar; eşik çevresindeki titreşim histerezis ile önlenir.</li></ul>
+</section>
+</main>
+<footer>Arduino ile Programlama · Ders Notları · 6. Hafta<br>Kaynaklar: C. Taşdemir – <i>Arduino</i>; G. Döktaş – <i>Arduino Eğitim Kitabı</i>; E. Delebe – <i>Projeler ile Arduino</i></footer>
+<script>
+(function(){
+ const KW=['void','if','else','for','while','do','return','switch','case','break','default','const','true','false','#include','#define'];
+ const TY=['int','float','long','unsigned','byte','bool','boolean','char','double','String','word'];
+ const CST=['HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP','LED_BUILTIN','A0','A1','A2','A3','A4','A5'];
+ const FN=['pinMode','digitalWrite','digitalRead','analogRead','analogWrite','delay','delayMicroseconds','millis','micros','setup','loop','map','constrain','pulseIn','tone','noTone','Serial','begin','print','println','attach','write','read','available','random'];
+ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+ function hl(src){
+  let out='',i=0;
+  const re=/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(#?[A-Za-z_][A-Za-z0-9_]*)|(\b\d+(?:\.\d+)?\b)/g;let m,last=0;
+  while((m=re.exec(src))){out+=esc(src.slice(last,m.index));
+   if(m[1])out+='<span class="com">'+esc(m[1])+'</span>';
+   else if(m[2])out+='<span class="str">'+esc(m[2])+'</span>';
+   else if(m[3]){const w=m[3];let c=KW.includes(w)?'kw':TY.includes(w)?'ty':CST.includes(w)?'cst':FN.includes(w)?'fn':'';out+=c?'<span class="'+c+'">'+esc(w)+'</span>':esc(w)}
+   else if(m[4])out+='<span class="num">'+m[4]+'</span>';
+   last=re.lastIndex}
+  return out+esc(src.slice(last))}
+ document.querySelectorAll('pre.code').forEach(p=>{const raw=p.textContent;p.innerHTML=hl(raw);
+  const b=document.createElement('button');b.className='copybtn';b.textContent='Kopyala';
+  b.onclick=()=>{navigator.clipboard.writeText(raw).then(()=>{b.textContent='Kopyalandı ✓';setTimeout(()=>b.textContent='Kopyala',1500)})};
+  p.parentElement.appendChild(b)});
+ document.querySelectorAll('.quiz .q').forEach(q=>{const ans=q.dataset.answer;const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{q.querySelectorAll('.opt').forEach(x=>x.classList.remove('ok','no'));
+   if(o.dataset.k===ans){o.classList.add('ok');if(fb)fb.style.display='block'}else{o.classList.add('no')}})});
+ document.querySelectorAll('.quiz .fb').forEach(f=>f.style.display='none');
+})();
+</script>
+<script>
+const fmt=(x,d)=>x.toFixed(d).replace('.',',');
+const fmtR=r=>r>=1e6?fmt(r/1e6,2)+' MΩ':r>=1e3?fmt(r/1e3,1)+' kΩ':Math.round(r)+' Ω';
+// ---- ADC simülasyonu ----
+(function(){
+ const s=document.getElementById('aV'),bits=document.getElementById('aBits');
+ for(let k=9;k>=0;k--){const e=document.createElement('span');e.id='ab'+k;e.title='bit '+k;bits.appendChild(e)}
+ function f(){const V=+s.value;const N=Math.min(1023,Math.floor(V*1024/5));
+  document.getElementById('aVv').textContent=fmt(V,2);document.getElementById('aN').textContent=N;
+  const b=N.toString(2).padStart(10,'0');for(let k=0;k<10;k++){const e=document.getElementById('ab'+(9-k));e.textContent=b[k];e.className=b[k]==='1'?'on':''}
+  const Vq=N*5/1024;
+  document.getElementById('aOut').innerHTML=`N = ⌊${fmt(V,2)} · 1024 / 5⌋ = <b>${N}</b> &nbsp; (ikili: ${b})<br>Bu sayının temsil ettiği gerilim: ${N} · 5/1024 = ${fmt(Vq,4)} V<br>Nicemleme farkı: ${fmt((V-Vq)*1000,2)} mV (en fazla 4,88 mV)`+(V>=5?'<br>5 V ve üzeri her zaman 1023 okunur.':'');
+  // büyütülmüş basamak
+  const n0=Math.max(0,Math.min(1018,N-2));const X=v=>40+(v-n0*5/1024)/(5*5/1024)*270;const Y=n=>190-(n-n0+0.5)/6*160;
+  let p=[];for(let n=n0;n<n0+5;n++){const v0=n*5/1024,v1=(n+1)*5/1024;p.push(X(v0)+','+Y(n),X(v1)+','+Y(n))}
+  document.getElementById('aStair').setAttribute('points',p.join(' '));
+  const L=document.getElementById('aLine');L.setAttribute('x1',X(V));L.setAttribute('x2',X(V));L.setAttribute('y1',30);L.setAttribute('y2',190);
+  const d=document.getElementById('aDot');d.setAttribute('cx',Math.min(310,X(V)));d.setAttribute('cy',Y(N));
+  let g='';for(let n=n0;n<n0+5;n++)g+=`<text x="36" y="${Y(n)+4}" font-size="10" text-anchor="end" font-family="Consolas">${n}</text>`;
+  document.getElementById('aLbl').innerHTML=g}
+ s.oninput=f;f();
+})();
+// ---- gece lambası ----
+(function(){
+ const L=document.getElementById('nL'),T=document.getElementById('nT'),H=document.getElementById('nH'),Nz=document.getElementById('nNoise');
+ const out=document.getElementById('nOut'),ser=document.getElementById('nSer');let led=false,hist=[];
+ function model(){const s=+L.value;const lux=Math.pow(10,s/20-1);const R=Math.min(1e6,15000*Math.pow(lux/10,-0.6));
+  const V=5*10000/(R+10000);const N=Math.min(1023,Math.floor(V*1024/5));return{s,lux,R,V,N}}
+ function desc(l){return l<0.5?'Zifiri karanlık':l<3?'Gece':l<30?'Loş oda':l<300?'Aydınlık oda':l<3000?'Çok aydınlık':'Güneş ışığı'}
+ function draw(m,read){const E=+T.value;document.getElementById('nTv').textContent=E;document.getElementById('nLv').textContent=desc(m.lux)+' (≈ '+(m.lux<1?fmt(m.lux,2):Math.round(m.lux))+' lx)';
+  document.getElementById('tR').textContent=fmtR(m.R);document.getElementById('tV').textContent=fmt(m.V,2)+' V';
+  const lamp=document.getElementById('gLamp');lamp.style.opacity=0.1+0.9*m.s/100;
+  document.getElementById('ldrBody').querySelector('circle').setAttribute('fill',`hsl(48,100%,${60+35*m.s/100}%)`);
+  document.getElementById('nFlow').style.animationDuration=Math.max(0.2,Math.min(8,0.0006*m.R/1+0.2))+'s';
+  const c=document.getElementById('nLed');c.setAttribute('fill',led?'#ffe14d':'#5a4a00');c.style.filter=led?'drop-shadow(0 0 12px #ffd000)':'none';
+  document.getElementById('nLedT').textContent=led?'HIGH':'LOW';
+  const cond=H.checked?(led?`isik > ${E+20} ? (kapama eşiği)`:`isik < ${E-20} ? (açma eşiği)`):`isik < ${E} ?`;
+  out.innerHTML=`R<sub>LDR</sub> = <b>${fmtR(m.R)}</b><br>V<sub>A0</sub> = 5 · 10k / (${fmtR(m.R)} + 10k) = <b>${fmt(m.V,3)} V</b><br>analogRead(A0) = ⌊V·1024/5⌋ = <b>${read}</b><br>${cond} → LED <b style="color:${led?'#b7950b':'#555'}">${led?'AÇIK (HIGH)':'KAPALI (LOW)'}</b>`;
+  // çizici
+  const pT=document.getElementById('pT');const y=v=>124-v/1023*104;pT.setAttribute('y1',y(E));pT.setAttribute('y2',y(E));
+  document.getElementById('pL').setAttribute('points',hist.map((v,i)=>(30+i*295/59).toFixed(1)+','+y(v).toFixed(1)).join(' '))}
+ function decide(read){const E=+T.value;if(H.checked){if(!led&&read<E-20)led=true;else if(led&&read>E+20)led=false}else led=read<E;}
+ function loopTick(){const m=model();let r=m.N;if(Nz.checked)r=Math.max(0,Math.min(1023,r+Math.round((Math.random()*2-1)*2)));
+  decide(r);hist.push(r);if(hist.length>60)hist.shift();draw(m,r);
+  ser.textContent+=`LDR = ${r}  -> LED ${led?'ACIK':'KAPALI'}\n`;const ls=ser.textContent.split('\n');if(ls.length>150)ser.textContent=ls.slice(-100).join('\n');ser.scrollTop=1e9}
+ [L,T,H].forEach(e=>e.addEventListener('input',()=>{const m=model();decide(m.N);draw(m,m.N)}));
+ for(let i=0;i<20;i++){hist.push(model().N)}
+ loopTick();setInterval(loopTick,500);
+})();
+</script>
+</body></html>

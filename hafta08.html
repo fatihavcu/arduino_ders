@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>8. Hafta – Sınav Haftası: Ara Sınav Tekrarı (1–7. Haftalar) | Arduino ile Programlama</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#1d2733;--muted:#5b6b7d;--teal:#00979d;--teal2:#00b3b9;--accent:#e67e22;--red:#e74c3c;--green:#27ae60;--code:#0f1b26;--border:#dde5ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+header.top{background:linear-gradient(135deg,#006468,#00979d 60%,#00b3b9);color:#fff;padding:28px 20px 34px;position:relative;overflow:hidden}
+header.top::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px),repeating-linear-gradient(0deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px);pointer-events:none}
+.wrap{max-width:1050px;margin:0 auto;padding:0 18px}
+.badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:3px 12px;border-radius:20px;font-size:.85em;letter-spacing:.5px}
+header.top h1{margin:10px 0 6px;font-size:2em}
+header.top p{margin:0;opacity:.92}
+nav.weeknav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;position:relative;z-index:1}
+nav.weeknav a{color:#fff;text-decoration:none;background:rgba(0,0,0,.18);padding:6px 12px;border-radius:6px;font-size:.9em}
+nav.weeknav a:hover{background:rgba(0,0,0,.35)}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;margin:22px 0}
+.toc ol{margin:6px 0;columns:2}
+.toc a{color:var(--teal);text-decoration:none}
+section.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin:22px 0;box-shadow:0 2px 8px rgba(20,40,60,.05);animation:fadeUp .6s ease both}
+section.card h2{margin-top:0;color:#006468;border-bottom:2px solid #e3f3f3;padding-bottom:8px}
+section.card h2 .num{display:inline-block;background:var(--teal);color:#fff;border-radius:50%;width:32px;height:32px;text-align:center;line-height:32px;margin-right:8px;font-size:.8em}
+h3{color:#0b4f6c}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.goals li{margin:4px 0}
+.note,.warn,.tip{border-radius:8px;padding:12px 16px;margin:14px 0;border-left:5px solid}
+.note{background:#eaf6ff;border-color:#2e86de}.warn{background:#fff3e6;border-color:var(--accent)}.tip{background:#eafaf1;border-color:var(--green)}
+.note::before{content:"ℹ️ Not: ";font-weight:600}.warn::before{content:"⚠️ Dikkat: ";font-weight:600}.tip::before{content:"💡 İpucu: ";font-weight:600}
+.formula{font-family:Cambria,"Times New Roman",serif;font-size:1.5em;text-align:center;background:#f7fbfb;border:1px dashed var(--teal);border-radius:8px;padding:12px;margin:14px 0}
+table.tbl{border-collapse:collapse;width:100%;margin:12px 0;font-size:.95em}
+table.tbl th,table.tbl td{border:1px solid var(--border);padding:7px 10px;text-align:left}
+table.tbl th{background:#e9f6f6;color:#064d50}
+table.tbl tr:nth-child(even) td{background:#fafcfd}
+.codebox{position:relative;margin:14px 0}
+.codebox .lbl{background:#1f3344;color:#9fd7da;font-size:.8em;padding:4px 12px;border-radius:8px 8px 0 0;display:inline-block;font-family:Consolas,monospace}
+pre.code{background:var(--code);color:#d7e3ee;padding:16px 18px;border-radius:0 8px 8px 8px;overflow:auto;font-family:Consolas,"Courier New",monospace;font-size:.92em;line-height:1.5;margin:0}
+pre.code .kw{color:#c792ea}.code .ty{color:#82aaff}.code .fn{color:#f78c6c}.code .num{color:#f7c56c}.code .str{color:#c3e88d}.code .com{color:#6b8299;font-style:italic}.code .cst{color:#ff5370}
+.copybtn{position:absolute;top:30px;right:8px;background:#2b4459;color:#cfe;border:0;border-radius:5px;padding:4px 10px;cursor:pointer;font-size:.8em}
+.copybtn:hover{background:var(--teal)}
+.figure{text-align:center;margin:16px 0}
+.figure svg{max-width:100%;height:auto}
+.figure .cap{font-size:.88em;color:var(--muted);margin-top:6px}
+.sim{background:#f3fafa;border:1px solid #bfe3e4;border-radius:10px;padding:16px;margin:16px 0}
+.sim h4{margin:0 0 10px;color:#006468}
+.sim label{display:block;margin:8px 0 2px;font-weight:600;font-size:.92em}
+.sim input[type=range]{width:100%;accent-color:var(--teal)}
+.sim .out{font-family:Consolas,monospace;background:#fff;border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-top:10px}
+.serial{background:#0b1620;color:#7CFC9a;font-family:Consolas,monospace;border-radius:6px;padding:10px;height:140px;overflow:auto;font-size:.88em;white-space:pre}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:.92em;margin:4px 4px 4px 0}
+.btn:hover{background:#007a7f}.btn.alt{background:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.toc ol{columns:1}}
+/* animations */
+.flow{stroke-dasharray:6 10;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+.glow{filter:drop-shadow(0 0 6px #ff4d4d)}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.spin{transform-origin:center;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* quiz */
+.quiz .q{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0}
+.quiz .q p{margin:0 0 8px;font-weight:600}
+.quiz .opt{display:block;width:100%;text-align:left;background:#f7f9fb;border:1px solid var(--border);border-radius:6px;padding:7px 10px;margin:4px 0;cursor:pointer;font-size:.95em}
+.quiz .opt:hover{background:#eef6f6}
+.quiz .opt.ok{background:#d9f5e3;border-color:var(--green)}
+.quiz .opt.no{background:#fde2df;border-color:var(--red)}
+.quiz .fb{font-size:.9em;margin-top:6px;color:var(--muted)}
+details{background:#fbfcfd;border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin:10px 0}
+details summary{cursor:pointer;font-weight:600;color:#0b4f6c}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding:8px 0 8px 46px;margin:6px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:32px;height:32px;border-radius:50%;background:var(--teal);color:#fff;text-align:center;line-height:32px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:30px 10px 40px}
+.pill{display:inline-block;background:#e3f3f3;color:#064d50;border-radius:12px;padding:2px 10px;font-size:.85em;margin:2px}
+</style></head><body>
+<header class="top"><div class="wrap">
+<span class="badge">ARDUİNO İLE PROGRAMLAMA · 8. HAFTA</span>
+<h1>Sınav Haftası: Ara Sınav Tekrarı (1–7. Haftalar)</h1><p>Özet kartları, formüller, tipik devreler, sık yapılan hatalar, kod izleme, 15 çözümlü örnek, puanlı deneme sınavı ve formül kağıdı</p>
+<nav class="weeknav"><a href="index.html">☰ Tüm Haftalar</a><a href="hafta07.html">← 7. Hafta</a><a href="hafta09.html">9. Hafta →</a></nav>
+</div></header>
+<main class="wrap">
+<div class="toc"><strong>Bu haftanın içeriği</strong><ol><li><a href="#hedef">Sınava Hazırlık ve Hedefler</a></li><li><a href="#ozet">Haftalık Özet Kartları (1–7)</a></li><li><a href="#ohm">Formül Tekrarı: Ohm ve Gerilim Bölücü</a></li><li><a href="#fn">Fonksiyonlar ve Yapılar Tablosu</a></li><li><a href="#devre">Tipik Devreler ve Tekrar Programı</a></li><li><a href="#hata">Sık Yapılan Hatalar</a></li><li><a href="#iz">Kod İzleme Adımlayıcısı</a></li><li><a href="#cozum">Çözümlü Örnek Sorular (15)</a></li><li><a href="#sinav">Deneme Sınavı (18 soru)</a></li><li><a href="#formul">Yazdırılabilir Formül Kağıdı</a></li><li><a href="#quiz">Kendini Test Et</a></li><li><a href="#odev">Çalışma Planı, Ödev ve Özet</a></li></ol></div>
+<style>
+.grid2>*{min-width:0}.sim svg{max-width:100%;height:auto}
+.rv{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.rv .c{border:1px solid var(--border);border-radius:10px;padding:12px 14px;background:#fbfdfd;border-top:4px solid var(--teal)}
+.rv .c h4{margin:0 0 6px;color:#064d50}.rv .c .wk{display:inline-block;background:var(--teal);color:#fff;border-radius:12px;padding:0 9px;font-size:.78em;margin-right:6px}
+.rv .c ul{margin:4px 0 6px;padding-left:18px;font-size:.92em}.rv .c code{font-size:.88em}
+.tr{background:#0f1b26;color:#d7e3ee;font-family:Consolas,monospace;font-size:.9em;border-radius:8px;padding:8px 0;overflow:auto}
+.tr div{padding:1px 12px;white-space:pre;border-left:4px solid transparent}.tr div span.n{color:#5b7083;display:inline-block;width:26px}
+.tr div.cur{background:#26425a;border-left-color:#f1c40f}
+.vt td,.vt th{padding:4px 8px!important;font-family:Consolas,monospace}
+.score{position:sticky;top:0;z-index:5;background:#e9f6f6;border:1px solid #bfe3e4;border-radius:10px;padding:10px 14px;margin:8px 0 14px;display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.score .bar{flex:1 1 200px;height:12px;background:#d6e4ea;border-radius:6px;overflow:hidden}.score .bar i{display:block;height:100%;width:0;background:var(--green);transition:width .3s}
+#sinav .q.qok{border-color:var(--green);background:#f3fcf6}#sinav .q.qno{border-color:var(--red);background:#fef6f5}
+.fs{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;font-size:.93em}.fs div{border:1px solid var(--border);border-radius:8px;padding:8px 12px}.fs b{color:#064d50}
+.prob{border-left:4px solid var(--accent);padding:4px 12px;margin:12px 0;background:#fffaf4;border-radius:0 8px 8px 0}
+@media(max-width:760px){.fs{grid-template-columns:1fr}}
+@media print{body.yazdir header.top,body.yazdir .toc,body.yazdir footer,body.yazdir section.card:not(#formul),body.yazdir .noprint{display:none!important}
+body.yazdir section.card{box-shadow:none;border:0;animation:none}body.yazdir .fs{font-size:10.5pt}body.yazdir{background:#fff}}
+</style>
+<section class="card" id="hedef"><h2><span class="num">1</span>Sınava Hazırlık ve Hedefler</h2>
+<p>8. hafta ara sınav haftasıdır. Bu sayfa 1–7. haftalarda işlenen konuların <b>yoğunlaştırılmış bir tekrarını</b>, çözümlü örnekleri ve puanlanan bir deneme sınavını içerir. Sınavda hem <b>hesap soruları</b> (Ohm, Kirchhoff, gerilim bölücü, ADC) hem de <b>kod okuma</b> ("bu programın çıktısı nedir?") soruları beklenebilir.</p>
+<ul class="goals">
+<li>Ohm Kanunu, LED ön direnci, seri devre ve gerilim bölücü hesaplarını hatasız yapabilmek</li>
+<li>Kirchhoff Gerilim Kanunu ile bir çevredeki gerilimleri doğrulayabilmek</li>
+<li><code>pinMode</code>, <code>digitalWrite</code>, <code>digitalRead</code>, <code>analogRead</code>, <code>delay</code>, <code>Serial</code> fonksiyonlarını doğru kullanabilmek</li>
+<li><code>if–else</code> ve <code>for</code> yapılarını içeren bir programı satır satır izleyip çıktısını bulabilmek</li>
+<li>Buton (pull-up/pull-down), LED ve LDR/potansiyometre devrelerini çizip açıklayabilmek</li>
+<li>Sık yapılan donanım ve yazılım hatalarını tanıyıp düzeltebilmek</li></ul>
+<table class="tbl"><tr><th>Hafta</th><th>Konu</th><th>Sınavdaki tipik soru</th></tr>
+<tr><td>1</td><td>Arduino'ya giriş, IDE, Ohm Kanunu</td><td>Akım/direnç hesabı, setup–loop farkı</td></tr>
+<tr><td>2</td><td>Kirchhoff, gerilim bölücü, breadboard</td><td>Çıkış gerilimi hesabı, breadboard bağlantıları</td></tr>
+<tr><td>3</td><td>Dijital yazma, if-else, LED</td><td>Blink zamanlaması, LED direnci</td></tr>
+<tr><td>4</td><td>Dijital okuma, buton</td><td>Pull-up/pull-down, buton–LED programı</td></tr>
+<tr><td>5</td><td>for döngüsü</td><td>Döngü kaç kez çalışır, çıktısı nedir</td></tr>
+<tr><td>6–7</td><td>Analog okuma, LDR, potansiyometre</td><td>ADC ↔ gerilim dönüşümü, eşik programları</td></tr></table>
+</section>
+<section class="card" id="ozet"><h2><span class="num">2</span>Haftalık Özet Kartları (1–7)</h2>
+<div class="rv">
+<div class="c"><h4><span class="wk">1. hafta</span>Arduino ve Ohm Kanunu</h4><ul>
+<li>UNO: ATmega328P, 16 MHz, 5 V; 14 dijital pin (6'sı PWM), 6 analog giriş</li>
+<li><code>setup()</code> bir kez, <code>loop()</code> sürekli çalışır</li>
+<li>V = I·R; ampermetre seri, voltmetre paralel</li>
+<li>LED direnci: R = (V<sub>s</sub> − V<sub>LED</sub>) / I</li></ul></div>
+<div class="c"><h4><span class="wk">2. hafta</span>Kirchhoff, gerilim bölücü, breadboard</h4><ul>
+<li>KGK: kapalı çevrede gerilim artışları = düşüşleri (ΣV = 0)</li>
+<li>Seri: R<sub>T</sub> = R1 + R2 + …, akım her yerde aynı</li>
+<li>Bölücü: V<sub>out</sub> = V<sub>in</sub> · R2 / (R1 + R2)</li>
+<li>Breadboard: numaralı her sıranın a–e ve f–j delikleri kendi içinde bağlı; yan raylar boyuna bağlı</li></ul></div>
+<div class="c"><h4><span class="wk">3. hafta</span>Dijital yazma ve if-else</h4><ul>
+<li><code>pinMode(p, OUTPUT)</code> → <code>digitalWrite(p, HIGH/LOW)</code></li>
+<li>HIGH = 5 V, LOW = 0 V; pin başına ≤ 20 mA</li>
+<li><code>if (koşul) {…} else {…}</code>; karşılaştırma <code>==</code>, atama <code>=</code></li>
+<li>Mantıksal işleçler: <code>&amp;&amp;</code> (ve), <code>||</code> (veya), <code>!</code> (değil)</li></ul></div>
+<div class="c"><h4><span class="wk">4. hafta</span>Dijital okuma ve buton</h4><ul>
+<li><code>digitalRead(p)</code> → HIGH (1) / LOW (0)</li>
+<li>Boşta kalan giriş "yüzer" → rastgele okuma; pull-up veya pull-down direnci şart</li>
+<li>Pull-down (10 kΩ → GND): basınca HIGH</li>
+<li><code>INPUT_PULLUP</code> + buton → GND: basınca <b>LOW</b></li></ul></div>
+<div class="c"><h4><span class="wk">5. hafta</span>for döngüsü</h4><ul>
+<li><code>for (başlangıç; koşul; artırım) { … }</code></li>
+<li><code>for (int i = 0; i &lt; n; i++)</code> → n kez çalışır (i = 0 … n−1)</li>
+<li>Kayan ışık (knight rider): pin numaralarını döngü değişkeni yapma</li>
+<li>Döngü değişkeni yalnızca döngü içinde geçerlidir</li></ul></div>
+<div class="c"><h4><span class="wk">6. hafta</span>Analog okuma ve LDR</h4><ul>
+<li><code>analogRead(A0)</code> → 0–1023 (10 bit ADC, 0–5 V)</li>
+<li>V = değer · 5,0 / 1023 (yaklaşık; teorik bölen 1024)</li>
+<li>LDR: ışık ↑ → direnç ↓; sabit dirençle bölücü kurulur</li>
+<li>Eşik karşılaştırması: <code>if (deger &lt; 300) …</code></li></ul></div>
+<div class="c"><h4><span class="wk">7. hafta</span>Potansiyometre</h4><ul>
+<li>3 uçlu ayarlı gerilim bölücü: dış uçlar 5 V ve GND, orta uç (silecek) A0</li>
+<li>Silecek gerilimi = 5 V × konum oranı</li>
+<li>Pot ile eşik/bekleme süresi ayarlama: <code>delay(analogRead(A0))</code></li>
+<li>Seri Monitörde okuma: <code>Serial.begin(9600)</code>, <code>Serial.println()</code></li></ul></div>
+</div>
+</section>
+<section class="card" id="ohm"><h2><span class="num">3</span>Formül Tekrarı: Ohm, Kirchhoff ve Gerilim Bölücü</h2>
+<div class="formula">V = I · R &nbsp;·&nbsp; R<sub>T</sub> = R1 + R2 &nbsp;·&nbsp; V<sub>s</sub> = V1 + V2 &nbsp;·&nbsp; V2 = V<sub>s</sub> · R2 / (R1 + R2)</div>
+<p>İki seri dirençten oluşan devre hem Ohm hem Kirchhoff hem de gerilim bölücü konularının ortak örneğidir. Akım her iki dirençten de <b>aynı</b> geçer; gerilim dirençlerle <b>orantılı</b> paylaşılır. Orta noktadaki gerilimi (V2) Arduino'nun A0 girişi ile ölçersek ADC değeri de hesaplanabilir.</p>
+<div class="sim"><h4>🔬 Simülasyon 1: Seri devre / gerilim bölücü tekrarı</h4>
+<div class="grid2"><div>
+<label>Kaynak V<sub>s</sub> = <span id="vdVsT">5</span> V</label><input type="range" id="vdVsS" min="1" max="12" step="0.5" value="5">
+<label>R1 = <span id="vdR1T">10000</span> Ω</label><input type="range" id="vdR1" min="100" max="47000" step="100" value="10000">
+<label>R2 = <span id="vdR2T">4700</span> Ω</label><input type="range" id="vdR2" min="100" max="47000" step="100" value="4700">
+<div class="out" id="vdOut"></div></div>
+<div class="figure" style="margin:0"><svg id="vdSvg" viewBox="0 0 420 260" width="420">
+<rect width="420" height="260" rx="10" fill="#fff"/>
+<path d="M60 40 H300 V220 H60 Z" fill="none" stroke="#555" stroke-width="3"/>
+<path id="vdCur" d="M60 130 V40 H300 V220 H60 Z" fill="none" stroke="#f1c40f" stroke-width="4" stroke-dasharray="4 14" class="flow"/>
+<rect x="38" y="100" width="44" height="60" rx="4" fill="#fff" stroke="#333" stroke-width="2"/><text x="60" y="122" text-anchor="middle" font-size="12">+</text><text x="60" y="150" text-anchor="middle" font-size="14">–</text>
+<text id="vdVs" x="30" y="135" text-anchor="end" font-size="12" font-weight="700" fill="#c0392b">5 V</text>
+<rect x="150" y="28" width="60" height="24" rx="5" fill="#d9b38c" stroke="#7a5230"/><text x="180" y="44" text-anchor="middle" font-size="11">R1</text>
+<rect x="288" y="100" width="24" height="60" rx="5" fill="#d9b38c" stroke="#7a5230"/><text x="300" y="134" text-anchor="middle" font-size="11">R2</text>
+<text id="vdV1" x="180" y="72" text-anchor="middle" font-size="11" fill="#e67e22">V1</text>
+<text id="vdV2" x="322" y="134" font-size="11" fill="#2e86de">V2</text>
+<circle cx="300" cy="80" r="4" fill="#00979d"/><path d="M300 80 H370" stroke="#00979d" stroke-width="2" stroke-dasharray="4 3"/><rect x="368" y="68" width="40" height="24" rx="4" fill="#0e7c86"/><text x="388" y="84" text-anchor="middle" fill="#fff" font-size="11">A0</text>
+<text x="388" y="108" text-anchor="middle" font-size="9" fill="#5b6b7d">V2'yi ölçer</text>
+<rect x="150" y="205" width="60" height="30" rx="4" fill="#fff" stroke="#333"/><text id="vdA" x="180" y="225" text-anchor="middle" font-size="11" font-family="Consolas">0 mA</text>
+<rect x="60" y="244" width="300" height="10" fill="#eee"/><rect id="vdB1" x="60" y="244" width="150" height="10" fill="#e67e22"/><rect id="vdB2" x="210" y="244" width="150" height="10" fill="#2e86de"/>
+</svg><div class="cap">Turuncu/mavi çubuk: kaynak geriliminin R1 ve R2 arasında paylaşımı (KGK). Akım arttıkça sarı çizgiler hızlanır.</div></div></div></div>
+<div class="tip">Sınavda gerilim bölücü sorusunda önce <b>hangi direncin GND tarafında</b> olduğuna bakın: formülün payına <b>çıkışın ölçüldüğü direnç</b> (orta nokta ile GND arasındaki) yazılır.</div>
+</section>
+<section class="card" id="fn"><h2><span class="num">4</span>Fonksiyonlar ve Yapılar Tablosu</h2>
+<table class="tbl"><tr><th>Fonksiyon / yapı</th><th>Görevi</th><th>Dönüş / değer aralığı</th><th>Hafta</th></tr>
+<tr><td><code>pinMode(pin, mod)</code></td><td>Pini OUTPUT, INPUT veya INPUT_PULLUP yapar</td><td>—</td><td>1, 3, 4</td></tr>
+<tr><td><code>digitalWrite(pin, değer)</code></td><td>Çıkış pinine HIGH (5 V) / LOW (0 V) verir</td><td>—</td><td>1, 3</td></tr>
+<tr><td><code>digitalRead(pin)</code></td><td>Giriş pinindeki lojik seviyeyi okur</td><td>HIGH (1) / LOW (0)</td><td>4</td></tr>
+<tr><td><code>analogRead(pin)</code></td><td>A0–A5'teki 0–5 V gerilimi sayıya çevirir</td><td>0–1023 (int)</td><td>6, 7</td></tr>
+<tr><td><code>delay(ms)</code></td><td>Programı ms milisaniye bekletir (1000 ms = 1 s)</td><td>—</td><td>1</td></tr>
+<tr><td><code>Serial.begin(baud)</code></td><td>Seri haberleşmeyi başlatır (ör. 9600 bit/s)</td><td>—</td><td>6</td></tr>
+<tr><td><code>Serial.print(x)</code> / <code>println(x)</code></td><td>Seri Monitöre yazar; println sonunda satır atlar</td><td>—</td><td>6</td></tr>
+<tr><td><code>if / else if / else</code></td><td>Koşula göre farklı kod bloklarını çalıştırır</td><td>—</td><td>3, 4</td></tr>
+<tr><td><code>for (i = a; koşul; i++)</code></td><td>Bir bloğu belirli sayıda tekrarlar</td><td>—</td><td>5</td></tr>
+<tr><td><code>%</code> (mod)</td><td>Tam sayı bölmesinden kalan: 7 % 3 = 1</td><td>—</td><td>5</td></tr>
+<tr><td><code>int</code> / <code>float</code></td><td>Tam sayı (16 bit, −32768…32767) / ondalıklı sayı</td><td>—</td><td>1–7</td></tr></table>
+<div class="note">Tam sayı bölmesinde ondalık kısım <b>atılır</b>: <code>7 / 2</code> = 3, <code>600 / 1023</code> = 0. Ondalıklı sonuç için en az bir sayı ondalıklı yazılmalıdır: <code>600 * 5.0 / 1023.0</code> = 2,93.</div>
+</section>
+<section class="card" id="devre"><h2><span class="num">5</span>Tipik Devreler ve Tekrar Programı</h2>
+<p>Sınavda en sık çizilmesi veya yorumlanması istenen dört temel devre aşağıdadır. (b) ve (c) şemalarındaki butonlara <b>tıklayarak</b> pinin okuduğu değeri görebilirsiniz.</p>
+<div class="figure"><svg id="tipik" viewBox="0 0 800 290" width="800"><style>#tipik path:not(.f){fill:none}</style>
+<g font-size="11">
+<text x="100" y="18" text-anchor="middle" font-weight="700">a) LED çıkışı</text>
+<rect x="70" y="30" width="60" height="22" rx="4" fill="#0e7c86"/><text x="100" y="45" text-anchor="middle" fill="#fff">D13</text>
+<path d="M100 52 V70" stroke="#333" stroke-width="2"/><path d="M100 70 V75 L108 79.2 L92 87.5 L108 95.8 L92 104.2 L108 112.5 L92 120.8 L100 125 V130" fill="none" stroke="#333" stroke-width="2"/><text x="113" y="104" font-size="10">220 Ω</text><path d="M100 130 V160" stroke="#333" stroke-width="2"/><path d="M91 160 h18 l-9 14 z" fill="#ff6b6b" stroke="#333" class="f glow"/><path d="M91 174 h18" stroke="#333" stroke-width="2"/><path d="M112 162 l7 -6 M115 169 l7 -6" stroke="#e74c3c" stroke-width="1.5"/><path d="M100 174 V215" stroke="#333" stroke-width="2"/><path d="M100 215 v6 M90 221 h20 M94 225 h12 M98 229 h4" stroke="#333" stroke-width="2"/>
+<path class="flow" d="M100 52 V215" stroke="#f1c40f" stroke-width="2.5" fill="none"/>
+<text x="100" y="255" text-anchor="middle" font-size="10" fill="#5b6b7d">digitalWrite(13, HIGH) → yanar</text>
+<text x="300" y="18" text-anchor="middle" font-weight="700">b) Buton + pull-down</text>
+<text x="300" y="42" text-anchor="middle" font-weight="700" fill="#c0392b">5V</text><path d="M300 46 V70" stroke="#333" stroke-width="2"/>
+<circle cx="300" cy="70" r="3" fill="#333"/><circle cx="300" cy="100" r="3" fill="#333"/><g id="bPD" style="cursor:pointer;transition:transform .15s"><line x1="304" y1="68" x2="304" y2="102" stroke="#333" stroke-width="3"/><line x1="304" y1="85" x2="318" y2="85" stroke="#333" stroke-width="2"/><rect x="316" y="78" width="12" height="14" rx="3" fill="#e67e22"/></g><path d="M300 100 V140 M300 120 H350" stroke="#333" stroke-width="2"/><circle cx="300" cy="120" r="3.5" fill="#333"/>
+<rect x="350" y="109" width="40" height="22" rx="4" fill="#0e7c86"/><text x="370" y="124" text-anchor="middle" fill="#fff">D2</text>
+<path d="M300 140 V145 L308 149.2 L292 157.5 L308 165.8 L292 174.2 L308 182.5 L292 190.8 L300 195 V200" fill="none" stroke="#333" stroke-width="2"/><text x="313" y="174" font-size="10">10 kΩ</text><path d="M300 205 v6 M290 211 h20 M294 215 h12 M298 219 h4" stroke="#333" stroke-width="2"/><path d="M300 200 V205" stroke="#333" stroke-width="2"/>
+<path id="fPD" class="flow" d="M300 46 V205" stroke="#f1c40f" stroke-width="2.5" fill="none" style="opacity:0"/>
+<text id="tPD" x="300" y="255" text-anchor="middle" font-size="10.5" font-family="Consolas" fill="#064d50">digitalRead(2) = LOW</text>
+<text x="300" y="272" text-anchor="middle" font-size="9.5" fill="#5b6b7d">butona tıklayın</text>
+<text x="500" y="18" text-anchor="middle" font-weight="700">c) INPUT_PULLUP</text>
+<rect x="430" y="28" width="98" height="120" rx="6" fill="none" stroke="#00979d" stroke-dasharray="5 3"/><text x="436" y="142" font-size="9" fill="#00979d">Arduino içi</text>
+<text x="480" y="44" text-anchor="middle" font-weight="700" fill="#c0392b">5V</text><path d="M480 48 V55" stroke="#333" stroke-width="2"/><path d="M480 55 V60 L488 63.3 L472 70.0 L488 76.7 L472 83.3 L488 90.0 L472 96.7 L480 100 V105" fill="none" stroke="#333" stroke-width="2"/><text x="493" y="84" font-size="10">≈35 kΩ</text><path d="M480 105 V120 H560" stroke="#333" stroke-width="2"/><circle cx="560" cy="120" r="3.5" fill="#333"/>
+<rect x="540" y="86" width="40" height="22" rx="4" fill="#0e7c86"/><text x="560" y="101" text-anchor="middle" fill="#fff">D2</text>
+<path d="M560 120 V150" stroke="#333" stroke-width="2"/><circle cx="560" cy="150" r="3" fill="#333"/><circle cx="560" cy="180" r="3" fill="#333"/><g id="bPU" style="cursor:pointer;transition:transform .15s"><line x1="564" y1="148" x2="564" y2="182" stroke="#333" stroke-width="3"/><line x1="564" y1="165" x2="578" y2="165" stroke="#333" stroke-width="2"/><rect x="576" y="158" width="12" height="14" rx="3" fill="#e67e22"/></g><path d="M560 180 V205" stroke="#333" stroke-width="2"/><path d="M560 205 v6 M550 211 h20 M554 215 h12 M558 219 h4" stroke="#333" stroke-width="2"/>
+<path id="fPU" class="flow" d="M480 48 V120 H560 V205" stroke="#f1c40f" stroke-width="2.5" fill="none" style="opacity:0"/>
+<text id="tPU" x="510" y="255" text-anchor="middle" font-size="10.5" font-family="Consolas" fill="#064d50">digitalRead(2) = HIGH</text>
+<text x="510" y="272" text-anchor="middle" font-size="9.5" fill="#5b6b7d">butona tıklayın</text>
+<text x="700" y="18" text-anchor="middle" font-weight="700">d) Gerilim bölücü (LDR)</text>
+<text x="700" y="42" text-anchor="middle" font-weight="700" fill="#c0392b">5V</text><path d="M700 46 V60" stroke="#333" stroke-width="2"/>
+<rect x="688" y="60" width="24" height="56" rx="10" fill="none" stroke="#333" stroke-width="2"/><path d="M700 62 V67 L708 70.5 L692 77.5 L708 84.5 L692 91.5 L708 98.5 L692 105.5 L700 109 V114" fill="none" stroke="#333" stroke-width="2"/><text x="713" y="92" font-size="10"></text><text x="718" y="92" font-size="10">LDR</text>
+<path d="M668 70 l12 8 M664 82 l12 8" stroke="#e67e22" stroke-width="1.5"/>
+<path d="M700 116 V135 M700 130 H750" stroke="#333" stroke-width="2"/><circle cx="700" cy="130" r="3.5" fill="#333"/>
+<rect x="745" y="119" width="40" height="22" rx="4" fill="#0e7c86"/><text x="765" y="134" text-anchor="middle" fill="#fff">A0</text>
+<path d="M700 135 V140 L708 144.2 L692 152.5 L708 160.8 L692 169.2 L708 177.5 L692 185.8 L700 190 V195" fill="none" stroke="#333" stroke-width="2"/><text x="713" y="169" font-size="10">10 kΩ</text><path d="M700 195 V205" stroke="#333" stroke-width="2"/><path d="M700 205 v6 M690 211 h20 M694 215 h12 M698 219 h4" stroke="#333" stroke-width="2"/>
+<path class="flow" d="M700 46 V205" stroke="#f1c40f" stroke-width="2.5" fill="none"/>
+<text x="700" y="255" text-anchor="middle" font-size="10" fill="#5b6b7d">Işık ↑ → R<tspan font-size="8">LDR</tspan> ↓ → V<tspan font-size="8">A0</tspan> ↑</text>
+</g></svg><div class="cap">Şekil 1. (a) LED çıkışı, (b) harici pull-down dirençli buton, (c) dahili pull-up (INPUT_PULLUP) ile buton, (d) LDR gerilim bölücü. Sarı kesikli çizgiler akım yolunu gösterir.</div></div>
+<div class="grid2"><div><div class="codebox"><span class="lbl">Tekrar.ino</span><pre class="code">// TEKRAR PROGRAMI: buton, potansiyometre ve for döngüsü bir arada
+// D2: buton -&gt; GND (INPUT_PULLUP)   A0: potansiyometre orta ucu
+// D3–D6: dört LED (her biri 220 Ω ile GND'ye)
+const int butonPin = 2;
+const int potPin = A0;
+
+void setup() {
+  pinMode(butonPin, INPUT_PULLUP);       // basılmazken HIGH, basılınca LOW
+  for (int p = 3; p &lt;= 6; p++) {         // 3, 4, 5, 6 numaralı pinleri çıkış yap
+    pinMode(p, OUTPUT);
+  }
+  Serial.begin(9600);
+}
+
+void loop() {
+  int potDeger = analogRead(potPin);     // 0–1023
+  float gerilim = potDeger * 5.0 / 1023.0;
+  int bekleme = 50 + potDeger / 4;       // 50–305 ms arası bekleme
+
+  Serial.print("Pot: ");
+  Serial.print(potDeger);
+  Serial.print("  V = ");
+  Serial.println(gerilim, 2);
+
+  if (digitalRead(butonPin) == LOW) {    // butona basıldı mı?
+    for (int p = 3; p &lt;= 6; p++) {       // kayan ışık: 3 -&gt; 6
+      digitalWrite(p, HIGH);
+      delay(bekleme);
+      digitalWrite(p, LOW);
+    }
+  } else {
+    for (int p = 3; p &lt;= 6; p++) {       // basılmadıysa hepsini söndür
+      digitalWrite(p, LOW);
+    }
+  }
+}</pre></div></div>
+<div><h3>Programın özellikleri</h3><ul>
+<li><b>INPUT_PULLUP</b> kullanıldığı için buton GND'ye bağlanır ve <b>basılınca LOW</b> okunur (Şekil 1c).</li>
+<li><code>for</code> döngüsü hem <code>setup()</code>'ta pinleri çıkış yapmak hem de kayan ışık için kullanılmıştır.</li>
+<li>Pot değeri 0–1023 olduğundan <code>potDeger / 4</code> 0–255 arasıdır; bekleme 50–305 ms olur. (Tam sayı bölmesi!)</li>
+<li>Butona basılı tutulduğu sürece LED'ler 3 → 6 sırasıyla kayar.</li></ul>
+<div class="tip">Örnek: pot = 600 → V = 600 · 5,0/1023 = 2,93 V; bekleme = 50 + 600/4 = 50 + 150 = 200 ms. Bir kayma turu 4 × 200 = 800 ms sürer.</div></div></div>
+<h3>Analog eşik göstergesi</h3>
+<div class="grid2"><div><div class="codebox"><span class="lbl">Uc_Kademe.ino</span><pre class="code">// Gerilime göre üç kademeli gösterge (6–7. hafta tekrarı)
+const int sensorPin = A0;   // LDR gerilim bölücü veya potansiyometre
+const int ledDusuk = 8;
+const int ledOrta = 9;
+const int ledYuksek = 10;
+
+void setup() {
+  pinMode(ledDusuk, OUTPUT);
+  pinMode(ledOrta, OUTPUT);
+  pinMode(ledYuksek, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int deger = analogRead(sensorPin);
+  Serial.println(deger);
+
+  digitalWrite(ledDusuk, LOW);           // önce hepsini söndür
+  digitalWrite(ledOrta, LOW);
+  digitalWrite(ledYuksek, LOW);
+
+  if (deger &lt; 341) {                     // 0–340   : 0 – 1,67 V
+    digitalWrite(ledDusuk, HIGH);
+  } else if (deger &lt; 682) {              // 341–681 : 1,67 – 3,33 V
+    digitalWrite(ledOrta, HIGH);
+  } else {                               // 682–1023: 3,33 – 5 V
+    digitalWrite(ledYuksek, HIGH);
+  }
+  delay(200);
+}</pre></div></div>
+<div><p>1023 / 3 ≈ 341 olduğundan aralık üç eşit parçaya bölünmüştür. <code>if – else if – else</code> zincirinde koşullar <b>yukarıdan aşağıya</b> denetlenir; ilk doğru koşulun bloğu çalışır, gerisi atlanır. Bu yüzden ikinci koşulda <code>deger &gt;= 341</code> yazmaya gerek yoktur.</p>
+<table class="tbl"><tr><th>analogRead</th><th>Gerilim</th><th>Yanan LED</th></tr><tr><td>200</td><td>0,98 V</td><td>D8</td></tr><tr><td>341</td><td>1,67 V</td><td>D9</td></tr><tr><td>681</td><td>3,33 V</td><td>D9</td></tr><tr><td>900</td><td>4,40 V</td><td>D10</td></tr></table></div></div>
+</section>
+<section class="card" id="hata"><h2><span class="num">6</span>Sık Yapılan Hatalar</h2>
+<table class="tbl"><tr><th>Hata</th><th>Belirti</th><th>Doğrusu</th></tr>
+<tr><td><code>if (x = 5)</code></td><td>Koşul her zaman doğru çalışır, x'in değeri değişir</td><td><code>if (x == 5)</code> (karşılaştırma iki eşittir)</td></tr>
+<tr><td>Satır sonunda <code>;</code> unutmak</td><td>Derleme hatası: <i>expected ';' before …</i></td><td>Her komut <code>;</code> ile biter</td></tr>
+<tr><td><code>pinmode</code>, <code>DigitalWrite</code></td><td><i>was not declared in this scope</i></td><td>Büyük/küçük harf duyarlı: <code>pinMode</code>, <code>digitalWrite</code></td></tr>
+<tr><td>LED pini için <code>pinMode(…, OUTPUT)</code> unutmak</td><td>LED çok sönük yanar (dahili pull-up üzerinden)</td><td>setup()'ta pinMode yazılmalı</td></tr>
+<tr><td>LED'i dirençsiz bağlamak</td><td>LED veya pin zarar görür</td><td>≈ 220 Ω seri direnç</td></tr>
+<tr><td>LED'i ters takmak</td><td>LED hiç yanmaz</td><td>Uzun bacak (anot) + tarafa</td></tr>
+<tr><td>Buton girişinde pull direnci yok</td><td>Basılmadan rastgele HIGH/LOW okunur</td><td>10 kΩ pull-down veya INPUT_PULLUP</td></tr>
+<tr><td><code>int v = deger / 1023 * 5;</code></td><td>Sonuç hep 0 (deger = 1023 ise 5)</td><td><code>float v = deger * 5.0 / 1023.0;</code></td></tr>
+<tr><td>Seri Monitör baud hızı farklı</td><td>Anlamsız karakterler görünür</td><td>Monitör hızı = <code>Serial.begin()</code> hızı</td></tr>
+<tr><td><code>for (int i = 0; i &lt;= 5; i++)</code> ile "5 kez" sanmak</td><td>Döngü 6 kez çalışır</td><td><code>i &lt; 5</code> → 5 kez</td></tr>
+<tr><td>0 ve 1 numaralı pinleri kullanmak</td><td>Program yüklenemez / seri iletişim bozulur</td><td>D0 (RX), D1 (TX) seri iletişime ayrılmıştır</td></tr>
+<tr><td><code>if (...);</code> (koşuldan sonra noktalı virgül)</td><td>Koşul ne olursa olsun blok çalışır</td><td>Koşuldan sonra <code>;</code> konmaz</td></tr></table>
+<div class="grid2"><div><div class="codebox"><span class="lbl">hatali.ino</span><pre class="code">int sayi = 0;
+void setup() { Serial.begin(9600); }
+void loop() {
+  if (sayi = 0) {              // HATA: atama!
+    Serial.println("Sifir");   // hiç yazılmaz
+  }
+  sayi++;
+}</pre></div></div><div><p><code>sayi = 0</code> ifadesi sayi'ya 0 atar ve ifadenin değeri 0 (yanlış) olur; blok <b>hiçbir zaman</b> çalışmaz ve üstelik sayi her turda sıfırlanır. Derleyici bunu bir uyarı ile bildirebilir ama hata vermez. <code>if (sayi == 0)</code> yazılmalıdır.</p></div></div>
+</section>
+<section class="card" id="iz"><h2><span class="num">7</span>Kod İzleme Adımlayıcısı</h2>
+<p>"Çıktı nedir?" sorularında programı <b>bilgisayar gibi</b> satır satır çalıştırmak gerekir. Aşağıdan bir program seçin ve <b>Adım ▶</b> ile ilerleyin: çalışan satır sarı ile işaretlenir; değişkenlerin değerleri, LED durumu ve Seri Monitör çıktısı her adımda güncellenir. Önce çıktıyı kendiniz tahmin edin, sonra doğrulayın.</p>
+<div class="sim"><h4>🔬 Simülasyon 2: Satır satır program izleme</h4>
+<label>Program</label><select id="trSel"><option value="0">A) for + if-else (toplam)</option><option value="1">B) loop + sayaç + LED</option><option value="2">C) analogRead + eşik</option></select>
+<div style="margin:8px 0"><button class="btn" id="trBack">◀ Geri</button><button class="btn" id="trStep">Adım ▶</button><button class="btn" id="trAuto">⏵ Otomatik</button><button class="btn alt" id="trReset">↺ Baştan</button> <span id="trCnt" class="pill"></span></div>
+<div class="grid2"><div class="tr" id="trCode"></div>
+<div><table class="tbl vt" id="trVars"></table>
+<div class="out" id="trNote" style="min-height:44px"></div>
+<div style="display:flex;align-items:center;gap:10px;margin:8px 0"><svg viewBox="0 0 60 50" width="60"><circle id="trLedH" cx="30" cy="22" r="20" fill="#ffb300" opacity="0"/><circle id="trLed" cx="30" cy="22" r="11" fill="#5a4a00"/><text x="30" y="47" text-anchor="middle" font-size="9">D13</text></svg><span id="trLedT" style="font-family:Consolas">LED: LOW</span></div>
+<label>Seri Monitör</label><div class="serial" id="trSer" style="height:110px"></div></div></div></div>
+</section>
+<section class="card" id="cozum"><h2><span class="num">8</span>Çözümlü Örnek Sorular (15)</h2><p>Her soruyu önce kâğıt üzerinde çözün, sonra <b>Çözümü göster</b>’e tıklayarak kontrol edin. 1–9 hesap, 10–15 kod okuma sorularıdır.</p><div class="prob"><p><b>Örnek 1 – Ohm Kanunu:</b> 9 V'luk bir pile 470 Ω direnç bağlanıyor. Devreden geçen akım kaç mA'dır?</p><details><summary>Çözümü göster</summary><p>I = V / R = 9 / 470 = 0,01915 A ≈ <b>19,1 mA</b></p></details></div><div class="prob"><p><b>Örnek 2 – LED ön direnci:</b> 5 V çıkışlı bir pine sarı LED (V<sub>LED</sub> = 2,1 V) 15 mA akımla bağlanacak. Direnç kaç Ω olmalı? 220 Ω seçilirse akım ne olur?</p><details><summary>Çözümü göster</summary><p>R = (5 − 2,1) / 0,015 = <b>193 Ω</b> → standart üst değer <b>220 Ω</b>. Gerçek akım: I = 2,9 / 220 = <b>13,2 mA</b> (güvenli).</p></details></div><div class="prob"><p><b>Örnek 3 – Seri devre:</b> 9 V kaynağa R1 = 1 kΩ, R2 = 2,2 kΩ, R3 = 330 Ω seri bağlanmıştır. Toplam direnç, akım ve R2 üzerindeki gerilim nedir?</p><details><summary>Çözümü göster</summary><p>R<sub>T</sub> = 1000 + 2200 + 330 = 3530 Ω · I = 9 / 3530 = <b>2,55 mA</b> · V<sub>R2</sub> = 0,00255 × 2200 = <b>5,61 V</b>. Kontrol (KGK): 2,55 + 5,61 + 0,84 = 9,0 V ✓</p></details></div><div class="prob"><p><b>Örnek 4 – Kirchhoff Gerilim Kanunu:</b> 12 V'luk kaynağa seri bağlı iki dirençten R1 üzerinde 4,5 V ölçülüyor ve devre akımı 3 mA'dır. R2 üzerindeki gerilim ve R1, R2 değerleri nedir?</p><details><summary>Çözümü göster</summary><p>KGK: V2 = 12 − 4,5 = <b>7,5 V</b> · R1 = 4,5 / 0,003 = <b>1,5 kΩ</b> · R2 = 7,5 / 0,003 = <b>2,5 kΩ</b></p></details></div><div class="prob"><p><b>Örnek 5 – Gerilim bölücü:</b> 5 V – R1 (10 kΩ) – çıkış – R2 (4,7 kΩ) – GND devresinde çıkış gerilimi nedir? Bu gerilim A0'a verilirse analogRead yaklaşık kaç okur?</p><details><summary>Çözümü göster</summary><p>V<sub>out</sub> = 5 · 4,7 / (10 + 4,7) = <b>1,60 V</b> · ADC ≈ 1,60 / 5 × 1023 ≈ <b>327</b></p></details></div><div class="prob"><p><b>Örnek 6 – ADC → gerilim:</b> analogRead(A0) = 768 okunmuştur. Pindeki gerilim yaklaşık kaç volttur?</p><details><summary>Çözümü göster</summary><p>V = 768 × 5,0 / 1023 = <b>3,75 V</b> (1024'e bölünürse de 3,75 V).</p></details></div><div class="prob"><p><b>Örnek 7 – LDR bölücü:</b> 5V – LDR – A0 – 10 kΩ – GND bağlantısında LDR karanlıkta 90 kΩ, aydınlıkta 2 kΩ'dur. Her iki durumda A0 gerilimi ve ADC değeri nedir?</p><details><summary>Çözümü göster</summary><p>Karanlık: V = 5 · 10 / (90 + 10) = <b>0,50 V</b> → ADC ≈ <b>102</b> · Aydınlık: V = 5 · 10 / (2 + 10) = <b>4,17 V</b> → ADC ≈ <b>852</b></p></details></div><div class="prob"><p><b>Örnek 8 – Potansiyometre:</b> 10 kΩ'luk potansiyometrenin silecek ucu GND tarafından itibaren direncin %30'unda duruyor. A0'daki gerilim ve okunan değer nedir? Sonuç pot değerine bağlı mıdır?</p><details><summary>Çözümü göster</summary><p>V = 0,30 × 5 = <b>1,5 V</b> → ADC ≈ 0,30 × 1023 ≈ <b>307</b>. Oran korunduğu için sonuç potun toplam değerinden (1 k, 10 k, 100 k) <b>bağımsızdır</b>.</p></details></div><div class="prob"><p><b>Örnek 9 – Güç:</b> Örnek 2'deki 220 Ω'luk direnç üzerinde harcanan güç nedir? 1/4 W direnç yeterli midir?</p><details><summary>Çözümü göster</summary><p>P = I²·R = 0,0132² × 220 = <b>0,038 W ≈ 38 mW</b> &lt; 250 mW → <b>yeterlidir</b>.</p></details></div><div class="prob"><p><b>Örnek 10 – Blink zamanlaması:</b> <code>digitalWrite(13,HIGH); delay(250); digitalWrite(13,LOW); delay(750);</code> loop() içindeyse LED'in periyodu, frekansı ve dakikadaki yanma sayısı nedir?</p><details><summary>Çözümü göster</summary><p>T = 250 + 750 = <b>1000 ms</b> → f = <b>1 Hz</b> → dakikada <b>60</b> kez yanar. LED sürenin %25'inde yanıktır.</p></details></div><div class="prob"><p><b>Örnek 11 – Çıktı nedir? (for):</b> <code>for (int i = 0; i &lt; 10; i += 3) { Serial.print(i); Serial.print(" "); }</code></p><details><summary>Çözümü göster</summary><p>i = 0, 3, 6, 9 değerlerini alır; 12 &lt; 10 yanlış olduğu için durur. Çıktı: <b><code>0 3 6 9 </code></b> (4 tekrar)</p></details></div><div class="prob"><p><b>Örnek 12 – Çıktı nedir? (INPUT_PULLUP):</b> <code>pinMode(2, INPUT_PULLUP);</code> ve loop'ta <code>if (digitalRead(2) == HIGH) digitalWrite(13, LOW); else digitalWrite(13, HIGH);</code> Buton D2 ile GND arasındadır. Butona basınca LED ne yapar?</p><details><summary>Çözümü göster</summary><p>Basılınca D2 GND'ye bağlanır → <b>LOW</b> okunur → else çalışır → <b>LED yanar</b>. Bırakınca pull-up nedeniyle HIGH → LED söner.</p></details></div><div class="prob"><p><b>Örnek 13 – Çıktı nedir? (tam sayı bölme):</b> <code>int a = 7; int b = 2; float c = a / b; Serial.println(c);</code></p><details><summary>Çözümü göster</summary><p><code>a / b</code> iki int'in bölmesidir → <b>3</b> (ondalık atılır), sonra float'a çevrilir. <code>println</code> float'ı 2 basamakla yazar: <b><code>3.00</code></b>. 3,5 için <code>(float)a / b</code> yazılmalıdır.</p></details></div><div class="prob"><p><b>Örnek 14 – Çıktı nedir? (if – else if):</b> <code>int x = 5; if (x &gt; 3 &amp;&amp; x &lt; 5) Serial.println("A"); else if (x == 5) Serial.println("B"); else Serial.println("C");</code></p><details><summary>Çözümü göster</summary><p>x &lt; 5 yanlış olduğundan ilk koşul (VE) yanlıştır; ikinci koşul x == 5 doğrudur → çıktı: <b>B</b></p></details></div><div class="prob"><p><b>Örnek 15 – Kayan ışık süresi:</b> <code>for (int p = 6; p &gt;= 2; p--) { digitalWrite(p, HIGH); delay(100); digitalWrite(p, LOW); delay(100); }</code> Kaç LED, hangi sırayla yanar? Döngü toplam ne kadar sürer?</p><details><summary>Çözümü göster</summary><p>p = 6, 5, 4, 3, 2 → <b>5 LED</b>, D6'dan D2'ye doğru. Her adım 200 ms → toplam <b>1000 ms = 1 s</b>.</p></details></div></section>
+<section class="card quiz" id="sinav"><h2><span class="num">9</span>Deneme Sınavı (18 soru)</h2>
+<p>Her sorunun <b>ilk cevabınız</b> puanlanır; cevap verdikten sonra soru kilitlenir ve doğru seçenek ile açıklaması gösterilir. Süre önerisi: 25 dakika.</p>
+<div class="score"><b>Puan: <span id="scP">0</span> / 100</b><span>✓ Doğru: <b id="scD">0</b></span><span>✗ Yanlış: <b id="scY">0</b></span><span>Boş: <b id="scB">18</b></span><div class="bar"><i id="scBar"></i></div><span id="scT">00:00</span><button class="btn alt" id="scReset">↺ Sıfırla</button></div><div class="q" data-answer="b"><p>1) 5 V'luk bir kaynağa 1 kΩ direnç bağlanırsa akım kaç mA olur?</p><button class="opt" data-k="a">a) 0,5 mA</button><button class="opt" data-k="b">b) 5 mA</button><button class="opt" data-k="c">c) 50 mA</button><button class="opt" data-k="d">d) 500 mA</button><div class="fb">✓ I = 5 / 1000 = 0,005 A = 5 mA.</div></div><div class="q" data-answer="c"><p>2) Arduino UNO'nun analog girişleri kaç bitlik ADC ile okunur ve kaç farklı değer verir?</p><button class="opt" data-k="a">a) 8 bit, 256</button><button class="opt" data-k="b">b) 12 bit, 4096</button><button class="opt" data-k="c">c) 10 bit, 1024</button><button class="opt" data-k="d">d) 16 bit, 65536</button><div class="fb">✓ UNO'nun ADC'si 10 bittir: 2¹⁰ = 1024 değer (0–1023).</div></div><div class="q" data-answer="a"><p>3) Bir pini giriş ya da çıkış olarak ayarlayan fonksiyon hangisidir?</p><button class="opt" data-k="a">a) pinMode()</button><button class="opt" data-k="b">b) digitalWrite()</button><button class="opt" data-k="c">c) Serial.begin()</button><button class="opt" data-k="d">d) analogRead()</button><div class="fb">✓ pinMode(pin, OUTPUT/INPUT/INPUT_PULLUP) pin yönünü belirler.</div></div><div class="q" data-answer="d"><p>4) Voltmetre devreye nasıl bağlanır?</p><button class="opt" data-k="a">a) Seri</button><button class="opt" data-k="b">b) Kaynağın yerine</button><button class="opt" data-k="c">c) Sadece GND'ye</button><button class="opt" data-k="d">d) Ölçülen elemana paralel</button><div class="fb">✓ Gerilim iki nokta arasındaki farktır; voltmetre elemana paralel bağlanır.</div></div><div class="q" data-answer="b"><p>5) Kirchhoff Gerilim Kanunu neyi ifade eder?</p><button class="opt" data-k="a">a) Bir düğüme giren akımlar toplamı sıfırdır</button><button class="opt" data-k="b">b) Kapalı bir çevrede gerilimlerin cebirsel toplamı sıfırdır</button><button class="opt" data-k="c">c) Direnç sıcaklıkla artar</button><button class="opt" data-k="d">d) Akım dirençle doğru orantılıdır</button><div class="fb">✓ KGK: kaynak gerilimi, çevredeki gerilim düşümlerinin toplamına eşittir (ΣV = 0). Seçenek a Kirchhoff Akım Kanunu'dur.</div></div><div class="q" data-answer="c"><p>6) 5 V beslemeli gerilim bölücüde R1 = R2 = 10 kΩ ise çıkış gerilimi nedir?</p><button class="opt" data-k="a">a) 5 V</button><button class="opt" data-k="b">b) 1,25 V</button><button class="opt" data-k="c">c) 2,5 V</button><button class="opt" data-k="d">d) 0 V</button><div class="fb">✓ Eşit dirençlerde gerilim yarıya bölünür: 5 · 10/(10+10) = 2,5 V.</div></div><div class="q" data-answer="a"><p>7) Breadboard'da aynı numaralı sıradaki a, b, c, d, e delikleri için hangisi doğrudur?</p><button class="opt" data-k="a">a) Birbirine elektriksel olarak bağlıdır</button><button class="opt" data-k="b">b) Birbirinden yalıtılmıştır</button><button class="opt" data-k="c">c) Yalnızca a ve e bağlıdır</button><button class="opt" data-k="d">d) f–j delikleriyle de bağlıdır</button><div class="fb">✓ Her sıranın a–e grubu kendi içinde bağlıdır; ortadaki oluk a–e ile f–j gruplarını ayırır.</div></div><div class="q" data-answer="d"><p>8) Renk bantları Kırmızı–Kırmızı–Kahverengi–Altın olan direncin değeri nedir?</p><button class="opt" data-k="a">a) 22 Ω ±%5</button><button class="opt" data-k="b">b) 2,2 kΩ ±%10</button><button class="opt" data-k="c">c) 221 Ω ±%5</button><button class="opt" data-k="d">d) 220 Ω ±%5</button><div class="fb">✓ 2, 2, ×10¹ → 22 × 10 = 220 Ω; altın ±%5.</div></div><div class="q" data-answer="b"><p>9) digitalRead() fonksiyonu ne döndürür?</p><button class="opt" data-k="a">a) 0–1023 arası bir sayı</button><button class="opt" data-k="b">b) HIGH (1) veya LOW (0)</button><button class="opt" data-k="c">c) Gerilimi volt olarak</button><button class="opt" data-k="d">d) Hiçbir şey döndürmez</button><div class="fb">✓ Dijital okuma yalnızca iki lojik seviye verir.</div></div><div class="q" data-answer="a"><p>10) <code>pinMode(2, INPUT_PULLUP)</code> yapılmış ve buton D2 ile GND arasına bağlanmıştır. Butona <b>basılmadığında</b> ne okunur?</p><button class="opt" data-k="a">a) HIGH</button><button class="opt" data-k="b">b) LOW</button><button class="opt" data-k="c">c) Rastgele</button><button class="opt" data-k="d">d) 512</button><div class="fb">✓ Dahili pull-up direnci pini 5 V'a çeker → HIGH. Basılınca GND'ye bağlanır → LOW.</div></div><div class="q" data-answer="c"><p>11) <code>for (int i = 0; i &lt; 5; i++)</code> döngüsünün gövdesi kaç kez çalışır?</p><button class="opt" data-k="a">a) 4</button><button class="opt" data-k="b">b) 6</button><button class="opt" data-k="c">c) 5</button><button class="opt" data-k="d">d) Sonsuz</button><div class="fb">✓ i = 0, 1, 2, 3, 4 → 5 kez.</div></div><div class="q" data-answer="b"><p>12) <code>analogRead(A0)</code> = 512 ise pindeki gerilim yaklaşık kaç volttur?</p><button class="opt" data-k="a">a) 1,0 V</button><button class="opt" data-k="b">b) 2,5 V</button><button class="opt" data-k="c">c) 5,12 V</button><button class="opt" data-k="d">d) 0,512 V</button><div class="fb">✓ 512 × 5 / 1023 ≈ 2,50 V.</div></div><div class="q" data-answer="d"><p>13) <code>Serial.begin(9600)</code> komutundaki 9600 neyi ifade eder?</p><button class="opt" data-k="a">a) Bellek boyutunu</button><button class="opt" data-k="b">b) Bekleme süresini (ms)</button><button class="opt" data-k="c">c) Pin numarasını</button><button class="opt" data-k="d">d) Saniyedeki bit sayısını (baud hızı)</button><div class="fb">✓ 9600 baud ≈ saniyede 9600 bit; Seri Monitör de aynı hıza ayarlanmalıdır.</div></div><div class="q" data-answer="a"><p>14) LDR'ye düşen ışık arttığında direnci nasıl değişir?</p><button class="opt" data-k="a">a) Azalır</button><button class="opt" data-k="b">b) Artar</button><button class="opt" data-k="c">c) Değişmez</button><button class="opt" data-k="d">d) Önce artar sonra azalır</button><div class="fb">✓ Fotodirençte ışık şiddeti arttıkça serbest yük taşıyıcı artar, direnç azalır.</div></div><div class="q" data-answer="c"><p>15) <code>int x = 10; x = x % 4;</code> sonrasında x kaçtır?</p><button class="opt" data-k="a">a) 2,5</button><button class="opt" data-k="b">b) 0</button><button class="opt" data-k="c">c) 2</button><button class="opt" data-k="d">d) 4</button><div class="fb">✓ % kalan işlecidir: 10 = 2·4 + 2 → kalan 2.</div></div><div class="q" data-answer="b"><p>16) Butonlu bir girişte pull-up/pull-down direnci kullanılmazsa ne olur?</p><button class="opt" data-k="a">a) Buton daha hızlı çalışır</button><button class="opt" data-k="b">b) Pin 'yüzer'; basılmadan rastgele HIGH/LOW okunabilir</button><button class="opt" data-k="c">c) Arduino yanar</button><button class="opt" data-k="d">d) Hiçbir fark olmaz</button><div class="fb">✓ Bağlantısız giriş, çevredeki elektriksel gürültüyü toplar; tanımsız seviye okunur.</div></div><div class="q" data-answer="d"><p>17) Aşağıdaki programın Seri Monitör çıktısı nedir?<br><code>for (int i = 3; i &gt; 0; i--) { Serial.print(i * 2); }</code></p><button class="opt" data-k="a">a) 246</button><button class="opt" data-k="b">b) 6420</button><button class="opt" data-k="c">c) 321</button><button class="opt" data-k="d">d) 642</button><div class="fb">✓ i = 3, 2, 1 → 6, 4, 2 yazılır; ayraç olmadığı için yan yana: 642.</div></div><div class="q" data-answer="a"><p>18) Kırmızı LED (2 V) 5 V'tan 10 mA ile sürülecekse gereken direnç kaç Ω'dur?</p><button class="opt" data-k="a">a) 300 Ω</button><button class="opt" data-k="b">b) 500 Ω</button><button class="opt" data-k="c">c) 200 Ω</button><button class="opt" data-k="d">d) 30 Ω</button><div class="fb">✓ R = (5 − 2) / 0,010 = 300 Ω (standart olarak 330 Ω seçilir).</div></div><div class="out" id="scMsg">Tüm soruları cevapladığınızda değerlendirme burada görünecek.</div></section>
+<section class="card" id="formul"><h2><span class="num">10</span>Yazdırılabilir Formül Kağıdı</h2>
+<p class="noprint"><button class="btn" id="prBtn">🖨 Yalnızca formül kağıdını yazdır</button> Tarayıcının yazdırma penceresinde "PDF olarak kaydet" seçeneğiyle dosya olarak da kaydedebilirsiniz.</p>
+<h3 style="margin-top:0">Arduino ile Programlama – Ara Sınav Formül Kağıdı (1–7. hafta)</h3>
+<div class="fs">
+<div><b>Ohm Kanunu:</b> V = I·R · I = V/R · R = V/I<br><b>Güç:</b> P = V·I = I²·R = V²/R</div>
+<div><b>Birimler:</b> 1 A = 1000 mA · 1 kΩ = 1000 Ω · 1 MΩ = 10⁶ Ω · 1 s = 1000 ms</div>
+<div><b>LED direnci:</b> R = (V<sub>s</sub> − V<sub>LED</sub>) / I<sub>LED</sub><br>Kırmızı ≈ 2 V · Sarı/Yeşil ≈ 2,1–2,2 V · Mavi/Beyaz ≈ 3,2 V</div>
+<div><b>Seri dirençler:</b> R<sub>T</sub> = R1 + R2 + … (akım aynı)<br><b>Paralel (2 direnç):</b> R<sub>T</sub> = R1·R2 / (R1 + R2) (gerilim aynı)</div>
+<div><b>Kirchhoff Gerilim Kanunu:</b> ΣV = 0 → V<sub>s</sub> = V1 + V2 + …</div>
+<div><b>Gerilim bölücü:</b> V<sub>out</sub> = V<sub>in</sub> · R2 / (R1 + R2)<br>(R2: çıkış ile GND arasındaki direnç)</div>
+<div><b>ADC (UNO):</b> 10 bit, 0–1023, 0–5 V<br>değer ≈ V / 5 × 1023 · V = değer × 5,0 / 1023 · 1 basamak ≈ 4,9 mV</div>
+<div><b>Renk kodu:</b> Siyah 0 · Kahve 1 · Kırmızı 2 · Turuncu 3 · Sarı 4 · Yeşil 5 · Mavi 6 · Mor 7 · Gri 8 · Beyaz 9 · Altın ±%5 · Gümüş ±%10</div>
+<div><b>Pinler:</b> Dijital D0–D13 (D0/D1 seri) · PWM ~3, 5, 6, 9, 10, 11 · Analog A0–A5 · Pin akımı ≤ 20 mA (mutlak 40 mA)</div>
+<div><b>Buton:</b> pull-down (10 kΩ→GND) → basınca HIGH · INPUT_PULLUP (buton→GND) → basınca LOW</div>
+<div><b>Blink:</b> T = t<sub>açık</sub> + t<sub>kapalı</sub> · f = 1/T · <b>for:</b> <code>for(i=0; i&lt;n; i++)</code> → n tekrar</div>
+<div><b>Veri tipleri:</b> int: −32768…32767 (16 bit) · float: ondalıklı · int/int → tam sayı bölme · % → kalan</div>
+</div></section>
+<section class="card quiz" id="quiz"><h2><span class="num">11</span>Kendini Test Et</h2><p>Bu bölüm sık yapılan hatalara odaklanır.</p><div class="q" data-answer="b"><p>1) <code>if (sayi = 3) { … }</code> satırında ne olur?</p><button class="opt" data-k="a">a) sayi 3 ise blok çalışır</button><button class="opt" data-k="b">b) sayi'ya 3 atanır ve koşul her zaman doğru olur</button><button class="opt" data-k="c">c) Derleyici çalıştırmayı reddeder</button><div class="fb">✓ Tek eşittir atamadır; ifadenin değeri 3 (sıfırdan farklı = doğru) olur. Karşılaştırma için <code>==</code> kullanılır.</div></div><div class="q" data-answer="c"><p>2) LED D8'e dirençle doğru bağlanmış, loop'ta <code>digitalWrite(8, HIGH)</code> var ama setup'ta pinMode yazılmamış. LED nasıl görünür?</p><button class="opt" data-k="a">a) Tam parlak</button><button class="opt" data-k="b">b) Hiç yanmaz ve pin bozulur</button><button class="opt" data-k="c">c) Çok sönük yanar</button><div class="fb">✓ Pin INPUT modunda kalır; HIGH yazmak dahili pull-up direncini (≈ 35 kΩ) açar ve LED'den çok küçük bir akım geçer.</div></div><div class="q" data-answer="a"><p>3) <code>int v = analogRead(A0) / 1023 * 5;</code> analogRead = 800 iken v kaçtır?</p><button class="opt" data-k="a">a) 0</button><button class="opt" data-k="b">b) 3</button><button class="opt" data-k="c">c) 3,91</button><div class="fb">✓ Önce 800/1023 tam sayı bölmesi yapılır → 0; 0 × 5 = 0. Doğrusu: <code>float v = analogRead(A0) * 5.0 / 1023.0;</code> → 3,91</div></div><div class="q" data-answer="b"><p>4) Seri Monitörde anlamsız karakterler görüyorsunuz. En olası neden nedir?</p><button class="opt" data-k="a">a) USB kablosu çok uzun</button><button class="opt" data-k="b">b) Monitörün baud hızı Serial.begin() ile aynı değil</button><button class="opt" data-k="c">c) loop() boş</button><div class="fb">✓ Gönderici ve alıcı aynı hızda olmalıdır (örn. her ikisi de 9600).</div></div><div class="q" data-answer="c"><p>5) <code>for (int i = 1; i &lt;= 10; i += 2)</code> döngüsü kaç kez çalışır?</p><button class="opt" data-k="a">a) 10</button><button class="opt" data-k="b">b) 6</button><button class="opt" data-k="c">c) 5</button><div class="fb">✓ i = 1, 3, 5, 7, 9 → 5 kez; 11 ≤ 10 yanlış olduğu için durur.</div></div></section>
+<section class="card" id="odev"><h2><span class="num">12</span>Çalışma Planı, Ödev ve Özet</h2>
+<h3>Önerilen çalışma planı</h3><ol class="steps">
+<li><b>Formüller (30 dk):</b> Formül kağıdını yazdırın; 8. bölümdeki 1–9. örnekleri çözümüne bakmadan çözün.</li>
+<li><b>Devreler (20 dk):</b> Şekil 1'deki dört devreyi boş kâğıda ezberden çizin; hangi durumda HIGH/LOW okunduğunu yazın.</li>
+<li><b>Kod okuma (30 dk):</b> Kod izleme adımlayıcısındaki üç programın çıktısını önce tahmin edin, sonra adımlayıcıyla kontrol edin.</li>
+<li><b>Deneme sınavı (25 dk):</b> 9. bölümdeki sınavı süre tutarak çözün; yanlışlarınızı ilgili haftanın notlarından tekrar edin.</li></ol>
+<h3>Ödev</h3><ol>
+<li>9 V kaynak, R1 = 3,3 kΩ ve R2 = 6,8 kΩ seri bağlıdır. Akımı, her direncin gerilimini ve gücünü hesaplayın; KGK ile doğrulayın.</li>
+<li>Butona her basıldığında Seri Monitöre basma sayısını yazan bir program yazın (ipucu: önceki buton durumunu bir değişkende saklayın).</li>
+<li>Bir potansiyometre ile 4 LED'den kaçının yanacağını belirleyen bir "bar gösterge" programı yazın (0–255 → 1 LED, … ; <code>for</code> kullanın).</li>
+<li>Aşağıdaki programın ilk 6 satırlık çıktısını yazın: <code>int a = 1; void loop() { a = a * 2; if (a &gt; 20) a = 1; Serial.println(a); }</code></li></ol>
+<details><summary>2. ödev için ipucu (tıklayın)</summary><div class="codebox"><span class="lbl">buton_sayac_ipucu.ino</span><pre class="code">const int butonPin = 2;
+int sayac = 0;
+int oncekiDurum = HIGH;          // INPUT_PULLUP: basılı değilken HIGH
+
+void setup() {
+  pinMode(butonPin, INPUT_PULLUP);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int durum = digitalRead(butonPin);
+  if (oncekiDurum == HIGH &amp;&amp; durum == LOW) {   // HIGH -&gt; LOW geçişi = yeni basma
+    sayac++;
+    Serial.print("Basma sayisi: ");
+    Serial.println(sayac);
+    delay(50);                                 // buton arklarını (bounce) atlatmak için
+  }
+  oncekiDurum = durum;
+}</pre></div></details>
+<h3>Özet</h3><ul>
+<li>Hesap soruları: V = I·R, R = (V<sub>s</sub> − V<sub>LED</sub>)/I, seri R<sub>T</sub> = ΣR, KGK ΣV = 0, V<sub>out</sub> = V<sub>in</sub>·R2/(R1+R2).</li>
+<li>ADC: 10 bit, 0–1023 ↔ 0–5 V; dönüşümde <code>5.0</code> ve <code>float</code> kullanılmalıdır.</li>
+<li>Butonlar mutlaka pull-up veya pull-down ile kullanılır; INPUT_PULLUP'ta basılı = LOW.</li>
+<li><code>for (i = 0; i &lt; n; i++)</code> n kez çalışır; <code>if – else if – else</code> zincirinde ilk doğru koşul çalışır.</li>
+<li>En sık hatalar: <code>=</code> / <code>==</code> karışıklığı, eksik <code>;</code>, eksik <code>pinMode</code>, tam sayı bölmesi, baud uyumsuzluğu.</li></ul>
+</section>
+</main>
+<footer>Arduino ile Programlama · Ders Notları · 8. Hafta<br>Kaynaklar: C. Taşdemir – <i>Arduino</i>; G. Döktaş – <i>Arduino Eğitim Kitabı</i>; E. Delebe – <i>Projeler ile Arduino</i></footer>
+<script>
+(function(){
+ const KW=['void','if','else','for','while','do','return','switch','case','break','default','const','true','false','#include','#define'];
+ const TY=['int','float','long','unsigned','byte','bool','boolean','char','double','String','word'];
+ const CST=['HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP','LED_BUILTIN','A0','A1','A2','A3','A4','A5'];
+ const FN=['pinMode','digitalWrite','digitalRead','analogRead','analogWrite','delay','delayMicroseconds','millis','micros','setup','loop','map','constrain','pulseIn','tone','noTone','Serial','begin','print','println','attach','write','read','available','random'];
+ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+ function hl(src){
+  let out='',i=0;
+  const re=/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(#?[A-Za-z_][A-Za-z0-9_]*)|(\b\d+(?:\.\d+)?\b)/g;let m,last=0;
+  while((m=re.exec(src))){out+=esc(src.slice(last,m.index));
+   if(m[1])out+='<span class="com">'+esc(m[1])+'</span>';
+   else if(m[2])out+='<span class="str">'+esc(m[2])+'</span>';
+   else if(m[3]){const w=m[3];let c=KW.includes(w)?'kw':TY.includes(w)?'ty':CST.includes(w)?'cst':FN.includes(w)?'fn':'';out+=c?'<span class="'+c+'">'+esc(w)+'</span>':esc(w)}
+   else if(m[4])out+='<span class="num">'+m[4]+'</span>';
+   last=re.lastIndex}
+  return out+esc(src.slice(last))}
+ document.querySelectorAll('pre.code').forEach(p=>{const raw=p.textContent;p.innerHTML=hl(raw);
+  const b=document.createElement('button');b.className='copybtn';b.textContent='Kopyala';
+  b.onclick=()=>{navigator.clipboard.writeText(raw).then(()=>{b.textContent='Kopyalandı ✓';setTimeout(()=>b.textContent='Kopyala',1500)})};
+  p.parentElement.appendChild(b)});
+ document.querySelectorAll('.quiz .q').forEach(q=>{const ans=q.dataset.answer;const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{q.querySelectorAll('.opt').forEach(x=>x.classList.remove('ok','no'));
+   if(o.dataset.k===ans){o.classList.add('ok');if(fb)fb.style.display='block'}else{o.classList.add('no')}})});
+ document.querySelectorAll('.quiz .fb').forEach(f=>f.style.display='none');
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+// ---------- Sim 1: gerilim bölücü ----------
+function vd(){const Vs=+$('vdVsS').value,R1=+$('vdR1').value,R2=+$('vdR2').value;
+ $('vdVsT').textContent=Vs;$('vdR1T').textContent=R1;$('vdR2T').textContent=R2;
+ const RT=R1+R2,I=Vs/RT,V1=I*R1,V2=I*R2;
+ const adcTxt=V2<=5?`analogRead(A0) ≈ ⌊${V2.toFixed(3)} × 1024 / 5⌋ = <b>${Math.min(1023,Math.floor(V2*1024/5))}</b>`:`<b style="color:#c0392b">V2 = ${V2.toFixed(2)} V &gt; 5 V: Arduino girişine verilemez!</b>`;
+ $('vdOut').innerHTML=`R<sub>T</sub> = ${R1} + ${R2} = ${RT} Ω<br>I = ${Vs} / ${RT} = <b>${(I*1000).toFixed(3)} mA</b><br>V1 = I·R1 = <b>${V1.toFixed(2)} V</b> · V2 = I·R2 = <b>${V2.toFixed(2)} V</b><br>KGK: V1 + V2 = ${(V1+V2).toFixed(2)} V = V<sub>s</sub> ✓<br>P<sub>toplam</sub> = V<sub>s</sub>·I = ${(Vs*I*1000).toFixed(2)} mW<br>`+adcTxt;
+ $('vdVs').textContent=Vs+' V';$('vdV1').textContent='V1 = '+V1.toFixed(2)+' V';$('vdV2').textContent='V2 = '+V2.toFixed(2)+' V';$('vdA').textContent=(I*1000).toFixed(2)+' mA';
+ const w1=300*V1/Vs;$('vdB1').setAttribute('width',w1.toFixed(1));$('vdB2').setAttribute('x',(60+w1).toFixed(1));$('vdB2').setAttribute('width',(300-w1).toFixed(1));
+ const c=$('vdCur');c.style.animationDuration=Math.max(0.2,Math.min(6,0.004/I)).toFixed(2)+'s';c.style.opacity=Math.min(1,0.25+I*300)}
+['vdVsS','vdR1','vdR2'].forEach(i=>$(i).oninput=vd);vd();
+// ---------- Tipik devreler: butonlar ----------
+let pd=false,pu=false;
+function bt(){$('bPD').style.transform=pd?'translateX(-4px)':'none';$('bPU').style.transform=pu?'translateX(-4px)':'none';
+ $('tPD').textContent='digitalRead(2) = '+(pd?'HIGH':'LOW');$('tPU').textContent='digitalRead(2) = '+(pu?'LOW':'HIGH');
+ $('fPD').style.opacity=pd?1:0;$('fPU').style.opacity=pu?1:0}
+$('bPD').addEventListener('click',()=>{pd=!pd;bt()});$('bPU').addEventListener('click',()=>{pu=!pu;bt()});bt();
+// ---------- Sim 2: kod izleme ----------
+const PROG=[
+ {code:['int toplam = 0;','','void setup() {','  Serial.begin(9600);','  for (int i = 1; i <= 4; i++) {','    toplam = toplam + i;','    if (toplam % 2 == 0) {','      Serial.println("Cift");','    } else {','      Serial.println(toplam);','    }','  }','  Serial.println("Bitti");','}','','void loop() {','}'],
+  gen(){const S=[];let toplam=0,out='';const st=(l,v,n)=>S.push({l,v:Object.assign({},v),out,n,led:null});
+   st(0,{toplam},'Global değişken toplam = 0 olarak oluşturulur.');
+   st(3,{toplam},'Seri haberleşme 9600 baud ile başlar.');
+   let i=1;st(4,{toplam,i},'for başlar: i = 1; koşul 1 <= 4 → doğru.');
+   while(true){toplam+=i;st(5,{toplam,i},`toplam = ${toplam-i} + ${i} = ${toplam}`);
+    const ev=toplam%2==0;st(6,{toplam,i},`${toplam} % 2 = ${toplam%2} → koşul ${ev?'doğru':'yanlış'}`);
+    if(ev){out+='Cift\n';st(7,{toplam,i},'"Cift" yazdırılır.')}else{out+=toplam+'\n';st(9,{toplam,i},`else bloğu: ${toplam} yazdırılır.`)}
+    i++;if(i<=4){st(4,{toplam,i},`i++ → i = ${i}; ${i} <= 4 → doğru, döngü devam.`)}else{st(4,{toplam,i},`i++ → i = ${i}; ${i} <= 4 → yanlış, döngüden çıkılır.`);break}}
+   out+='Bitti\n';st(12,{toplam},'"Bitti" yazdırılır. (i artık tanımlı değildir.)');
+   st(15,{toplam},'setup() biter; loop() boştur ve sonsuza kadar hiçbir şey yapmadan döner. Son çıktı: 1, 3, Cift, Cift, Bitti');return S}},
+ {code:['const int led = 13;','int sayac = 0;','','void setup() {','  pinMode(led, OUTPUT);','  Serial.begin(9600);','}','','void loop() {','  sayac++;','  if (sayac % 3 == 0) {','    digitalWrite(led, HIGH);','  } else {','    digitalWrite(led, LOW);','  }','  Serial.println(sayac);','  delay(500);','}'],
+  gen(){const S=[];let sayac=0,out='',led='LOW',t=0;const st=(l,n)=>S.push({l,v:{sayac,'zaman (ms)':t},out,n,led});
+   st(0,'led sabiti 13 olarak tanımlanır.');st(1,'sayac = 0');st(4,'D13 çıkış yapılır.');st(5,'Seri haberleşme başlar.');
+   for(let k=0;k<6;k++){sayac++;st(9,`loop() ${k+1}. tur: sayac++ → ${sayac}`);
+    const c=sayac%3==0;st(10,`${sayac} % 3 = ${sayac%3} → ${c?'doğru':'yanlış'}`);
+    if(c){led='HIGH';st(11,'LED yanar (HIGH).')}else{led='LOW';st(13,'LED söner (LOW).')}
+    out+=sayac+'\n';st(15,`${sayac} yazdırılır.`);t+=500;st(16,'500 ms beklenir; loop() başa döner.')}
+   st(17,'… loop() sonsuza kadar sürer. Kural: LED yalnızca sayac 3\'ün katı olduğunda yanar (her 3 turda 500 ms).');return S}},
+ {code:['void setup() {','  Serial.begin(9600);','}','','void loop() {','  int deger = analogRead(A0);','  float v = deger * 5.0 / 1023.0;','  if (v > 2.5) {','    Serial.println("Yuksek");','  } else {','    Serial.println("Dusuk");','  }','  delay(1000);','}'],
+  gen(){const S=[];let out='';const R=[614,300,1023,512];const st=(l,v,n)=>S.push({l,v:Object.assign({},v),out,n,led:null});
+   st(1,{},'Seri haberleşme başlar.');
+   R.forEach((d,k)=>{st(5,{deger:d},`${k+1}. tur: A0 okunur → deger = ${d} (örnek okuma)`);
+    const v=d*5/1023;st(6,{deger:d,v:v.toFixed(2)},`v = ${d} × 5.0 / 1023.0 = ${v.toFixed(3)}`);
+    const c=v>2.5;st(7,{deger:d,v:v.toFixed(2)},`${v.toFixed(2)} > 2.5 → ${c?'doğru':'yanlış'}`+(d==512?' (2,502 > 2,5: sınırda!)':''));
+    if(c){out+='Yuksek\n';st(8,{deger:d,v:v.toFixed(2)},'"Yuksek" yazdırılır.')}else{out+='Dusuk\n';st(10,{deger:d,v:v.toFixed(2)},'"Dusuk" yazdırılır.')}
+    st(12,{deger:d,v:v.toFixed(2)},'1 s beklenir.')});
+   st(13,{},'Okumalar 614, 300, 1023, 512 için çıktı: Yuksek, Dusuk, Yuksek, Yuksek');return S}}];
+let P=0,steps=[],k=0,auto=null;
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function trLoad(){P=+$('trSel').value;steps=PROG[P].gen();k=0;
+ $('trCode').innerHTML=PROG[P].code.map((c,i)=>`<div id="tl${i}"><span class="n">${i+1}</span>${esc(c)||' '}</div>`).join('');trShow()}
+function trShow(){const s=steps[k];document.querySelectorAll('#trCode div').forEach(d=>d.classList.remove('cur'));
+ const el=$('tl'+s.l);el.classList.add('cur');const box=$('trCode');box.scrollTop=Math.max(0,el.offsetTop-box.offsetTop-60);
+ const ks=Object.keys(s.v);$('trVars').innerHTML='<tr><th>Değişken</th><th>Değer</th></tr>'+(ks.length?ks.map(x=>`<tr><td>${x}</td><td><b>${s.v[x]}</b></td></tr>`).join(''):'<tr><td colspan="2">—</td></tr>');
+ $('trNote').innerHTML=`<b>Satır ${s.l+1}:</b> ${esc(s.n)}`;$('trSer').textContent=s.out;$('trSer').scrollTop=1e9;
+ $('trCnt').textContent=`adım ${k+1} / ${steps.length}`;
+ const on=s.led==='HIGH';$('trLed').setAttribute('fill',on?'#ffb300':'#5a4a00');$('trLedH').setAttribute('opacity',on?.5:0);$('trLedT').textContent=s.led?('LED: '+s.led):'LED: (bu programda kullanılmıyor)'}
+$('trStep').onclick=()=>{if(k<steps.length-1){k++;trShow()}};$('trBack').onclick=()=>{if(k>0){k--;trShow()}};
+$('trReset').onclick=()=>{k=0;trShow()};$('trSel').onchange=()=>{if(auto){clearInterval(auto);auto=null;$('trAuto').textContent='⏵ Otomatik'}trLoad()};
+$('trAuto').onclick=()=>{if(auto){clearInterval(auto);auto=null;$('trAuto').textContent='⏵ Otomatik';return}
+ $('trAuto').textContent='⏸ Durdur';auto=setInterval(()=>{if(k<steps.length-1){k++;trShow()}else{clearInterval(auto);auto=null;$('trAuto').textContent='⏵ Otomatik'}},900)};
+trLoad();
+// ---------- Deneme sınavı: puan sayacı ----------
+const sec=$('sinav');const qs=[...sec.querySelectorAll('.q')];const N=qs.length;let t0=null,tm=null;
+function upd(){let d=0,y=0;qs.forEach(q=>{if(q.dataset.done==='1')d++;else if(q.dataset.done==='0')y++});
+ $('scD').textContent=d;$('scY').textContent=y;$('scB').textContent=N-d-y;const p=Math.round(100*d/N);$('scP').textContent=p;$('scBar').style.width=(100*(d+y)/N)+'%';
+ if(d+y===N){clearInterval(tm);const m=p>=85?'Mükemmel! Konulara hâkimsiniz.':p>=70?'İyi. Yanlış yaptığınız konuları bir kez daha gözden geçirin.':p>=50?'Orta. Özet kartlarını ve çözümlü örnekleri tekrar çalışın.':'Yetersiz. 1–7. hafta notlarını yeniden okuyup sınavı tekrar çözün.';
+  $('scMsg').innerHTML=`<b>Sonuç: ${d} doğru, ${y} yanlış → ${p} puan.</b> ${m} (Süre: ${$('scT').textContent})`}}
+sec.addEventListener('click',e=>{const o=e.target.closest('.opt');if(!o)return;const q=o.closest('.q');
+ if(q.dataset.done!==undefined){e.stopPropagation();return}   // kilitli: ortak.js işleyicisine ulaşmasın
+ if(!t0){t0=Date.now();tm=setInterval(()=>{const s=Math.floor((Date.now()-t0)/1000);$('scT').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')},1000)}
+ const ok=o.dataset.k===q.dataset.answer;q.dataset.done=ok?'1':'0';q.classList.add(ok?'qok':'qno');
+ setTimeout(()=>{q.querySelectorAll('.opt').forEach(x=>{if(x.dataset.k===q.dataset.answer)x.classList.add('ok')});const fb=q.querySelector('.fb');fb.style.display='block';if(!ok)fb.innerHTML=fb.innerHTML.replace(/^✓/,'✗ Doğru cevap: '+q.dataset.answer+') —')},0);
+ upd()},true);
+$('scReset').onclick=()=>{qs.forEach(q=>{delete q.dataset.done;q.classList.remove('qok','qno');q.querySelectorAll('.opt').forEach(x=>x.classList.remove('ok','no'));const fb=q.querySelector('.fb');fb.style.display='none';fb.innerHTML=fb.innerHTML.replace(/^✗ Doğru cevap: [a-d]\) —/,'✓')});
+ clearInterval(tm);t0=null;$('scT').textContent='00:00';$('scMsg').textContent='Tüm soruları cevapladığınızda değerlendirme burada görünecek.';upd()};
+upd();
+// ---------- Yazdırma ----------
+$('prBtn').onclick=()=>{document.body.classList.add('yazdir');window.print();setTimeout(()=>document.body.classList.remove('yazdir'),500)};
+window.addEventListener('afterprint',()=>document.body.classList.remove('yazdir'));
+})();
+</script>
+</body></html>

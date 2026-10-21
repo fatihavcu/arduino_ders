@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5. Hafta – for Döngüsü ve LED Uygulamaları | Arduino ile Programlama</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#1d2733;--muted:#5b6b7d;--teal:#00979d;--teal2:#00b3b9;--accent:#e67e22;--red:#e74c3c;--green:#27ae60;--code:#0f1b26;--border:#dde5ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+header.top{background:linear-gradient(135deg,#006468,#00979d 60%,#00b3b9);color:#fff;padding:28px 20px 34px;position:relative;overflow:hidden}
+header.top::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px),repeating-linear-gradient(0deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px);pointer-events:none}
+.wrap{max-width:1050px;margin:0 auto;padding:0 18px}
+.badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:3px 12px;border-radius:20px;font-size:.85em;letter-spacing:.5px}
+header.top h1{margin:10px 0 6px;font-size:2em}
+header.top p{margin:0;opacity:.92}
+nav.weeknav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;position:relative;z-index:1}
+nav.weeknav a{color:#fff;text-decoration:none;background:rgba(0,0,0,.18);padding:6px 12px;border-radius:6px;font-size:.9em}
+nav.weeknav a:hover{background:rgba(0,0,0,.35)}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;margin:22px 0}
+.toc ol{margin:6px 0;columns:2}
+.toc a{color:var(--teal);text-decoration:none}
+section.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin:22px 0;box-shadow:0 2px 8px rgba(20,40,60,.05);animation:fadeUp .6s ease both}
+section.card h2{margin-top:0;color:#006468;border-bottom:2px solid #e3f3f3;padding-bottom:8px}
+section.card h2 .num{display:inline-block;background:var(--teal);color:#fff;border-radius:50%;width:32px;height:32px;text-align:center;line-height:32px;margin-right:8px;font-size:.8em}
+h3{color:#0b4f6c}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.goals li{margin:4px 0}
+.note,.warn,.tip{border-radius:8px;padding:12px 16px;margin:14px 0;border-left:5px solid}
+.note{background:#eaf6ff;border-color:#2e86de}.warn{background:#fff3e6;border-color:var(--accent)}.tip{background:#eafaf1;border-color:var(--green)}
+.note::before{content:"ℹ️ Not: ";font-weight:600}.warn::before{content:"⚠️ Dikkat: ";font-weight:600}.tip::before{content:"💡 İpucu: ";font-weight:600}
+.formula{font-family:Cambria,"Times New Roman",serif;font-size:1.5em;text-align:center;background:#f7fbfb;border:1px dashed var(--teal);border-radius:8px;padding:12px;margin:14px 0}
+table.tbl{border-collapse:collapse;width:100%;margin:12px 0;font-size:.95em}
+table.tbl th,table.tbl td{border:1px solid var(--border);padding:7px 10px;text-align:left}
+table.tbl th{background:#e9f6f6;color:#064d50}
+table.tbl tr:nth-child(even) td{background:#fafcfd}
+.codebox{position:relative;margin:14px 0}
+.codebox .lbl{background:#1f3344;color:#9fd7da;font-size:.8em;padding:4px 12px;border-radius:8px 8px 0 0;display:inline-block;font-family:Consolas,monospace}
+pre.code{background:var(--code);color:#d7e3ee;padding:16px 18px;border-radius:0 8px 8px 8px;overflow:auto;font-family:Consolas,"Courier New",monospace;font-size:.92em;line-height:1.5;margin:0}
+pre.code .kw{color:#c792ea}.code .ty{color:#82aaff}.code .fn{color:#f78c6c}.code .num{color:#f7c56c}.code .str{color:#c3e88d}.code .com{color:#6b8299;font-style:italic}.code .cst{color:#ff5370}
+.copybtn{position:absolute;top:30px;right:8px;background:#2b4459;color:#cfe;border:0;border-radius:5px;padding:4px 10px;cursor:pointer;font-size:.8em}
+.copybtn:hover{background:var(--teal)}
+.figure{text-align:center;margin:16px 0}
+.figure svg{max-width:100%;height:auto}
+.figure .cap{font-size:.88em;color:var(--muted);margin-top:6px}
+.sim{background:#f3fafa;border:1px solid #bfe3e4;border-radius:10px;padding:16px;margin:16px 0}
+.sim h4{margin:0 0 10px;color:#006468}
+.sim label{display:block;margin:8px 0 2px;font-weight:600;font-size:.92em}
+.sim input[type=range]{width:100%;accent-color:var(--teal)}
+.sim .out{font-family:Consolas,monospace;background:#fff;border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-top:10px}
+.serial{background:#0b1620;color:#7CFC9a;font-family:Consolas,monospace;border-radius:6px;padding:10px;height:140px;overflow:auto;font-size:.88em;white-space:pre}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:.92em;margin:4px 4px 4px 0}
+.btn:hover{background:#007a7f}.btn.alt{background:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.toc ol{columns:1}}
+/* animations */
+.flow{stroke-dasharray:6 10;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+.glow{filter:drop-shadow(0 0 6px #ff4d4d)}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.spin{transform-origin:center;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* quiz */
+.quiz .q{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0}
+.quiz .q p{margin:0 0 8px;font-weight:600}
+.quiz .opt{display:block;width:100%;text-align:left;background:#f7f9fb;border:1px solid var(--border);border-radius:6px;padding:7px 10px;margin:4px 0;cursor:pointer;font-size:.95em}
+.quiz .opt:hover{background:#eef6f6}
+.quiz .opt.ok{background:#d9f5e3;border-color:var(--green)}
+.quiz .opt.no{background:#fde2df;border-color:var(--red)}
+.quiz .fb{font-size:.9em;margin-top:6px;color:var(--muted)}
+details{background:#fbfcfd;border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin:10px 0}
+details summary{cursor:pointer;font-weight:600;color:#0b4f6c}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding:8px 0 8px 46px;margin:6px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:32px;height:32px;border-radius:50%;background:var(--teal);color:#fff;text-align:center;line-height:32px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:.85em;padding:30px 10px 40px}
+.pill{display:inline-block;background:#e3f3f3;color:#064d50;border-radius:12px;padding:2px 10px;font-size:.85em;margin:2px}
+</style></head><body>
+<header class="top"><div class="wrap">
+<span class="badge">ARDUİNO İLE PROGRAMLAMA · 5. HAFTA</span>
+<h1>for Döngüsü ve LED Uygulamaları</h1><p>Döngülerle tekrar, diziler ile pin yönetimi; yürüyen ışık, Kara Şimşek, LED bar ve ikili sayıcı</p>
+<nav class="weeknav"><a href="index.html">☰ Tüm Haftalar</a><a href="hafta04.html">← 4. Hafta</a><a href="hafta06.html">6. Hafta →</a></nav>
+</div></header>
+<main class="wrap">
+<div class="toc"><strong>Bu haftanın içeriği</strong><ol><li><a href="#hedef">Haftanın Hedefleri</a></li><li><a href="#neden">Neden Döngü? for Döngüsünün Sözdizimi</a></li><li><a href="#akis">for Döngüsünün Akış Diyagramı ve Adım Adım Çalışması</a></li><li><a href="#while">while ve do-while Döngüleri (Kısaca)</a></li><li><a href="#dizi">Diziler (Array) ile Pin Yönetimi</a></li><li><a href="#devre">Devre Şeması: 8 LED'li Bağlantı</a></li><li><a href="#kara">Uygulama 1–2: Yürüyen Işık ve Kara Şimşek</a></li><li><a href="#sim">LED Animasyon Simülatörü ve Hız Ayarı</a></li><li><a href="#bar">Uygulama 3: LED Bar ile Sayma</a></li><li><a href="#binary">Uygulama 4: 4 LED ile İkili (Binary) Sayıcı</a></li><li><a href="#fonk">Bu Haftanın Yeni Yapıları ve Fonksiyonları</a></li><li><a href="#quiz">Kendini Test Et</a></li><li><a href="#odev">Ödev ve Özet</a></li></ol></div>
+<style>
+.fcbox{transition:fill .25s,stroke .25s}
+.fcact{fill:#ffe2b8 !important;stroke:#e67e22 !important;stroke-width:3 !important}
+.ledrow{display:flex;justify-content:center;gap:4px;flex-wrap:wrap}
+.arrcell{font-family:Consolas,monospace}
+.bin4{font-family:Consolas,monospace;font-size:1.6em;letter-spacing:6px;text-align:center}
+</style>
+
+<section class="card" id="hedef"><h2><span class="num">1</span>Haftanın Hedefleri</h2>
+<ul class="goals">
+<li>Tekrarlanan işlemleri <b>for döngüsü</b> ile kısa ve okunaklı biçimde yazabilmek</li>
+<li>for döngüsünün üç bölümünü (başlangıç, koşul, artırma) ve çalışma sırasını açıklayabilmek</li>
+<li><b>while</b> ve <b>do-while</b> döngülerini tanımak, sonsuz döngü hatasını fark edebilmek</li>
+<li>Pin numaralarını bir <b>dizi (array)</b> içinde saklayıp döngüyle yönetebilmek</li>
+<li>8 LED ile <b>yürüyen ışık</b>, <b>Kara Şimşek</b> ve <b>LED bar</b> uygulamalarını kurup programlayabilmek</li>
+<li>4 LED ile <b>ikili (binary) sayıcı</b> yapabilmek ve <code>delay()</code> ile hız ayarlayabilmek</li>
+</ul>
+<div class="note">Bu hafta 3. ve 4. haftada öğrendiğimiz <code>digitalWrite()</code>, <code>pinMode()</code> ve if-else yapılarını tekrar kullanacağız. Gerekli malzemeler: Arduino UNO, breadboard, 8 adet LED, 8 adet 220 Ω direnç, erkek-erkek jumper kablolar.</div>
+</section>
+
+<section class="card" id="neden"><h2><span class="num">2</span>Neden Döngü? for Döngüsünün Sözdizimi</h2>
+<p>8 LED'i sırayla yakmak istediğimizi düşünelim. Döngü bilmeden her LED için ayrı satır yazmamız gerekir. Bu hem uzun hem de hataya açık bir yöntemdir; LED sayısı 20 olsaydı 20 satır <code>pinMode</code> yazmak gerekirdi.</p>
+<div class="grid2"><div><div class="codebox"><span class="lbl">uzun_yol.ino (döngüsüz)</span><pre class="code">void setup() {
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
+  pinMode(7, OUTPUT);
+  pinMode(8, OUTPUT);
+  pinMode(9, OUTPUT);
+}
+void loop() { }</pre></div></div><div><div class="codebox"><span class="lbl">kisa_yol.ino (for ile)</span><pre class="code">void setup() {
+  // pin = 2, 3, 4, ... , 9 değerlerini sırayla alır
+  for (int pin = 2; pin &lt;= 9; pin++) {
+    pinMode(pin, OUTPUT);
+  }
+}
+void loop() { }</pre></div><p>İki program <b>aynı işi</b> yapar. Sağdaki sürümde LED sayısını değiştirmek için yalnızca <code>9</code> sayısını değiştirmek yeterlidir.</p></div></div>
+<h3>Genel yazım kuralı</h3>
+<div class="formula" style="font-family:Consolas,monospace;font-size:1.2em">for ( <span style="color:#2e86de">başlangıç</span> ; <span style="color:#e67e22">koşul</span> ; <span style="color:#8e44ad">artırma</span> ) { <span style="color:#27ae60">gövde</span> }</div>
+<table class="tbl"><tr><th>Bölüm</th><th>Örnek</th><th>Ne zaman çalışır?</th><th>Görevi</th></tr>
+<tr><td style="color:#2e86de"><b>Başlangıç</b></td><td><code>int i = 0</code></td><td>Döngüye girerken <b>yalnızca bir kez</b></td><td>Sayaç değişkenini oluşturur ve ilk değerini verir</td></tr>
+<tr><td style="color:#e67e22"><b>Koşul</b></td><td><code>i &lt; 8</code></td><td>Her turun <b>başında</b></td><td>Doğru (true) ise gövde çalışır, yanlış (false) ise döngü biter</td></tr>
+<tr><td style="color:#27ae60"><b>Gövde</b></td><td><code>{ ... }</code></td><td>Koşul doğru olduğunda</td><td>Tekrarlanacak komutlar</td></tr>
+<tr><td style="color:#8e44ad"><b>Artırma</b></td><td><code>i++</code></td><td>Her turun <b>sonunda</b></td><td>Sayacı günceller; ardından koşul yeniden kontrol edilir</td></tr></table>
+<table class="tbl"><tr><th>Artırma ifadesi</th><th>Anlamı</th><th>Örnek döngü</th><th>i'nin aldığı değerler</th></tr>
+<tr><td><code>i++</code></td><td>i = i + 1</td><td><code>for (int i = 0; i &lt; 5; i++)</code></td><td>0, 1, 2, 3, 4 (5 tur)</td></tr>
+<tr><td><code>i--</code></td><td>i = i − 1</td><td><code>for (int i = 7; i &gt;= 0; i--)</code></td><td>7, 6, 5, …, 0 (8 tur)</td></tr>
+<tr><td><code>i += 2</code></td><td>i = i + 2</td><td><code>for (int i = 2; i &lt;= 9; i += 2)</code></td><td>2, 4, 6, 8 (4 tur)</td></tr>
+<tr><td><code>i *= 2</code></td><td>i = i · 2</td><td><code>for (int i = 1; i &lt;= 128; i *= 2)</code></td><td>1, 2, 4, …, 128 (8 tur)</td></tr></table>
+<div class="tip">Tur sayısını hızlıca bulmak için: <code>for (int i = 0; i &lt; N; i++)</code> kalıbındaki döngü <b>tam N kez</b> çalışır. Koşulda <code>&lt;</code> yerine <code>&lt;=</code> yazarsanız döngü bir tur fazla çalışır.</div>
+</section>
+
+<section class="card" id="akis"><h2><span class="num">3</span>for Döngüsünün Akış Diyagramı ve Adım Adım Çalışması</h2>
+<p>Aşağıdaki akış diyagramında for döngüsünün çalışma sırası görülmektedir: <b>① → ② → ③ → ④ → ② → ③ → ④ → … → ② → ⑤</b>. Başlangıç bölümü yalnızca bir kez çalışır; koşul ise her turda yeniden kontrol edilir. Koşul ilk kez <b>yanlış</b> olduğunda program döngüden çıkar ve döngüden sonraki satıra geçer.</p>
+<div class="sim"><h4>🔬 Simülasyon: for döngüsünü adım adım çalıştırın</h4>
+<div class="grid2"><div><div class="codebox"><span class="lbl">adim_adim.ino</span><pre class="code">const int N = 3;   // simülasyonda kaydırıcı ile değiştirilir
+
+void setup() {
+  Serial.begin(9600);
+  for (int i = 0; i &lt; N; i++) {
+    Serial.print("i = ");
+    Serial.println(i);
+  }
+  Serial.println("Dongu bitti");
+}
+void loop() { }</pre></div>
+<label>Koşuldaki sınır N = <span id="fcNv">3</span></label><input type="range" id="fcN" min="1" max="6" value="3">
+<button class="btn" id="fcStep">⏭ Bir adım</button><button class="btn" id="fcAuto">▶ Otomatik</button><button class="btn alt" id="fcReset">↺ Sıfırla</button>
+<div class="out" id="fcOut"></div>
+<div class="serial" id="fcSer" style="height:110px"></div></div>
+<div class="figure"><svg viewBox="0 0 440 370" width="440" id="fcSvg">
+<defs><marker id="ar5" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8z" fill="#333"/></marker></defs>
+<rect id="fcInit" class="fcbox" x="120" y="10" width="180" height="40" rx="20" fill="#e8f1fb" stroke="#2e86de" stroke-width="2"/>
+<text x="210" y="35" text-anchor="middle" font-size="13">① Başlangıç: <tspan font-family="Consolas">int i = 0</tspan></text>
+<path d="M210 50 V82" stroke="#333" stroke-width="2" marker-end="url(#ar5)"/>
+<polygon id="fcCond" class="fcbox" points="210,84 290,124 210,164 130,124" fill="#fff6e0" stroke="#e67e22" stroke-width="2"/>
+<text x="210" y="122" text-anchor="middle" font-size="12">② Koşul</text>
+<text x="210" y="139" text-anchor="middle" font-size="12" font-family="Consolas" id="fcCondTxt">i &lt; N ?</text>
+<path d="M210 164 V196" stroke="#333" stroke-width="2" marker-end="url(#ar5)"/>
+<text x="222" y="184" font-size="11" fill="#27ae60" font-weight="700">doğru</text>
+<rect id="fcBody" class="fcbox" x="120" y="198" width="180" height="44" rx="6" fill="#e0f4e8" stroke="#27ae60" stroke-width="2"/>
+<text x="210" y="217" text-anchor="middle" font-size="13">③ Döngü gövdesi</text>
+<text x="210" y="234" text-anchor="middle" font-size="11" font-family="Consolas">{ komutlar }</text>
+<path d="M210 242 V272" stroke="#333" stroke-width="2" marker-end="url(#ar5)"/>
+<rect id="fcInc" class="fcbox" x="120" y="274" width="180" height="40" rx="6" fill="#efe6fb" stroke="#8e44ad" stroke-width="2"/>
+<text x="210" y="299" text-anchor="middle" font-size="13">④ Artırma: <tspan font-family="Consolas">i++</tspan></text>
+<path d="M120 294 H50 V124 H126" stroke="#8e44ad" stroke-width="2.5" fill="none" marker-end="url(#ar5)"/>
+<path d="M120 294 H50 V124 H126" stroke="#f1c40f" stroke-width="3" fill="none" class="flow"/>
+<text x="44" y="215" font-size="11" fill="#8e44ad" text-anchor="middle" transform="rotate(-90 44 215)">tekrar koşula dön</text>
+<path d="M290 124 H330" stroke="#333" stroke-width="2" marker-end="url(#ar5)"/>
+<text x="298" y="116" font-size="11" fill="#e74c3c" font-weight="700">yanlış</text>
+<rect id="fcExit" class="fcbox" x="332" y="104" width="100" height="40" rx="6" fill="#fdecea" stroke="#e74c3c" stroke-width="2"/>
+<text x="382" y="122" text-anchor="middle" font-size="12">⑤ Döngüden</text><text x="382" y="137" text-anchor="middle" font-size="12">çık</text>
+<path d="M210 50 V84 M210 164 V198 M210 242 V274" stroke="#f1c40f" stroke-width="3" fill="none" class="flow"/>
+<text x="220" y="350" text-anchor="middle" font-size="12" fill="#5b6b7d">Sarı çizgiler programın izlediği yolu gösterir</text>
+</svg><div class="cap">Şekil 1. for döngüsünün akış diyagramı. Simülasyonda çalışan bölüm turuncu çerçeveyle gösterilir.</div></div></div></div>
+<div class="note">Sayaç değişkeni <code>i</code> döngünün başlangıç bölümünde tanımlandığı için yalnızca döngü içinde geçerlidir (<b>yerel değişken</b>). Döngü bittikten sonra <code>i</code>'yi kullanmaya çalışırsanız derleyici <i>'i' was not declared in this scope</i> hatası verir.</div>
+</section>
+
+<section class="card" id="while"><h2><span class="num">4</span>while ve do-while Döngüleri (Kısaca)</h2>
+<p>Tekrar sayısının önceden bilinmediği durumlarda <b>while</b> döngüsü tercih edilir. while, koşul doğru olduğu sürece gövdeyi tekrarlar. for döngüsündeki başlangıç ve artırma işlemleri burada programcı tarafından ayrıca yazılır.</p>
+<div class="grid2"><div><div class="codebox"><span class="lbl">while_ornek.ino</span><pre class="code">void setup() {
+  Serial.begin(9600);
+  int i = 0;              // başlangıç (döngüden önce)
+  while (i &lt; 5) {         // koşul
+    Serial.println(i);    // gövde
+    i++;                  // artırma (unutulmamalı!)
+  }
+}
+void loop() { }</pre></div></div><div><div class="codebox"><span class="lbl">dowhile_ornek.ino</span><pre class="code">void setup() {
+  Serial.begin(9600);
+  int i = 10;
+  do {
+    Serial.println(i);    // koşul yanlış olsa da
+    i++;                  // gövde EN AZ BİR KEZ çalışır
+  } while (i &lt; 5);
+}
+void loop() { }</pre></div></div></div>
+<table class="tbl"><tr><th>Döngü</th><th>Koşul kontrolü</th><th>En az kaç kez çalışır?</th><th>Tipik kullanım</th></tr>
+<tr><td><code>for</code></td><td>Tur başında</td><td>0</td><td>Tekrar sayısı belli (8 LED, 16 sayı…)</td></tr>
+<tr><td><code>while</code></td><td>Tur başında</td><td>0</td><td>Bir olay gerçekleşene kadar bekleme (ör. buton basılana kadar)</td></tr>
+<tr><td><code>do-while</code></td><td>Tur sonunda</td><td>1</td><td>Önce işlem yapılıp sonra kontrol edilecekse</td></tr></table>
+<p>Örnek: 4. haftadaki butonu kullanarak, buton basılana kadar programı bekletmek için <code>while (digitalRead(7) == LOW) { }</code> yazılabilir. Gövde boştur; döngü yalnızca koşulu tekrar tekrar kontrol eder.</p>
+<div class="warn"><b>Sonsuz döngü:</b> while içinde koşulu değiştiren bir komut yoksa (örneğin <code>i++</code> unutulursa) koşul hiçbir zaman yanlış olmaz ve program o noktada sonsuza kadar takılır. Arduino'da <code>loop()</code> zaten sonsuz bir döngüdür; onun içinde ayrıca sonsuz döngü kurmaya genellikle gerek yoktur.</div>
+</section>
+
+<section class="card" id="dizi"><h2><span class="num">5</span>Diziler (Array) ile Pin Yönetimi</h2>
+<p><b>Dizi</b>, aynı türden birden çok değeri tek bir isim altında saklayan veri yapısıdır. Elemanlara <b>köşeli parantez</b> içindeki <b>indis</b> ile erişilir. LED'ler ardışık pinlere bağlı olmasa bile (ör. 3, 5, 6, 9, 10, 11) pin numaralarını bir diziye yazıp döngüyle kolayca kullanabiliriz.</p>
+<div class="figure"><svg viewBox="0 0 560 130" width="560"><text x="10" y="22" font-family="Consolas" font-size="13">int ledler[] = {2, 3, 4, 5, 6, 7, 8, 9};</text><rect x="20" y="40" width="60" height="40" rx="4" fill="#e3f3f3" stroke="#00979d" stroke-width="2"/><text x="50" y="66" text-anchor="middle" font-size="16" font-weight="700" fill="#064d50">2</text><text x="50" y="100" text-anchor="middle" font-size="11" font-family="Consolas" fill="#e67e22">ledler[0]</text><rect x="86" y="40" width="60" height="40" rx="4" fill="#e3f3f3" stroke="#00979d" stroke-width="2"/><text x="116" y="66" text-anchor="middle" font-size="16" font-weight="700" fill="#064d50">3</text><text x="116" y="100" text-anchor="middle" font-size="11" font-family="Consolas" fill="#e67e22">ledler[1]</text><rect x="152" y="40" width="60" height="40" rx="4" fill="#e3f3f3" stroke="#00979d" stroke-width="2"/><text x="182" y="66" text-anchor="middle" font-size="16" font-weight="700" fill="#064d50">4</text><text x="182" y="100" text-anchor="middle" font-size="11" font-family="Consolas" fill="#e67e22">ledler[2]</text><rect x="218" y="40" width="60" height="40" rx="4" fill="#e3f3f3" stroke="#00979d" stroke-width="2"/><text x="248" y="66" text-anchor="middle" font-size="16" font-weight="700" fill="#064d50">5</text><text x="248" y="100" text-anchor="middle" font-size="11" font-family="Consolas" fill="#e67e22">ledler[3]</text><rect x="284" y="40" width="60" height="40" rx="4" fill="#e3f3f3" stroke="#00979d" stroke-width="2"/><text x="314" y="66" text-anchor="middle" font-size="16" font-weight="700" fill="#064d50">6</text><text x="314" y="100" text-anchor="middle" font-size="11" font-family="Consolas" fill="#e67e22">ledler[4]</text><rect x="350" y="40" width="60" height="40" rx="4" fill="#e3f3f3" stroke="#00979d" stroke-width="2"/><text x="380" y="66" text-anchor="middle" font-size="16" font-weight="700" fill="#064d50">7</text><text x="380" y="100" text-anchor="middle" font-size="11" font-family="Consolas" fill="#e67e22">ledler[5]</text><rect x="416" y="40" width="60" height="40" rx="4" fill="#e3f3f3" stroke="#00979d" stroke-width="2"/><text x="446" y="66" text-anchor="middle" font-size="16" font-weight="700" fill="#064d50">8</text><text x="446" y="100" text-anchor="middle" font-size="11" font-family="Consolas" fill="#e67e22">ledler[6]</text><rect x="482" y="40" width="60" height="40" rx="4" fill="#e3f3f3" stroke="#00979d" stroke-width="2"/><text x="512" y="66" text-anchor="middle" font-size="16" font-weight="700" fill="#064d50">9</text><text x="512" y="100" text-anchor="middle" font-size="11" font-family="Consolas" fill="#e67e22">ledler[7]</text><text x="20" y="122" font-size="11" fill="#5b6b7d">İndis (sıra numarası) 0'dan başlar: 8 elemanlı dizide son indis 7'dir.</text></svg><div class="cap">Şekil 2. ledler dizisi: her kutuda bir pin numarası, altında indisi</div></div>
+<div class="codebox"><span class="lbl">dizi_tanim.ino</span><pre class="code">// Tanımlama yöntemleri
+int ledler[] = {2, 3, 4, 5, 6, 7, 8, 9};   // boyutu derleyici sayar (8)
+int sayilar[4];                             // 4 elemanlı, değerleri sonradan atanır
+const int LED_SAYISI = sizeof(ledler) / sizeof(ledler[0]);  // 16 bayt / 2 bayt = 8
+
+void setup() {
+  for (int i = 0; i &lt; LED_SAYISI; i++) {
+    pinMode(ledler[i], OUTPUT);   // i = 0 iken ledler[0] = 2 numaralı pin
+  }
+  sayilar[0] = 25;                // ilk elemana değer atama
+}
+void loop() { }</pre></div>
+<table class="tbl"><tr><th>İfade</th><th>Değer</th><th>Açıklama</th></tr>
+<tr><td><code>ledler[0]</code></td><td>2</td><td>İlk eleman (indis 0)</td></tr>
+<tr><td><code>ledler[7]</code></td><td>9</td><td>Son eleman (indis = eleman sayısı − 1)</td></tr>
+<tr><td><code>sizeof(ledler)</code></td><td>16</td><td>Dizinin bayt cinsinden boyutu (UNO'da <code>int</code> = 2 bayt, 8 × 2)</td></tr>
+<tr><td><code>sizeof(ledler) / sizeof(ledler[0])</code></td><td>8</td><td>Eleman sayısı – LED eklendiğinde kendiliğinden güncellenir</td></tr></table>
+<div class="warn"><code>ledler[8]</code> yazmak 8 elemanlı dizinin <b>dışına</b> taşmaktır. Derleyici bu hatayı genellikle yakalamaz; program bellekteki rastgele bir değeri pin numarası sanarak beklenmedik davranır. Döngü koşulunu <code>i &lt; 8</code> şeklinde yazın, <code>i &lt;= 8</code> değil.</div>
+</section>
+
+<section class="card" id="devre"><h2><span class="num">6</span>Devre Şeması: 8 LED'li Bağlantı</h2>
+<p>Her LED, kendi dijital pinine <b>220 Ω</b>'luk bir ön dirençle bağlanır; LED'lerin katotları (kısa bacak) breadboard'un <b>GND (–)</b> hattında birleşir ve bu hat Arduino'nun GND pinine bağlanır. Pin HIGH olduğunda akım <i>pin → direnç → LED → GND</i> yolunu izler.</p>
+<div class="figure"><svg viewBox="0 0 760 410" width="760" id="c5"><defs><pattern id="holes5" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="7" cy="7" r="1.6" fill="#c9c9bf"/></pattern></defs><rect x="10" y="20" width="200" height="370" rx="12" fill="#0e7c86" stroke="#064d50" stroke-width="3"/><text x="70" y="160" fill="#fff" font-size="18" font-weight="700" text-anchor="middle" transform="rotate(-90 70 160)">ARDUINO UNO</text><rect x="40" y="290" width="70" height="40" rx="3" fill="#1b1b1b"/><text x="75" y="314" fill="#ccc" font-size="8" text-anchor="middle">ATmega328P</text><rect x="178" y="35" width="24" height="345" fill="#111"/><rect x="250" y="20" width="500" height="370" rx="8" fill="#f4f4ee" stroke="#c8c8bd"/><rect x="262" y="30" width="430" height="350" fill="url(#holes5)"/><line x1="712" y1="30" x2="712" y2="380" stroke="#2e86de" stroke-width="3"/><text x="728" y="205" font-size="12" fill="#2e86de" text-anchor="middle" transform="rotate(-90 728 205)">GND (–) hattı</text><rect x="186" y="53" width="10" height="10" fill="#c9a227"/><text x="172" y="62" fill="#fff" font-size="11" text-anchor="end" font-family="Consolas">D2</text><g id="c5r0"><path d="M196 58 H330" stroke="#e74c3c" stroke-width="4" fill="none"/><path id="c5f0" d="M196 58 H330 M390 58 H455 M485 58 H712" stroke="#ffe066" stroke-width="2" fill="none" class="flow" opacity=".15"/><rect x="330" y="51" width="60" height="14" rx="6" fill="#e8cfa6" stroke="#a5835a"/><rect x="340" y="51" width="5" height="14" fill="#d00"/><rect x="349" y="51" width="5" height="14" fill="#d00"/><rect x="358" y="51" width="5" height="14" fill="#7b3f00"/><rect x="378" y="51" width="5" height="14" fill="#c9a227"/><path d="M390 58 H455 M485 58 H712" stroke="#888" stroke-width="2.5" fill="none"/><circle id="c5L0" cx="470" cy="58" r="12" fill="#5c1a1a" stroke="#333"/></g><rect x="186" y="91" width="10" height="10" fill="#c9a227"/><text x="172" y="100" fill="#fff" font-size="11" text-anchor="end" font-family="Consolas">D3</text><g id="c5r1"><path d="M196 96 H330" stroke="#e67e22" stroke-width="4" fill="none"/><path id="c5f1" d="M196 96 H330 M390 96 H455 M485 96 H712" stroke="#ffe066" stroke-width="2" fill="none" class="flow" opacity=".15"/><rect x="330" y="89" width="60" height="14" rx="6" fill="#e8cfa6" stroke="#a5835a"/><rect x="340" y="89" width="5" height="14" fill="#d00"/><rect x="349" y="89" width="5" height="14" fill="#d00"/><rect x="358" y="89" width="5" height="14" fill="#7b3f00"/><rect x="378" y="89" width="5" height="14" fill="#c9a227"/><path d="M390 96 H455 M485 96 H712" stroke="#888" stroke-width="2.5" fill="none"/><circle id="c5L1" cx="470" cy="96" r="12" fill="#5c1a1a" stroke="#333"/></g><rect x="186" y="129" width="10" height="10" fill="#c9a227"/><text x="172" y="138" fill="#fff" font-size="11" text-anchor="end" font-family="Consolas">D4</text><g id="c5r2"><path d="M196 134 H330" stroke="#f1c40f" stroke-width="4" fill="none"/><path id="c5f2" d="M196 134 H330 M390 134 H455 M485 134 H712" stroke="#ffe066" stroke-width="2" fill="none" class="flow" opacity=".15"/><rect x="330" y="127" width="60" height="14" rx="6" fill="#e8cfa6" stroke="#a5835a"/><rect x="340" y="127" width="5" height="14" fill="#d00"/><rect x="349" y="127" width="5" height="14" fill="#d00"/><rect x="358" y="127" width="5" height="14" fill="#7b3f00"/><rect x="378" y="127" width="5" height="14" fill="#c9a227"/><path d="M390 134 H455 M485 134 H712" stroke="#888" stroke-width="2.5" fill="none"/><circle id="c5L2" cx="470" cy="134" r="12" fill="#5c1a1a" stroke="#333"/></g><rect x="186" y="167" width="10" height="10" fill="#c9a227"/><text x="172" y="176" fill="#fff" font-size="11" text-anchor="end" font-family="Consolas">D5</text><g id="c5r3"><path d="M196 172 H330" stroke="#27ae60" stroke-width="4" fill="none"/><path id="c5f3" d="M196 172 H330 M390 172 H455 M485 172 H712" stroke="#ffe066" stroke-width="2" fill="none" class="flow" opacity=".15"/><rect x="330" y="165" width="60" height="14" rx="6" fill="#e8cfa6" stroke="#a5835a"/><rect x="340" y="165" width="5" height="14" fill="#d00"/><rect x="349" y="165" width="5" height="14" fill="#d00"/><rect x="358" y="165" width="5" height="14" fill="#7b3f00"/><rect x="378" y="165" width="5" height="14" fill="#c9a227"/><path d="M390 172 H455 M485 172 H712" stroke="#888" stroke-width="2.5" fill="none"/><circle id="c5L3" cx="470" cy="172" r="12" fill="#5c1a1a" stroke="#333"/></g><rect x="186" y="205" width="10" height="10" fill="#c9a227"/><text x="172" y="214" fill="#fff" font-size="11" text-anchor="end" font-family="Consolas">D6</text><g id="c5r4"><path d="M196 210 H330" stroke="#2e86de" stroke-width="4" fill="none"/><path id="c5f4" d="M196 210 H330 M390 210 H455 M485 210 H712" stroke="#ffe066" stroke-width="2" fill="none" class="flow" opacity=".15"/><rect x="330" y="203" width="60" height="14" rx="6" fill="#e8cfa6" stroke="#a5835a"/><rect x="340" y="203" width="5" height="14" fill="#d00"/><rect x="349" y="203" width="5" height="14" fill="#d00"/><rect x="358" y="203" width="5" height="14" fill="#7b3f00"/><rect x="378" y="203" width="5" height="14" fill="#c9a227"/><path d="M390 210 H455 M485 210 H712" stroke="#888" stroke-width="2.5" fill="none"/><circle id="c5L4" cx="470" cy="210" r="12" fill="#5c1a1a" stroke="#333"/></g><rect x="186" y="243" width="10" height="10" fill="#c9a227"/><text x="172" y="252" fill="#fff" font-size="11" text-anchor="end" font-family="Consolas">D7</text><g id="c5r5"><path d="M196 248 H330" stroke="#8e44ad" stroke-width="4" fill="none"/><path id="c5f5" d="M196 248 H330 M390 248 H455 M485 248 H712" stroke="#ffe066" stroke-width="2" fill="none" class="flow" opacity=".15"/><rect x="330" y="241" width="60" height="14" rx="6" fill="#e8cfa6" stroke="#a5835a"/><rect x="340" y="241" width="5" height="14" fill="#d00"/><rect x="349" y="241" width="5" height="14" fill="#d00"/><rect x="358" y="241" width="5" height="14" fill="#7b3f00"/><rect x="378" y="241" width="5" height="14" fill="#c9a227"/><path d="M390 248 H455 M485 248 H712" stroke="#888" stroke-width="2.5" fill="none"/><circle id="c5L5" cx="470" cy="248" r="12" fill="#5c1a1a" stroke="#333"/></g><rect x="186" y="281" width="10" height="10" fill="#c9a227"/><text x="172" y="290" fill="#fff" font-size="11" text-anchor="end" font-family="Consolas">D8</text><g id="c5r6"><path d="M196 286 H330" stroke="#16a085" stroke-width="4" fill="none"/><path id="c5f6" d="M196 286 H330 M390 286 H455 M485 286 H712" stroke="#ffe066" stroke-width="2" fill="none" class="flow" opacity=".15"/><rect x="330" y="279" width="60" height="14" rx="6" fill="#e8cfa6" stroke="#a5835a"/><rect x="340" y="279" width="5" height="14" fill="#d00"/><rect x="349" y="279" width="5" height="14" fill="#d00"/><rect x="358" y="279" width="5" height="14" fill="#7b3f00"/><rect x="378" y="279" width="5" height="14" fill="#c9a227"/><path d="M390 286 H455 M485 286 H712" stroke="#888" stroke-width="2.5" fill="none"/><circle id="c5L6" cx="470" cy="286" r="12" fill="#5c1a1a" stroke="#333"/></g><rect x="186" y="319" width="10" height="10" fill="#c9a227"/><text x="172" y="328" fill="#fff" font-size="11" text-anchor="end" font-family="Consolas">D9</text><g id="c5r7"><path d="M196 324 H330" stroke="#d35400" stroke-width="4" fill="none"/><path id="c5f7" d="M196 324 H330 M390 324 H455 M485 324 H712" stroke="#ffe066" stroke-width="2" fill="none" class="flow" opacity=".15"/><rect x="330" y="317" width="60" height="14" rx="6" fill="#e8cfa6" stroke="#a5835a"/><rect x="340" y="317" width="5" height="14" fill="#d00"/><rect x="349" y="317" width="5" height="14" fill="#d00"/><rect x="358" y="317" width="5" height="14" fill="#7b3f00"/><rect x="378" y="317" width="5" height="14" fill="#c9a227"/><path d="M390 324 H455 M485 324 H712" stroke="#888" stroke-width="2.5" fill="none"/><circle id="c5L7" cx="470" cy="324" r="12" fill="#5c1a1a" stroke="#333"/></g><text x="360" y="44" font-size="10" text-anchor="middle" fill="#555">8 × 220 Ω</text><text x="470" y="44" font-size="10" text-anchor="middle" fill="#555">anot(+) ← LED → katot(–)</text><rect x="186" y="350" width="10" height="10" fill="#c9a227"/><text x="172" y="359" fill="#fff" font-size="11" text-anchor="end" font-family="Consolas">GND</text><path d="M196 355 H712" stroke="#222" stroke-width="4" fill="none"/><path d="M712 355 H196" stroke="#9fd7da" stroke-width="2" fill="none" class="flow"/></svg><div class="cap">Şekil 3. D2–D9 pinlerine bağlı 8 LED. Animasyonda Kara Şimşek programı çalışmaktadır; yalnızca HIGH olan pinin hattında akım (sarı çizgi) akar.</div></div>
+<div class="grid2"><div><h3>Akım hesabı (1. hafta tekrarı)</h3>
+<p>Kırmızı LED için V<sub>LED</sub> ≈ 2 V: I = (5 − 2) / 220 ≈ <b>13,6 mA</b>. Bu değer pin başına önerilen 20 mA sınırının altındadır.</p></div>
+<div><h3>Toplam akım sınırı</h3><p>ATmega328P'nin toplam G/Ç akımı (VCC/GND pinleri üzerinden) <b>200 mA</b> ile sınırlıdır. 8 LED aynı anda yanarsa ≈ 8 × 13,6 ≈ 109 mA çekilir; bu güvenli bölgededir.</p></div></div>
+<div class="tip">Bağlantı yaparken önce tüm LED'lerin <b>uzun bacağını</b> (anot) direnç tarafına, kısa bacağını GND hattına yerleştirin. Bir LED yanmıyorsa ilk kontrol edilecek şey ters takılıp takılmadığıdır.</div>
+</section>
+
+<section class="card" id="kara"><h2><span class="num">7</span>Uygulama 1–2: Yürüyen Işık ve Kara Şimşek</h2>
+<p><b>Yürüyen ışık</b> uygulamasında LED'ler soldan sağa sırayla yanar; aynı anda yalnızca bir LED yanıktır. <b>Kara Şimşek</b> (Knight Rider) etkisinde ise ışık bir uçtan diğerine gidip geri döner. Geri dönüşte uçlardaki LED'lerin iki kez yanıp duraklama yapmaması için ikinci döngü <code>LED_SAYISI − 2</code>'den başlayıp <code>1</code>'de biter.</p>
+<div class="grid2"><div><div class="codebox"><span class="lbl">YuruyenIsik.ino</span><pre class="code">// 8 LED ile yürüyen ışık (soldan sağa)
+const int ledler[] = {2, 3, 4, 5, 6, 7, 8, 9};
+const int LED_SAYISI = 8;
+int bekleme = 100;   // her LED'in yanık kalma süresi (ms)
+
+void setup() {
+  for (int i = 0; i &lt; LED_SAYISI; i++) {
+    pinMode(ledler[i], OUTPUT);
+  }
+}
+
+void loop() {
+  for (int i = 0; i &lt; LED_SAYISI; i++) {
+    digitalWrite(ledler[i], HIGH);  // i. LED'i yak
+    delay(bekleme);                 // bekle
+    digitalWrite(ledler[i], LOW);   // söndür, sıradakine geç
+  }
+}</pre></div></div><div><div class="codebox"><span class="lbl">KaraSimsek.ino</span><pre class="code">// 8 LED ile Kara Şimşek (git-gel ışık)
+const int ledler[] = {2, 3, 4, 5, 6, 7, 8, 9};
+const int LED_SAYISI = 8;
+int bekleme = 80;
+
+void setup() {
+  for (int i = 0; i &lt; LED_SAYISI; i++) {
+    pinMode(ledler[i], OUTPUT);
+  }
+}
+
+void loop() {
+  // İleri: indis 0, 1, ..., 7
+  for (int i = 0; i &lt; LED_SAYISI; i++) {
+    digitalWrite(ledler[i], HIGH);
+    delay(bekleme);
+    digitalWrite(ledler[i], LOW);
+  }
+  // Geri: indis 6, 5, ..., 1 (uçlar tekrar yanmasın)
+  for (int i = LED_SAYISI - 2; i &gt; 0; i--) {
+    digitalWrite(ledler[i], HIGH);
+    delay(bekleme);
+    digitalWrite(ledler[i], LOW);
+  }
+}</pre></div></div></div>
+<p>Kara Şimşek'te bir tam tur: ileri döngü 8 adım + geri döngü 6 adım = <b>14 adım</b>. Her adım <code>bekleme</code> kadar sürdüğünden bir tur süresi 14 × 80 = <b>1120 ms</b> olur.</p>
+</section>
+
+<section class="card" id="sim"><h2><span class="num">8</span>LED Animasyon Simülatörü ve Hız Ayarı</h2>
+<p>Aşağıdaki simülatör, bu haftaki sketch'lerin <b>aynı sırayla</b> çalıştırılmış hâlidir. Mod seçerek yürüyen ışık, Kara Şimşek ve LED bar programlarını; kaydırıcıyla da <code>bekleme</code> değişkenini değiştirebilirsiniz. Seri Monitör penceresinde her adımda hangi <code>digitalWrite</code> komutunun çalıştığı görülür.</p>
+<div class="sim"><h4>🔬 Simülasyon: 8 LED – yürüyen ışık / Kara Şimşek / LED bar</h4>
+<div class="grid2"><div>
+<label>Program (mod)</label><select id="kMode"><option value="kara">Kara Şimşek (git-gel)</option><option value="yur">Yürüyen ışık (soldan sağa)</option><option value="bar">LED bar (dolma–boşalma)</option></select>
+<label>bekleme = <span id="kDv">100</span> ms</label><input type="range" id="kD" min="20" max="500" step="10" value="100">
+<button class="btn" id="kStart">⏸ Durdur</button><button class="btn alt" id="kClr">Seri Monitörü temizle</button>
+<div class="out" id="kOut"></div></div>
+<div><div class="figure" style="margin:0"><svg viewBox="0 0 520 110" width="520"><rect x="2" y="2" width="516" height="106" rx="10" fill="#1c2833"/><circle id="kL0" cx="32.5" cy="42" r="18" fill="#4a1414" stroke="#000"/><text x="32.5" y="80" fill="#fff" font-size="12" text-anchor="middle" font-family="Consolas">D2</text><text x="32.5" y="97" fill="#9fd7da" font-size="10" text-anchor="middle" font-family="Consolas">[0]</text><circle id="kL1" cx="97.5" cy="42" r="18" fill="#4a1414" stroke="#000"/><text x="97.5" y="80" fill="#fff" font-size="12" text-anchor="middle" font-family="Consolas">D3</text><text x="97.5" y="97" fill="#9fd7da" font-size="10" text-anchor="middle" font-family="Consolas">[1]</text><circle id="kL2" cx="162.5" cy="42" r="18" fill="#4a1414" stroke="#000"/><text x="162.5" y="80" fill="#fff" font-size="12" text-anchor="middle" font-family="Consolas">D4</text><text x="162.5" y="97" fill="#9fd7da" font-size="10" text-anchor="middle" font-family="Consolas">[2]</text><circle id="kL3" cx="227.5" cy="42" r="18" fill="#4a1414" stroke="#000"/><text x="227.5" y="80" fill="#fff" font-size="12" text-anchor="middle" font-family="Consolas">D5</text><text x="227.5" y="97" fill="#9fd7da" font-size="10" text-anchor="middle" font-family="Consolas">[3]</text><circle id="kL4" cx="292.5" cy="42" r="18" fill="#4a1414" stroke="#000"/><text x="292.5" y="80" fill="#fff" font-size="12" text-anchor="middle" font-family="Consolas">D6</text><text x="292.5" y="97" fill="#9fd7da" font-size="10" text-anchor="middle" font-family="Consolas">[4]</text><circle id="kL5" cx="357.5" cy="42" r="18" fill="#4a1414" stroke="#000"/><text x="357.5" y="80" fill="#fff" font-size="12" text-anchor="middle" font-family="Consolas">D7</text><text x="357.5" y="97" fill="#9fd7da" font-size="10" text-anchor="middle" font-family="Consolas">[5]</text><circle id="kL6" cx="422.5" cy="42" r="18" fill="#4a1414" stroke="#000"/><text x="422.5" y="80" fill="#fff" font-size="12" text-anchor="middle" font-family="Consolas">D8</text><text x="422.5" y="97" fill="#9fd7da" font-size="10" text-anchor="middle" font-family="Consolas">[6]</text><circle id="kL7" cx="487.5" cy="42" r="18" fill="#4a1414" stroke="#000"/><text x="487.5" y="80" fill="#fff" font-size="12" text-anchor="middle" font-family="Consolas">D9</text><text x="487.5" y="97" fill="#9fd7da" font-size="10" text-anchor="middle" font-family="Consolas">[7]</text></svg></div>
+<div class="serial" id="kSer"></div></div></div></div>
+<h3>delay() ile hız ayarı</h3>
+<div class="formula">T<sub>tur</sub> = (adım sayısı) × bekleme &nbsp;&nbsp;&nbsp; f<sub>adım</sub> = 1000 / bekleme &nbsp;[adım/s]</div>
+<table class="tbl"><tr><th>Program</th><th>Bir turdaki adım sayısı</th><th>bekleme = 100 ms iken tur süresi</th></tr>
+<tr><td>Yürüyen ışık</td><td>8</td><td>800 ms</td></tr><tr><td>Kara Şimşek</td><td>8 + 6 = 14</td><td>1400 ms</td></tr><tr><td>LED bar (8 yakma + 8 söndürme)</td><td>16</td><td>1600 ms</td></tr></table>
+<div class="note">İnsan gözü yaklaşık 20 ms'den kısa süren değişimleri ayrı ayrı algılayamaz (<b>görme sürekliliği</b>). bekleme çok küçük seçilirse (ör. 5 ms) tüm LED'ler sönük biçimde aynı anda yanıyormuş gibi görünür. Ayrıca <code>delay()</code> çalışırken Arduino başka iş yapamaz; ileride bunun yerine <code>millis()</code> kullanmayı öğreneceğiz.</div>
+</section>
+
+<section class="card" id="bar"><h2><span class="num">9</span>Uygulama 3: LED Bar ile Sayma</h2>
+<p>LED bar (çubuk gösterge) uygulamasında LED'ler söndürülmeden birer birer yakılır; böylece yanan LED sayısı 1'den 8'e kadar artar. Ardından ters yönde birer birer söndürülür. Bu yapı ilerleyen haftalarda bir sensör değerini (ışık şiddeti, potansiyometre konumu) göstermek için kullanılacaktır.</p>
+<div class="grid2"><div><div class="codebox"><span class="lbl">LedBar.ino</span><pre class="code">const int ledler[] = {2, 3, 4, 5, 6, 7, 8, 9};
+const int LED_SAYISI = 8;
+int bekleme = 150;
+
+void setup() {
+  Serial.begin(9600);
+  for (int i = 0; i &lt; LED_SAYISI; i++) {
+    pinMode(ledler[i], OUTPUT);
+  }
+}
+
+void loop() {
+  // Dolma: LED'ler söndürülmeden sırayla yakılır
+  for (int i = 0; i &lt; LED_SAYISI; i++) {
+    digitalWrite(ledler[i], HIGH);
+    Serial.print("Yanan LED sayisi: ");
+    Serial.println(i + 1);
+    delay(bekleme);
+  }
+  // Boşalma: sondan başa doğru söndürülür
+  for (int i = LED_SAYISI - 1; i &gt;= 0; i--) {
+    digitalWrite(ledler[i], LOW);
+    Serial.print("Yanan LED sayisi: ");
+    Serial.println(i);
+    delay(bekleme);
+  }
+}</pre></div></div><div>
+<h3>Programın izlediği adımlar</h3>
+<table class="tbl"><tr><th>Döngü</th><th>i</th><th>Komut</th><th>Yanan LED</th></tr>
+<tr><td>1. (dolma)</td><td>0</td><td>D2 → HIGH</td><td>1</td></tr>
+<tr><td>1. (dolma)</td><td>1</td><td>D3 → HIGH</td><td>2</td></tr>
+<tr><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+<tr><td>1. (dolma)</td><td>7</td><td>D9 → HIGH</td><td>8</td></tr>
+<tr><td>2. (boşalma)</td><td>7</td><td>D9 → LOW</td><td>7</td></tr>
+<tr><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+<tr><td>2. (boşalma)</td><td>0</td><td>D2 → LOW</td><td>0</td></tr></table>
+<div class="tip">Simülatörde <b>LED bar</b> modunu seçerek bu tablodaki sırayı canlı olarak izleyebilirsiniz.</div>
+<div class="note">Seri porta yazdırılan metinlerde Türkçe karakter kullanılmadı (<i>sayisi</i>); bazı seri terminallerde ç, ş, ı gibi karakterler bozuk görünebilir.</div></div></div>
+</section>
+
+<section class="card" id="binary"><h2><span class="num">10</span>Uygulama 4: 4 LED ile İkili (Binary) Sayıcı</h2>
+<p>Bilgisayarlar sayıları <b>ikili (binary)</b> tabanda, yani yalnızca 0 ve 1 rakamlarıyla saklar. 4 LED'in her biri bir <b>bit</b>'i gösterirse 2<sup>4</sup> = <b>16</b> farklı durum, yani 0–15 arası sayılar gösterilebilir. En sağdaki bit en düşük değerli bittir (LSB, ağırlık 1), en soldaki bit en yüksek değerlidir (MSB, ağırlık 8).</p>
+<div class="formula">sayı = b<sub>3</sub>·8 + b<sub>2</sub>·4 + b<sub>1</sub>·2 + b<sub>0</sub>·1 &nbsp;&nbsp; örnek: 1011<sub>2</sub> = 8 + 0 + 2 + 1 = 11</div>
+<div class="grid2"><div><div class="codebox"><span class="lbl">IkiliSayici.ino</span><pre class="code">// 4 LED ile 0-15 ikili sayıcı
+// bit0 (LSB) -&gt; pin 2, bit1 -&gt; pin 3, bit2 -&gt; pin 4, bit3 (MSB) -&gt; pin 5
+const int bitPinleri[] = {2, 3, 4, 5};
+
+void setup() {
+  Serial.begin(9600);
+  for (int b = 0; b &lt; 4; b++) {
+    pinMode(bitPinleri[b], OUTPUT);
+  }
+}
+
+void loop() {
+  for (int sayi = 0; sayi &lt; 16; sayi++) {      // dış döngü: sayılar
+    for (int b = 0; b &lt; 4; b++) {              // iç döngü: bitler
+      // bitRead(sayi, b): sayının b. bitini 0 ya da 1 olarak verir
+      digitalWrite(bitPinleri[b], bitRead(sayi, b));
+    }
+    Serial.print("onluk: ");
+    Serial.print(sayi);
+    Serial.print("  ikili: ");
+    Serial.println(sayi, BIN);   // baştaki sıfırlar yazılmaz
+    delay(500);
+  }
+}</pre></div></div><div>
+<table class="tbl"><tr><th>Onluk</th><th>İkili</th><th>D5 D4 D3 D2</th></tr>
+<tr><td>0</td><td>0000</td><td>○ ○ ○ ○</td></tr><tr><td>1</td><td>0001</td><td>○ ○ ○ ●</td></tr>
+<tr><td>2</td><td>0010</td><td>○ ○ ● ○</td></tr><tr><td>5</td><td>0101</td><td>○ ● ○ ●</td></tr>
+<tr><td>10</td><td>1010</td><td>● ○ ● ○</td></tr><tr><td>15</td><td>1111</td><td>● ● ● ●</td></tr></table>
+<div class="note">Burada <b>iç içe (nested) döngü</b> kullanıldı: dış döngünün her turunda iç döngü 4 tur atar. Toplamda 16 × 4 = 64 kez <code>digitalWrite</code> çalışır.</div></div></div>
+<div class="sim"><h4>🔬 Simülasyon: 4 bitlik ikili sayıcı</h4>
+<div class="grid2"><div>
+<div class="figure" style="margin:0"><svg viewBox="0 0 360 110" width="360"><rect x="2" y="2" width="356" height="106" rx="10" fill="#1c2833"/><circle id="bL0" cx="45.0" cy="42" r="18" fill="#4a1414" stroke="#000"/><text x="45.0" y="80" fill="#fff" font-size="12" text-anchor="middle" font-family="Consolas">D5</text><text x="45.0" y="97" fill="#9fd7da" font-size="10" text-anchor="middle" font-family="Consolas">bit3 (8)</text><circle id="bL1" cx="135.0" cy="42" r="18" fill="#4a1414" stroke="#000"/><text x="135.0" y="80" fill="#fff" font-size="12" text-anchor="middle" font-family="Consolas">D4</text><text x="135.0" y="97" fill="#9fd7da" font-size="10" text-anchor="middle" font-family="Consolas">bit2 (4)</text><circle id="bL2" cx="225.0" cy="42" r="18" fill="#4a1414" stroke="#000"/><text x="225.0" y="80" fill="#fff" font-size="12" text-anchor="middle" font-family="Consolas">D3</text><text x="225.0" y="97" fill="#9fd7da" font-size="10" text-anchor="middle" font-family="Consolas">bit1 (2)</text><circle id="bL3" cx="315.0" cy="42" r="18" fill="#4a1414" stroke="#000"/><text x="315.0" y="80" fill="#fff" font-size="12" text-anchor="middle" font-family="Consolas">D2</text><text x="315.0" y="97" fill="#9fd7da" font-size="10" text-anchor="middle" font-family="Consolas">bit0 (1)</text></svg></div>
+<div class="bin4" id="bBin">0000</div>
+<label>delay = <span id="bDv">500</span> ms</label><input type="range" id="bD" min="100" max="1500" step="50" value="500">
+<button class="btn" id="bRun">⏸ Durdur</button><button class="btn" id="bInc">+1</button><button class="btn alt" id="bRst">↺ Sıfırla</button>
+<div class="out" id="bOut"></div></div>
+<div><div class="serial" id="bSer" style="height:250px"></div></div></div></div>
+</section>
+
+<section class="card" id="fonk"><h2><span class="num">11</span>Bu Haftanın Yeni Yapıları ve Fonksiyonları</h2>
+<table class="tbl"><tr><th>Yapı / Fonksiyon</th><th>Yazımı</th><th>Görevi</th></tr>
+<tr><td>for döngüsü</td><td><code>for (int i = 0; i &lt; n; i++) { }</code></td><td>Gövdeyi belirli sayıda tekrarlar</td></tr>
+<tr><td>while döngüsü</td><td><code>while (koşul) { }</code></td><td>Koşul doğru olduğu sürece tekrarlar</td></tr>
+<tr><td>do-while döngüsü</td><td><code>do { } while (koşul);</code></td><td>Gövdeyi en az bir kez çalıştırır, sonra koşulu kontrol eder</td></tr>
+<tr><td>Dizi tanımı</td><td><code>int ledler[] = {2, 3, 4};</code></td><td>Aynı türden değerleri sıralı biçimde saklar</td></tr>
+<tr><td>Dizi elemanı</td><td><code>ledler[i]</code></td><td>i. indisteki elemana erişir (ilk indis 0)</td></tr>
+<tr><td><code>sizeof()</code></td><td><code>sizeof(ledler) / sizeof(ledler[0])</code></td><td>Bayt cinsinden boyut; bölme ile eleman sayısı bulunur</td></tr>
+<tr><td><code>bitRead()</code></td><td><code>bitRead(sayi, b)</code></td><td>sayının b. bitini (0 ya da 1) döndürür</td></tr>
+<tr><td><code>Serial.println(x, BIN)</code></td><td><code>Serial.println(11, BIN)</code> → <code>1011</code></td><td>Sayıyı ikili tabanda yazdırır (DEC, HEX, OCT de kullanılabilir)</td></tr>
+<tr><td><code>const</code></td><td><code>const int LED_SAYISI = 8;</code></td><td>Değeri program boyunca değiştirilemeyen sabit tanımlar</td></tr></table>
+<div class="tip"><code>break</code> komutu döngüyü hemen sonlandırır; <code>continue</code> ise o turun kalanını atlayıp bir sonraki tura geçer. Örneğin <code>if (i == 3) continue;</code> satırı 4. LED'i atlar.</div>
+</section>
+
+<section class="card quiz" id="quiz"><h2><span class="num">12</span>Kendini Test Et</h2>
+<div class="q" data-answer="b"><p>1) <code>for (int i = 0; i &lt; 8; i++)</code> döngüsünün gövdesi kaç kez çalışır?</p><button class="opt" data-k="a">a) 7</button><button class="opt" data-k="b">b) 8</button><button class="opt" data-k="c">c) 9</button><div class="fb">✓ i = 0, 1, …, 7 değerlerini alır; i = 8 olduğunda koşul (8 &lt; 8) yanlış olur ve döngü biter. Toplam 8 tur.</div></div>
+<div class="q" data-answer="a"><p>2) <code>int ledler[] = {2, 3, 4, 5, 6, 7, 8, 9};</code> tanımında <code>ledler[3]</code> kaçtır?</p><button class="opt" data-k="a">a) 5</button><button class="opt" data-k="b">b) 3</button><button class="opt" data-k="c">c) 4</button><div class="fb">✓ İndisler 0'dan başlar: ledler[0]=2, ledler[1]=3, ledler[2]=4, ledler[3]=5.</div></div>
+<div class="q" data-answer="c"><p>3) Kara Şimşek programında (ileri 8 + geri 6 adım) bekleme = 50 ms ise bir tam tur kaç ms sürer?</p><button class="opt" data-k="a">a) 400 ms</button><button class="opt" data-k="b">b) 800 ms</button><button class="opt" data-k="c">c) 700 ms</button><div class="fb">✓ 14 adım × 50 ms = 700 ms. Geri döngü uç LED'leri tekrarlamadığı için 16 değil 14 adım vardır.</div></div>
+<div class="q" data-answer="b"><p>4) 4 LED'li ikili sayıcıda D5, D4, D3, D2 sırasıyla ● ○ ● ● (yanık, sönük, yanık, yanık) ise gösterilen sayı kaçtır?</p><button class="opt" data-k="a">a) 13</button><button class="opt" data-k="b">b) 11</button><button class="opt" data-k="c">c) 7</button><div class="fb">✓ 1011₂ = 8 + 0 + 2 + 1 = 11. D5 en yüksek değerli bit (8), D2 en düşük değerli bittir (1).</div></div>
+<div class="q" data-answer="b"><p>5) <code>int i = 0; while (i &lt; 5) { digitalWrite(13, HIGH); }</code> kodunun sorunu nedir?</p><button class="opt" data-k="a">a) while içinde digitalWrite kullanılamaz</button><button class="opt" data-k="b">b) i hiç artırılmadığı için sonsuz döngü oluşur</button><button class="opt" data-k="c">c) Koşulda &lt;= kullanılmalıdır</button><div class="fb">✓ Gövdede i'yi değiştiren bir komut (i++) yoktur; i hep 0 kalır, 0 &lt; 5 hep doğrudur ve program bu satırda takılır.</div></div>
+</section>
+
+<section class="card" id="odev"><h2><span class="num">13</span>Ödev ve Özet</h2>
+<h3>Ödev</h3><ol>
+<li>8 LED ile <b>ortadan dışa</b> animasyon yapın: önce D5–D6, sonra D4–D7, sonra D3–D8, en son D2–D9 birlikte yansın; ardından ters sırayla içe dönsün.</li>
+<li>Kara Şimşek programını, her tam turda <code>bekleme</code> değeri 20 ms azalacak şekilde değiştirin; değer 20 ms'nin altına inince yeniden 200 ms'ye dönsün.</li>
+<li>4 LED'li ikili sayıcıyı <b>15'ten 0'a geri sayacak</b> şekilde düzenleyin ve her sayıyı Seri Monitör'e onluk ve onaltılık (<code>HEX</code>) olarak yazdırın.</li>
+<li>Yürüyen ışığı <b>kuyruklu</b> hâle getirin: aynı anda yan yana iki LED yansın (i ve i+1), dizi sınırı aşılmasın.</li></ol>
+<details><summary>1. ödev için ipucu (tıklayın)</summary>
+<p>8 LED'lik dizide ortadaki iki indis 3 ve 4'tür. i = 0'dan 3'e kadar giden bir döngüde <code>ledler[3 - i]</code> ve <code>ledler[4 + i]</code> aynı anda yakılırsa ışık ortadan dışa yayılır.</p><div class="codebox"><span class="lbl">ortadan_disa_ipucu.ino</span><pre class="code">for (int i = 0; i &lt; 4; i++) {
+  digitalWrite(ledler[3 - i], HIGH);
+  digitalWrite(ledler[4 + i], HIGH);
+  delay(bekleme);
+  digitalWrite(ledler[3 - i], LOW);
+  digitalWrite(ledler[4 + i], LOW);
+}</pre></div></details>
+<h3>Özet</h3><ul>
+<li><code>for (başlangıç; koşul; artırma)</code>: başlangıç bir kez, koşul her turun başında, artırma her turun sonunda çalışır.</li>
+<li><code>for (int i = 0; i &lt; N; i++)</code> kalıbı tam N tur döner; <code>i--</code> ile geri, <code>i += 2</code> ile atlayarak sayılır.</li>
+<li><code>while</code> tekrar sayısı belli olmadığında kullanılır; koşulu değiştirmeyi unutmak sonsuz döngüye yol açar.</li>
+<li>Diziler pin numaralarını tek isim altında toplar; indis 0'dan başlar, son indis (eleman sayısı − 1)'dir.</li>
+<li>Yürüyen ışık 8, Kara Şimşek 14, LED bar 16 adımdan oluşur; tur süresi = adım sayısı × bekleme.</li>
+<li>n LED ile 2<sup>n</sup> farklı sayı gösterilir; <code>bitRead()</code> bir sayının istenen bitini verir.</li></ul>
+</section>
+</main>
+<footer>Arduino ile Programlama · Ders Notları · 5. Hafta<br>Kaynaklar: C. Taşdemir – <i>Arduino</i>; G. Döktaş – <i>Arduino Eğitim Kitabı</i>; E. Delebe – <i>Projeler ile Arduino</i></footer>
+<script>
+(function(){
+ const KW=['void','if','else','for','while','do','return','switch','case','break','default','const','true','false','#include','#define'];
+ const TY=['int','float','long','unsigned','byte','bool','boolean','char','double','String','word'];
+ const CST=['HIGH','LOW','INPUT','OUTPUT','INPUT_PULLUP','LED_BUILTIN','A0','A1','A2','A3','A4','A5'];
+ const FN=['pinMode','digitalWrite','digitalRead','analogRead','analogWrite','delay','delayMicroseconds','millis','micros','setup','loop','map','constrain','pulseIn','tone','noTone','Serial','begin','print','println','attach','write','read','available','random'];
+ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+ function hl(src){
+  let out='',i=0;
+  const re=/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(#?[A-Za-z_][A-Za-z0-9_]*)|(\b\d+(?:\.\d+)?\b)/g;let m,last=0;
+  while((m=re.exec(src))){out+=esc(src.slice(last,m.index));
+   if(m[1])out+='<span class="com">'+esc(m[1])+'</span>';
+   else if(m[2])out+='<span class="str">'+esc(m[2])+'</span>';
+   else if(m[3]){const w=m[3];let c=KW.includes(w)?'kw':TY.includes(w)?'ty':CST.includes(w)?'cst':FN.includes(w)?'fn':'';out+=c?'<span class="'+c+'">'+esc(w)+'</span>':esc(w)}
+   else if(m[4])out+='<span class="num">'+m[4]+'</span>';
+   last=re.lastIndex}
+  return out+esc(src.slice(last))}
+ document.querySelectorAll('pre.code').forEach(p=>{const raw=p.textContent;p.innerHTML=hl(raw);
+  const b=document.createElement('button');b.className='copybtn';b.textContent='Kopyala';
+  b.onclick=()=>{navigator.clipboard.writeText(raw).then(()=>{b.textContent='Kopyalandı ✓';setTimeout(()=>b.textContent='Kopyala',1500)})};
+  p.parentElement.appendChild(b)});
+ document.querySelectorAll('.quiz .q').forEach(q=>{const ans=q.dataset.answer;const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{q.querySelectorAll('.opt').forEach(x=>x.classList.remove('ok','no'));
+   if(o.dataset.k===ans){o.classList.add('ok');if(fb)fb.style.display='block'}else{o.classList.add('no')}})});
+ document.querySelectorAll('.quiz .fb').forEach(f=>f.style.display='none');
+})();
+</script>
+<script>
+// ---- for adım adım simülasyonu ----
+(function(){
+ const ids={init:'fcInit',cond:'fcCond',body:'fcBody',inc:'fcInc',exit:'fcExit'};
+ const N_=document.getElementById('fcN'),Nv=document.getElementById('fcNv'),out=document.getElementById('fcOut'),ser=document.getElementById('fcSer');
+ const condTxt=document.getElementById('fcCondTxt');let st,i,n,k,timer=null;
+ function hi(p){Object.values(ids).forEach(x=>document.getElementById(x).classList.remove('fcact'));if(p)document.getElementById(ids[p]).classList.add('fcact')}
+ function reset(){st='start';i=null;n=+N_.value;k=0;Nv.textContent=n;condTxt.textContent='i < '+n+' ?';hi(null);ser.textContent='';
+  out.innerHTML='Hazır. <b>Bir adım</b> butonuna basın. (N = '+n+')';stopAuto()}
+ function step(){
+  k++;
+  if(st==='start'){st='init';i=0;hi('init');out.innerHTML=`Adım ${k}: <b>başlangıç</b> → int i = 0 (yalnızca bir kez)`;return}
+  if(st==='init'||st==='inc'){st='cond';hi('cond');const ok=i<n;out.innerHTML=`Adım ${k}: <b>koşul</b> → i &lt; ${n} → ${i} &lt; ${n} → <b style="color:${ok?'#27ae60':'#e74c3c'}">${ok?'doğru':'yanlış'}</b>`;return}
+  if(st==='cond'){ if(i<n){st='body';hi('body');ser.textContent+='i = '+i+'\n';ser.scrollTop=1e9;out.innerHTML=`Adım ${k}: <b>gövde</b> → Serial.println(i) yazdırdı: ${i}`}
+   else{st='exit';hi('exit');ser.textContent+='Dongu bitti\n';ser.scrollTop=1e9;out.innerHTML=`Adım ${k}: <b>döngüden çıkıldı</b>. Gövde toplam <b>${n}</b> kez çalıştı.`;stopAuto()} return}
+  if(st==='body'){st='inc';i++;hi('inc');out.innerHTML=`Adım ${k}: <b>artırma</b> → i++ → i = ${i}`;return}
+  if(st==='exit'){reset()}
+ }
+ function stopAuto(){if(timer){clearInterval(timer);timer=null}document.getElementById('fcAuto').textContent='▶ Otomatik'}
+ document.getElementById('fcStep').onclick=()=>{stopAuto();step()};
+ document.getElementById('fcAuto').onclick=function(){if(timer){stopAuto();return}if(st==='exit')reset();this.textContent='⏸ Durdur';timer=setInterval(step,700)};
+ document.getElementById('fcReset').onclick=reset;N_.oninput=reset;reset();
+ // başlangıçta bir kez otomatik oynat
+ document.getElementById('fcAuto').click();
+})();
+
+// ---- devre şemasında Kara Şimşek animasyonu ----
+(function(){
+ const seq=[0,1,2,3,4,5,6,7,6,5,4,3,2,1];let p=0;
+ setInterval(()=>{for(let j=0;j<8;j++){const on=(j===seq[p]);const L=document.getElementById('c5L'+j);
+   L.setAttribute('fill',on?'#ff2a2a':'#5c1a1a');L.style.filter=on?'drop-shadow(0 0 8px #ff3b3b)':'none';
+   document.getElementById('c5f'+j).setAttribute('opacity',on?1:.12)} p=(p+1)%seq.length},180);
+})();
+
+// ---- 8 LED simülatörü ----
+(function(){
+ const pins=[2,3,4,5,6,7,8,9];const mode=document.getElementById('kMode'),D=document.getElementById('kD'),Dv=document.getElementById('kDv');
+ const out=document.getElementById('kOut'),ser=document.getElementById('kSer'),btn=document.getElementById('kStart');
+ let steps=[],p=0,run=true,t=null,state=new Array(8).fill(false),tms=0;
+ function build(){steps=[];const m=mode.value;
+  if(m==='yur'){for(let i=0;i<8;i++)steps.push({on:[i],i,loop:'for (i++)',cmd:`digitalWrite(${pins[i]}, HIGH)`})}
+  if(m==='kara'){for(let i=0;i<8;i++)steps.push({on:[i],i,loop:'ileri for',cmd:`digitalWrite(${pins[i]}, HIGH)`});
+   for(let i=6;i>0;i--)steps.push({on:[i],i,loop:'geri for',cmd:`digitalWrite(${pins[i]}, HIGH)`})}
+  if(m==='bar'){for(let i=0;i<8;i++){const a=[];for(let j=0;j<=i;j++)a.push(j);steps.push({on:a,i,loop:'dolma for',cmd:`digitalWrite(${pins[i]}, HIGH)`,ser:'Yanan LED sayisi: '+(i+1)})}
+   for(let i=7;i>=0;i--){const a=[];for(let j=0;j<i;j++)a.push(j);steps.push({on:a,i,loop:'bosalma for',cmd:`digitalWrite(${pins[i]}, LOW)`,ser:'Yanan LED sayisi: '+i})}}
+  p=0}
+ function draw(s){for(let j=0;j<8;j++){const on=s.on.includes(j);const c=document.getElementById('kL'+j);c.setAttribute('fill',on?'#ff2a2a':'#4a1414');c.style.filter=on?'drop-shadow(0 0 9px #ff3b3b)':'none'}}
+ function tick(){const s=steps[p];const d=+D.value;draw(s);
+  const names={kara:'Kara Şimşek',yur:'Yürüyen ışık',bar:'LED bar'};
+  out.innerHTML=`Mod: <b>${names[mode.value]}</b> · adım ${p+1}/${steps.length} (${s.loop})<br>i = ${s.i} → ledler[${s.i}] = pin <b>${pins[s.i]}</b><br>Bir tur = ${steps.length} × ${d} ms = <b>${steps.length*d} ms</b> (${(1000/(steps.length*d)).toFixed(2).replace('.',',')} tur/s)`;
+  ser.textContent+=`[${String(tms).padStart(6,' ')} ms] ${s.cmd}`+(s.ser?`   -> ${s.ser}`:'')+'\n';
+  const lines=ser.textContent.split('\n');if(lines.length>200)ser.textContent=lines.slice(-150).join('\n');ser.scrollTop=1e9;
+  tms+=d;p=(p+1)%steps.length;if(run)t=setTimeout(tick,d)}
+ mode.onchange=()=>{build();ser.textContent+='--- yeni program yüklendi ---\n'};
+ D.oninput=()=>{Dv.textContent=D.value};
+ btn.onclick=()=>{run=!run;btn.textContent=run?'⏸ Durdur':'▶ Başlat';if(run)tick();else clearTimeout(t)};
+ document.getElementById('kClr').onclick=()=>{ser.textContent=''};
+ build();tick();
+})();
+
+// ---- ikili sayıcı ----
+(function(){
+ const D=document.getElementById('bD'),Dv=document.getElementById('bDv'),out=document.getElementById('bOut'),ser=document.getElementById('bSer'),bin=document.getElementById('bBin'),btn=document.getElementById('bRun');
+ let n=0,run=true,t=null;
+ function show(){const b=n.toString(2).padStart(4,'0');bin.textContent=b;
+  for(let k=0;k<4;k++){const on=b[k]==='1';const c=document.getElementById('bL'+k);c.setAttribute('fill',on?'#ff2a2a':'#4a1414');c.style.filter=on?'drop-shadow(0 0 9px #ff3b3b)':'none'}
+  const parts=[];[8,4,2,1].forEach((w,k)=>{if(b[k]==='1')parts.push(w)});
+  out.innerHTML=`sayi = <b>${n}</b> → ${b}<sub>2</sub> = ${parts.length?parts.join(' + '):'0'} = ${n}<br>bitRead(${n}, 0..3) → D2=${b[3]}, D3=${b[2]}, D4=${b[1]}, D5=${b[0]}`;
+  ser.textContent+=`onluk: ${n}  ikili: ${n.toString(2)}\n`;const L=ser.textContent.split('\n');if(L.length>200)ser.textContent=L.slice(-150).join('\n');ser.scrollTop=1e9}
+ function tick(){show();n=(n+1)%16;if(run)t=setTimeout(tick,+D.value)}
+ D.oninput=()=>Dv.textContent=D.value;
+ btn.onclick=()=>{run=!run;btn.textContent=run?'⏸ Durdur':'▶ Başlat';if(run)tick();else clearTimeout(t)};
+ document.getElementById('bInc').onclick=()=>{if(run){run=false;clearTimeout(t);btn.textContent='▶ Başlat'}show();n=(n+1)%16};
+ document.getElementById('bRst').onclick=()=>{n=0;ser.textContent='';if(!run){show();n=1}};
+ tick();
+})();
+</script>
+</body></html>
